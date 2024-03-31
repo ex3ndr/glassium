@@ -1,16 +1,69 @@
+import * as React from 'react';
 import { StatusBar } from 'expo-status-bar';
 import { Button, SafeAreaView, ScrollView, StyleSheet, Text, View } from 'react-native';
-import { startBluetooth } from './sources/modules/bt';
+import { openDevice, startBluetooth } from './sources/modules/bt';
 import { useDebugLog } from './sources/utils/useDebugLog';
-import React from 'react';
 import { useAsyncCommand } from './sources/utils/useAsyncCommand';
+import { delay } from './sources/utils/time';
+import { BTCharacteristic } from './sources/modules/bt_common';
 
 export default function App() {
   const [logs, log] = useDebugLog();
   const [executing, execute] = useAsyncCommand(async () => {
+
+    // Staring bluetooth
     log('Starting bluetooth...');
     let results = await startBluetooth();
     log('Bluetooth started:' + results);
+    if (results !== 'started') {
+      log('Failed to start bluetooth');
+      return;
+    }
+
+    // Open device
+    log('Opening device...');
+    let device = await openDevice({ name: 'Super' });
+    if (device === null) {
+      log('Failed to open device');
+      return;
+    }
+    log('Device opened:' + device.name + ' (' + device.id + ')');
+    let target: BTCharacteristic | null = null;
+    for (let service of device.services) {
+      log('Service:' + service.id);
+      for (let characteristic of service.characteristics) {
+        log('- Characteristic:' + characteristic.id);
+        log('  - canRead:' + characteristic.canRead);
+        log('  - canWrite:' + characteristic.canWrite);
+        log('  - canNotify:' + characteristic.canNotify);
+        if (characteristic.canNotify && characteristic.id.toLowerCase() === '19b10001-e8f2-537e-4f6c-d104768a1214') {
+          target = characteristic;
+        }
+      }
+    }
+
+    // Subscribe
+    if (target === null) {
+      log('Target characteristic not found');
+      return;
+    }
+    log('Subscribing...');
+    let total = 0;
+    let sub = target.subscribe((data) => {
+      log('Received:' + data.length + ' bytes');
+      total += data.length;
+    });
+
+    // Await for 10 seconds
+    await delay(10000);
+
+    // Unsubscribe
+    log('Unsubscribing...');
+    sub();
+
+    // Done
+    log('Done');
+    log('Total received:' + total + ' bytes');
   });
 
   return (

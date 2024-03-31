@@ -50,7 +50,7 @@ export default function App() {
     log('Subscribing...');
     let total = 0;
     let sub = target.subscribe((data) => {
-      log('Received:' + data.length + ' bytes');
+      // log('Received:' + data.length + ' bytes');
       total += data.length;
     });
 

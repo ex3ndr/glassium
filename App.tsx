@@ -63,7 +63,7 @@ export default function App() {
 
     // Done
     log('Done');
-    log('Total received:' + total + ' bytes');
+    log('Total received:' + total + ' bytes, speed:' + (total / 10) + ' bytes/sec');
   });
 
   return (

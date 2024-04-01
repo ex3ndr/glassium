@@ -16,7 +16,14 @@
     ],
     "ios": {
       "supportsTablet": true,
-      "bundleIdentifier": "com.superapp.ios"
+      "bundleIdentifier": "com.superapp.ios",
+      "infoPlist": {
+        "UIBackgroundModes": [
+          "fetch",
+          "remote-notification",
+          "bluetooth-central"
+        ]
+      }
     },
     "android": {
       "adaptiveIcon": {

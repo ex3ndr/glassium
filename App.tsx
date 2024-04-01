@@ -6,10 +6,14 @@ import { useDebugLog } from './sources/utils/useDebugLog';
 import { useAsyncCommand } from './sources/utils/useAsyncCommand';
 import { delay } from './sources/utils/time';
 import { BTCharacteristic } from './sources/modules/bt_common';
+import { connectAsync, startAsync } from './modules/hardware';
 
 export default function App() {
   const [logs, log] = useDebugLog();
   const [executing, execute] = useAsyncCommand(async () => {
+
+    log('Starting L2CAP bluetooth...');
+    await startAsync();
 
     // Staring bluetooth
     log('Starting bluetooth...');
@@ -41,6 +45,10 @@ export default function App() {
         }
       }
     }
+
+    // L2CAP
+    log('Connecting to l2cap...');
+    await connectAsync(device.id);
 
     // Subscribe
     if (target === null) {

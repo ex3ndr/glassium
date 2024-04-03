@@ -1,5 +1,6 @@
 import { WaveFile } from "wavefile";
 import { CodecType } from "./protocol";
+import { decodeOpus } from "./opus";
 
 export async function decode(codec: CodecType, frames: Uint8Array[]) {
     console.warn(frames);
@@ -46,6 +47,9 @@ export async function decode(codec: CodecType, frames: Uint8Array[]) {
             wav.fromMuLaw();
             return wav;
         }
+    }
+    if (codec === 'opus') {
+        return decodeOpus(frames);
     }
     return null;
 }

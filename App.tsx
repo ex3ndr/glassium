@@ -52,8 +52,8 @@ export default function App() {
     let target: ProtocolDefinition | null = null;
     let protocol = await resolveProtocol(device);
     if (protocol) {
-      if (protocol.kind !== 'super' || protocol.codec === 'opus') {
-        log('Unsupported protocol: ' + protocol.codec + ' (' + protocol.kind + ')');
+      if (protocol.kind !== 'super') {
+        log('Unsupported protocol');
       } else {
         target = protocol;
       }

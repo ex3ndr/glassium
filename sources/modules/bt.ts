@@ -103,7 +103,7 @@ export async function openDevice(params: { name: string } | { services: string[]
     let services: BTService[] = [];
 
     // Connect to device
-    await btDevice.connect({ requestMTU: 251 });
+    await btDevice.connect({ requestMTU: 128 });
     await m.discoverAllServicesAndCharacteristicsForDevice(btDevice.id);
 
     // Load services

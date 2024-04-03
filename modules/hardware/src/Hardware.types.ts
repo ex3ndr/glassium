@@ -7,5 +7,6 @@ export type L2CAPState = {
 export type ModuleType = {
   startAsync(): Promise<void>;
   stopAsync(): Promise<void>;
-  connectAsync(device: string): Promise<void>
+  connectAsync(device: string, psm: number): Promise<void>
+  disconnectAsync(): Promise<void>;
 };

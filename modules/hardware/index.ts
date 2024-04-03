@@ -18,6 +18,10 @@ export async function stopAsync(): Promise<void> {
   await HardwareModule.stopAsync();
 }
 
-export async function connectAsync(id: string): Promise<void> {
-  await HardwareModule.connectAsync(id);
+export async function connectAsync(uuid: string, psm: number): Promise<void> {
+  await HardwareModule.connectAsync(uuid, psm);
+}
+
+export async function disconnectAsync(): Promise<void> {
+  await HardwareModule.disconnectAsync();
 }

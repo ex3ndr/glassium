@@ -10,7 +10,10 @@ export default {
   async stopAsync(): Promise<void> {
     // noop
   },
-  async connectAsync(id: string): Promise<void> {
+  async connectAsync(device: string, psm: number): Promise<void> {
+    // noop
+  },
+  async disconnectAsync(): Promise<void> {
     // noop
   }
 } satisfies ModuleType;

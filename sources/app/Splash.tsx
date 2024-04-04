@@ -9,7 +9,7 @@ export const Splash = React.memo(() => {
     const router = useRouter();
     const safeArea = useSafeAreaInsets();
     const doStart = React.useCallback(async () => {
-        router.navigate('number');
+        router.navigate('phone');
     }, []);
     return (
         <>

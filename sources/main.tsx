@@ -6,6 +6,7 @@ import { View } from 'react-native';
 import { Splash } from './app/Splash';
 import { PhoneScreen } from './app/auth/PhoneScreen';
 import { Theme } from './theme';
+import { CountryPicker } from './app/auth/CountryScreen';
 
 const Stack = createNativeStackNavigator();
 
@@ -35,6 +36,13 @@ export function Boot() {
                             component={PhoneScreen}
                         />
 
+                        <Stack.Group screenOptions={{ presentation: 'modal' }}>
+                            <Stack.Screen
+                                name='country'
+                                component={CountryPicker}
+                                options={{ headerShown: false }}
+                            />
+                        </Stack.Group>
                     </Stack.Navigator>
                 </NavigationContainer>
             </SafeAreaProvider>

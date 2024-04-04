@@ -2,14 +2,13 @@ import * as React from 'react';
 import { Alert, KeyboardAvoidingView, Text, TextInput, View } from 'react-native';
 import { useRouter } from '../../routing';
 import { Theme } from '../../theme';
-// import { HButton } from '../../components/HButton';
 import * as RNLocalize from "react-native-localize";
-// import { Country, countries } from '../../utils/countries';
-// import { useEffectAfterOpen } from '../../utils/navigation';
 import { useSafeAreaInsets } from 'react-native-safe-area-context';
 import { parsePhoneNumber } from 'libphonenumber-js';
 import { Country, countries } from '../../utils/countries';
 import { SButton } from '../components/SButton';
+import { useHappyAction } from '../helpers/useHappyAction';
+import { requestPhoneAuth } from '../../modules/api/auth';
 
 export const PhoneScreen = React.memo(() => {
 
@@ -30,7 +29,11 @@ export const PhoneScreen = React.memo(() => {
     const [number, setNumber] = React.useState('');
 
     // Actions
-    const [loading, setLoading] = React.useState(false);
+    const [requesting, doRequest] = useHappyAction(async () => {
+        let val = country.value + ' ' + number;
+        await requestPhoneAuth(val, '');
+        router.navigate('code', { number: val });
+    });
     const openCountryPicker = React.useCallback(() => {
         router.navigate('country', {
             current: country,
@@ -39,39 +42,8 @@ export const PhoneScreen = React.memo(() => {
             }
         });
     }, [country]);
-    const onContinue = React.useCallback(() => {
-        let val = country.value + ' ' + number;
-        if (loading) {
-            return;
-        }
-        setLoading(true);
-
-        // // Execute
-        // (async () => {
-        //     try {
-        //         let result = await startPhoneAuth(val);
-        //         if (result.state === 'ok') {
-        //             router.navigate('code', { number: result.number });
-        //             return;
-        //         }
-        //         if (result.state === 'invalid_number') {
-        //             Alert.alert(t('errors.title'), t('errors.invalidNumber'));
-        //             return;
-        //         }
-        //         if (result.state === 'try_again_later') {
-        //             Alert.alert(t('errors.title'), t('errors.tryAgainLater'));
-        //             return;
-        //         }
-        //         Alert.alert(t('errors.title'), t('errors.unknown')); // Unknown error for client
-        //     } catch (e) {
-        //         Alert.alert(t('errors.title'), t('errors.unknown'));
-        //     } finally {
-        //         setLoading(false);
-        //     }
-        // })();
-    }, [number, country, loading]);
     const setNumberValue = React.useCallback((src: string) => {
-        if (loading) {
+        if (requesting) {
             return;
         }
         try {
@@ -97,12 +69,7 @@ export const PhoneScreen = React.memo(() => {
             // Ignore
         }
         setNumber(src);
-    }, []);
-
-    // Auto focus
-    // useEffectAfterOpen(() => {
-    //     inputRef.current?.focus();
-    // });
+    }, [requesting]);
 
     return (
         <View style={{ flexGrow: 1, backgroundColor: Theme.background }}>
@@ -117,7 +84,7 @@ export const PhoneScreen = React.memo(() => {
                         <Text style={{ fontSize: 36, alignSelf: 'center', marginBottom: 8 }}>Your Phone</Text>
                         <Text style={{ fontSize: 22, color: Theme.text, alignSelf: 'center', lineHeight: 30 }}>Please, confirm your country code</Text>
                         <Text style={{ fontSize: 22, color: Theme.text, alignSelf: 'center', lineHeight: 30 }}>and enter your phone number.</Text>
-                        <SButton title={country.label + ' ' + country.emoji} style={{ alignSelf: 'stretch', marginTop: 48, marginBottom: 12 }} onPress={openCountryPicker} disabled={loading} />
+                        <SButton title={country.label + ' ' + country.emoji} style={{ alignSelf: 'stretch', marginTop: 48, marginBottom: 12 }} onPress={openCountryPicker} disabled={requesting} />
                         <View style={{ height: 50, backgroundColor: '#F2F2F2', alignSelf: 'stretch', flexDirection: 'row', borderRadius: 8 }}>
                             <View style={{ marginLeft: 4, width: 60, height: 50, justifyContent: 'center', alignItems: 'center' }}>
                                 <Text style={{ fontSize: 17, fontWeight: '600', opacity: 0.4 }}>
@@ -145,7 +112,7 @@ export const PhoneScreen = React.memo(() => {
                             />
                         </View>
                     </View>
-                    <SButton title='Continue' style={{ alignSelf: 'stretch', marginTop: 48, paddingBottom: 16 }} onPress={onContinue} loading={loading} />
+                    <SButton title='Continue' style={{ alignSelf: 'stretch', marginTop: 48, paddingBottom: 16 }} onPress={doRequest} loading={requesting} />
                 </View>
             </KeyboardAvoidingView>
         </View>

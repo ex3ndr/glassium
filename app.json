@@ -22,7 +22,11 @@
           "fetch",
           "remote-notification",
           "bluetooth-central"
-        ]
+        ],
+        "UIViewControllerBasedStatusBarAppearance": true
+      },
+      "config": {
+        "usesNonExemptEncryption": false
       }
     },
     "android": {

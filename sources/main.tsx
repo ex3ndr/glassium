@@ -7,6 +7,7 @@ import { Splash } from './app/Splash';
 import { PhoneScreen } from './app/auth/PhoneScreen';
 import { Theme } from './theme';
 import { CountryPicker } from './app/auth/CountryScreen';
+import { CodeScreen } from './app/auth/CodeScreen';
 
 const Stack = createNativeStackNavigator();
 
@@ -34,6 +35,10 @@ export function Boot() {
                         <Stack.Screen
                             name='phone'
                             component={PhoneScreen}
+                        />
+                        <Stack.Screen
+                            name='code'
+                            component={CodeScreen}
                         />
 
                         <Stack.Group screenOptions={{ presentation: 'modal' }}>

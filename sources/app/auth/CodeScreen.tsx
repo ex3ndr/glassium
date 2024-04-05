@@ -6,10 +6,12 @@ import { useSafeAreaInsets } from 'react-native-safe-area-context';
 import { useRoute } from '@react-navigation/native';
 import { SButton } from '../components/SButton';
 import { useHappyAction } from '../helpers/useHappyAction';
-import { requestPhoneAuthVerify, storeToken } from '../../modules/api/auth';
+import { requestPhoneAuthVerify } from '../../modules/api/auth';
+import { storeToken, useGlobalStateController } from '../../global';
 
 export const CodeScreen = React.memo(() => {
 
+    const controller = useGlobalStateController();
     const router = useRouter();
     const number = (useRoute().params as { number: string }).number;
     const safeArea = useSafeAreaInsets();
@@ -24,11 +26,9 @@ export const CodeScreen = React.memo(() => {
             router.goBack();
             return;
         }
-
-        // Store token
-        storeToken(output);
-
-        // Go to next screen
+        
+        // Successful login
+        controller.login(output);
     })
     const doSetCode = React.useCallback((v: string) => {
         if (requesting) {

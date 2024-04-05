@@ -1,6 +1,5 @@
 import axios from 'axios';
 import * as z from 'zod';
-import { storage } from "../../storage";
 import { HappyError } from '../errors/HappyError';
 
 export async function requestPhoneAuth(phone: string, key: string) {
@@ -50,16 +49,3 @@ export async function requestPhoneAuthVerify(phone: string, key: string, code: s
     }
     return body.data.token;
 }
-
-//
-// Storage
-//
-
-export function storeToken(token: string) {
-    storage.set('token', token);
-}
-
-export function getToken() {
-    return storage.getString('token');
-}
-

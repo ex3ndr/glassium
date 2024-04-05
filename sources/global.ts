@@ -114,20 +114,22 @@ async function refreshOnboarding(client: SuperClient): Promise<OnboardingState |
 
     // Load server state
     let serverState = await client.fetchPreState();
-    if (serverState.canActivate) {
-        return { kind: 'need_activation' };
-    }
     if (serverState.needUsername) {
         return { kind: 'need_username' };
     }
-    if (serverState.needProfile) {
+    if (serverState.needName) {
         return { kind: 'need_name' };
     }
 
-    // Load push state
+    // Request notifications
     let notificationPermissions = await Notifications.getPermissionsAsync();
-    if (notificationPermissions.status === 'undetermined' && !isSkipNotifications()) {
+    if (notificationPermissions.status === 'undetermined' && !isSkipNotifications() && notificationPermissions.canAskAgain) {
         return { kind: 'need_push' };
+    }
+
+    // In the end require activation
+    if (serverState.canActivate) {
+        return { kind: 'need_activation' };
     }
 
     // All requirements satisfied

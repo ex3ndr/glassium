@@ -8,6 +8,9 @@ import { OnboardingState } from '../global';
 import { PreUsernameScreen } from './pre/PreUsername';
 import { PrePreparingScreen } from './pre/PrePreparing';
 import { HomeScreen } from './Home';
+import { PreNameScreen } from './pre/PreName';
+import { PreNotificationsScreen } from './pre/PreNotifications';
+import { PreActivationScreen } from './pre/PreActivation';
 
 export const Stack = createNativeStackNavigator();
 
@@ -26,6 +29,9 @@ export const Pre = (state: OnboardingState) => {
             <Stack.Screen
                 name='prepare'
                 component={PrePreparingScreen}
+                options={{
+                    headerShown: false
+                }}
             />
         );
     }
@@ -34,6 +40,42 @@ export const Pre = (state: OnboardingState) => {
             <Stack.Screen
                 name='need_username'
                 component={PreUsernameScreen}
+                options={{
+                    headerShown: false
+                }}
+            />
+        );
+    }
+    if (state.kind === 'need_name') {
+        return (
+            <Stack.Screen
+                name='need_name'
+                component={PreNameScreen}
+                options={{
+                    headerShown: false
+                }}
+            />
+        );
+    }
+    if (state.kind === 'need_push') {
+        return (
+            <Stack.Screen
+                name='need_push'
+                component={PreNotificationsScreen}
+                options={{
+                    headerShown: false
+                }}
+            />
+        );
+    }
+    if (state.kind === 'need_activation') {
+        return (
+            <Stack.Screen
+                name='need_activation'
+                component={PreActivationScreen}
+                options={{
+                    headerShown: false
+                }}
             />
         );
     }
@@ -46,8 +88,7 @@ export const Auth = (
             name='splash'
             component={Splash}
             options={{
-                headerShown: false,
-                statusBarStyle: 'light'
+                headerShown: false
             }}
         />
         <Stack.Screen

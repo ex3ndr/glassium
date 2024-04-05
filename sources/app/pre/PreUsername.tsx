@@ -11,18 +11,18 @@ import * as Haptics from 'expo-haptics';
 import { SButton } from '../components/SButton';
 import { ShakeInstance, Shaker } from '../components/Shaker';
 import { SInput } from '../components/SInput';
+import { useHappyAction } from '../helpers/useHappyAction';
+import { alert } from '../helpers/alert';
 
 export const PreUsernameScreen = React.memo(() => {
     const safeArea = useSafeAreaInsets();
     const client = useClient();
     const controller = useGlobalStateController();
-    const [loading, setLoading] = React.useState(false);
+
     const [username, setUsername] = React.useState('');
     const usernameRef = React.useRef<ShakeInstance>(null);
-    const onContinue = React.useCallback(() => {
-        if (loading) {
-            return;
-        }
+
+    const [requesting, doRequest] = useHappyAction(async () => {
 
         // Normalize and check
         let name = username.trim();
@@ -32,32 +32,21 @@ export const PreUsernameScreen = React.memo(() => {
             return;
         }
 
-        // // Create username
-        // run(async () => {
-        //     setLoading(true);
-        //     try {
-
-        //         // Create username
-        //         let res = await backoff(() => client.post('/account/create_username', { username: name }));
-        //         if (!res.data.ok) {
-        //             if (res.data.error === 'invalid_username') {
-        //                 usernameRef.current?.shake();
-        //                 Haptics.notificationAsync(Haptics.NotificationFeedbackType.Error);
-        //             } else if (res.data.error === 'username_taken') {
-        //                 Alert.alert(t('errors.title'), t('errors.usernameTaken'));
-        //             } else {
-        //                 Alert.alert(t('errors.title'), t('errors.unknown'));
-        //             }
-        //             return;
-        //         }
-
-        //         // Refresh onboarding
-        //         await controller.refresh();
-        //     } finally {
-        //         setLoading(false);
-        //     }
-        // });
-    }, [loading, username]);
+        // Create username
+        let res = await client.preUsername(name);
+        if (res.ok) {
+            await controller.refresh(); // This moves to the next screen
+        } else {
+            if (res.error === 'invalid_username') {
+                usernameRef.current?.shake();
+                Haptics.notificationAsync(Haptics.NotificationFeedbackType.Error);
+                // await alert('Invalid username', 'Please try another username', [{ text: 'OK' }]);
+            }
+            if (res.error === 'already_used') {
+                await alert('Username already used', 'Please try another username', [{ text: 'OK' }]);
+            }
+        }
+    });
     return (
         <View style={{ flexGrow: 1, backgroundColor: Theme.background }}>
             <KeyboardAvoidingView
@@ -74,7 +63,7 @@ export const PreUsernameScreen = React.memo(() => {
                             <SInput placeholder='Username' style={{ marginTop: 24 }} value={username} onValueChange={setUsername} />
                         </Shaker>
                     </View>
-                    <SButton title='Continue' style={{ alignSelf: 'stretch', marginTop: 48, paddingBottom: 16 }} onPress={onContinue} loading={loading} />
+                    <SButton title='Continue' style={{ alignSelf: 'stretch', marginTop: 48, paddingBottom: 16 }} onPress={doRequest} loading={requesting} />
                 </View>
             </KeyboardAvoidingView>
         </View>

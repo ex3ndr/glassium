@@ -19,6 +19,7 @@ export const App = (
         <Stack.Screen
             name='home'
             component={HomeScreen}
+            options={{ headerShown: false }}
         />
     </>
 );

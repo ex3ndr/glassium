@@ -19,5 +19,9 @@ export const Schema = {
     }), z.object({
         ok: z.literal(false),
         error: z.literal('invalid_name'),
-    })])
+    })]),
+    sessionStart: z.object({
+        ok: z.literal(true),
+        session: z.string(),
+    }),
 };

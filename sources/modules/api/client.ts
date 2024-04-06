@@ -34,4 +34,15 @@ export class SuperClient {
             await this.client.post('/pre/complete');
         })
     }
+
+    startSession(repeatKey: string) {
+        return backoff(async () => {
+            let res = await this.client.post('/app/session/start', { repeatKey, timeout: 15 }); // 15 seconds timeout
+            return Schema.sessionStart.parse(res.data).session;
+        })
+    }
+
+    async stopSession(session: string) {
+        await this.client.post('/app/session/stop', { session });
+    }
 }

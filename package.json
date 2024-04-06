@@ -18,6 +18,7 @@
     "@shopify/react-native-skia": "0.1.221",
     "axios": "^1.6.8",
     "expo": "~50.0.14",
+    "expo-av": "~13.10.5",
     "expo-crypto": "~12.8.1",
     "expo-haptics": "~12.8.1",
     "expo-localization": "~14.8.3",

@@ -1,8 +1,13 @@
 PODS:
+  - Audio (1.0.0):
+    - ExpoModulesCore
   - boost (1.83.0)
   - DoubleConversion (1.1.6)
   - EXApplication (5.8.3):
     - ExpoModulesCore
+  - EXAV (13.10.5):
+    - ExpoModulesCore
+    - ReactCommon/turbomodule/core
   - EXConstants (15.4.5):
     - ExpoModulesCore
   - EXFont (11.10.3):
@@ -1130,9 +1135,11 @@ PODS:
   - Yoga (1.14.0)
 
 DEPENDENCIES:
+  - Audio (from `../modules/audio/ios`)
   - boost (from `../node_modules/react-native/third-party-podspecs/boost.podspec`)
   - DoubleConversion (from `../node_modules/react-native/third-party-podspecs/DoubleConversion.podspec`)
   - EXApplication (from `../node_modules/expo-application/ios`)
+  - EXAV (from `../node_modules/expo-av/ios`)
   - EXConstants (from `../node_modules/expo-constants/ios`)
   - EXFont (from `../node_modules/expo-font/ios`)
   - EXNotifications (from `../node_modules/expo-notifications/ios`)
@@ -1216,12 +1223,16 @@ SPEC REPOS:
     - SocketRocket
 
 EXTERNAL SOURCES:
+  Audio:
+    :path: "../modules/audio/ios"
   boost:
     :podspec: "../node_modules/react-native/third-party-podspecs/boost.podspec"
   DoubleConversion:
     :podspec: "../node_modules/react-native/third-party-podspecs/DoubleConversion.podspec"
   EXApplication:
     :path: "../node_modules/expo-application/ios"
+  EXAV:
+    :path: "../node_modules/expo-av/ios"
   EXConstants:
     :path: "../node_modules/expo-constants/ios"
   EXFont:
@@ -1363,9 +1374,11 @@ EXTERNAL SOURCES:
     :path: "../node_modules/react-native/ReactCommon/yoga"
 
 SPEC CHECKSUMS:
+  Audio: 9279ee7392c9e2523612c8d83b806c010a2ed35a
   boost: d3f49c53809116a5d38da093a8aa78bf551aed09
   DoubleConversion: fea03f2699887d960129cc54bba7e52542b6f953
   EXApplication: 137189a3f149b4e8e546884629392c3efc94cbd3
+  EXAV: 07e50f934907fa8274dd06fbcd20ee4b9478c619
   EXConstants: 988aa430ca0f76b43cd46b66e7fae3287f9cc2fc
   EXFont: f20669cb266ef48b004f1eb1f2b20db96cd1df9f
   EXNotifications: e11f0e9a5b657c064a481a5d522f3bc5a07bf7cd

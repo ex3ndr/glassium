@@ -3,9 +3,13 @@ import { backoff } from "../../utils/time";
 import { Schema } from "./client.schema";
 
 export class SuperClient {
+
     readonly client: Axios
-    constructor(client: Axios) {
+    readonly token: string;
+
+    constructor(client: Axios, token: string) {
         this.client = client;
+        this.token = token;
     }
 
     fetchPreState() {
@@ -35,6 +39,10 @@ export class SuperClient {
         })
     }
 
+    //
+    // Session Operations
+    //
+
     startSession(repeatKey: string) {
         return backoff(async () => {
             let res = await this.client.post('/app/session/start', { repeatKey, timeout: 15 }); // 15 seconds timeout
@@ -50,6 +58,17 @@ export class SuperClient {
         return backoff(async () => {
             let res = await this.client.post('/app/session/upload/audio', { session, repeatKey, format, chunks });
             return Schema.uploadAudio.parse(res.data);
-        })
+        });
+    }
+
+    //
+    // List Sessions
+    //
+
+    listSessions() {
+        return backoff(async () => {
+            let res = await this.client.post('/app/session/list', {});
+            return Schema.listSessions.parse(res.data);
+        });
     }
 }

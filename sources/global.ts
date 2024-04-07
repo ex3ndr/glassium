@@ -163,7 +163,7 @@ export function useNewGlobalController(): [GlobalState, GlobalStateController] {
             headers: {
                 Authorization: `Bearer ${token}`,
             },
-        }));
+        }), token);
 
         // If onboarding is completed - we are ready
         if (isOnboardingCompleted()) {
@@ -200,7 +200,7 @@ export function useNewGlobalController(): [GlobalState, GlobalStateController] {
                     headers: {
                         Authorization: `Bearer ${token}`,
                     },
-                }));
+                }), token);
 
                 // Update state
                 currentState = {

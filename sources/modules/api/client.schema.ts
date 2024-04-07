@@ -26,5 +26,15 @@ export const Schema = {
     }),
     uploadAudio: z.object({
         ok: z.boolean(),
+    }),
+    listSessions: z.object({
+        ok: z.boolean(),
+        sessions: z.array(z.object({
+            id: z.string(),
+            index: z.number(),
+            created: z.number(),
+            state: z.union([z.literal('starting'), z.literal('processing'), z.literal('finished'), z.literal('canceled'), z.literal('in-progress')])
+        })),
+        next: z.string().nullable()
     })
 };

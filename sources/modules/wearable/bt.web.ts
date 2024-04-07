@@ -86,6 +86,9 @@ export async function openDevice(params: { name: string } | { services: string[]
     return {
         id,
         name,
-        services
+        services,
+        close: () => {
+            gatt.disconnect();
+        }
     };
 }

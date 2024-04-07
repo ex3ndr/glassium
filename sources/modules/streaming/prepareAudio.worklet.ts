@@ -1,7 +1,7 @@
 import { WaveFile } from 'wavefile';
-import { compress } from '../../../modules/audio';
+import { Worklets } from 'react-native-worklets-core';
 
-export async function prepareAudio(format: 'opus' | 'pcm-16' | 'pcm-8' | 'mulaw-16' | 'mulaw-8', frames: Uint8Array[]) {
+export function prepareAudio(format: 'opus' | 'pcm-16' | 'pcm-8' | 'mulaw-16' | 'mulaw-8', frames: Uint8Array[]) {
     'worklet';
 
     // PCM
@@ -32,11 +32,7 @@ export async function prepareAudio(format: 'opus' | 'pcm-16' | 'pcm-8' | 'mulaw-
         }
         let output = wav.toBuffer();
 
-        // Compress
-        let converted = await compress(output);
-
-        // Output
-        return converted;
+        return { format: 'wav', data: output };
     }
 
     // MuLaw
@@ -65,11 +61,8 @@ export async function prepareAudio(format: 'opus' | 'pcm-16' | 'pcm-8' | 'mulaw-
         }
         let output = wav.toBuffer();
 
-        // Compress
-        let converted = await compress(output);
-
         // Output
-        return converted;
+        return { format: 'wav', data: output };
     }
 
     // Opus
@@ -90,3 +83,5 @@ export async function prepareAudio(format: 'opus' | 'pcm-16' | 'pcm-8' | 'mulaw-
 
     throw new Error('Unsupported format');
 }
+
+export const prepareAudioAsync = Worklets.createRunInContextFn(prepareAudio);

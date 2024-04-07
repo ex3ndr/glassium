@@ -24,4 +24,7 @@ export const Schema = {
         ok: z.literal(true),
         session: z.string(),
     }),
+    uploadAudio: z.object({
+        ok: z.boolean(),
+    })
 };

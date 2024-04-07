@@ -3,7 +3,8 @@ export type BTStartResult = 'started' | 'denied' | 'failure';
 export type BTDevice = {
     id: string,
     name: string,
-    services: BTService[]
+    services: BTService[],
+    close : () => void
 };
 
 export type BTService = {

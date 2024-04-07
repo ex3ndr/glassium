@@ -1,4 +1,3 @@
-import { PermissionsAndroid, Platform } from 'react-native';
 import * as b64 from 'react-native-quick-base64';
 import { BleManager, Device, ScanOptions, State, Subscription } from 'react-native-ble-plx';
 import { BTDevice, BTService, BTStartResult } from './bt_common';
@@ -65,7 +64,7 @@ export async function openDevice(params: { name: string } | { services: string[]
     let m = manager();
 
     // Load device
-    let btDevice = await new Promise<Device | null>((resolve, reject) => {
+    const btDevice = await new Promise<Device | null>((resolve, reject) => {
         let uuids: string[] | null = null;
         let options: ScanOptions | null = null;
         let ended = false;
@@ -144,6 +143,9 @@ export async function openDevice(params: { name: string } | { services: string[]
     return {
         id,
         name,
-        services
+        services,
+        close: () => {
+            btDevice.cancelConnection();
+        }
     };
 }

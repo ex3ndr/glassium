@@ -45,4 +45,11 @@ export class SuperClient {
     async stopSession(session: string) {
         await this.client.post('/app/session/stop', { session });
     }
+
+    uploadAudio(session: string, repeatKey: string, format: string, chunks: string[]) {
+        return backoff(async () => {
+            let res = await this.client.post('/app/session/upload/audio', { session, repeatKey, format, chunks });
+            return Schema.uploadAudio.parse(res.data);
+        })
+    }
 }

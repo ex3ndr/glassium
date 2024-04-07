@@ -1,6 +1,6 @@
 import { BTCharacteristic, BTDevice } from "./bt_common";
 
-export type CodecType = 'pcm-16' | 'pcm-8' | 'mu-law-16' | 'mu-law-8' | 'opus';
+export type CodecType = 'pcm-16' | 'pcm-8' | 'mulaw-16' | 'mulaw-8' | 'opus';
 
 export type ProtocolDefinition = {
     kind: 'super',
@@ -39,9 +39,9 @@ async function resolveSuperProtocol(device: BTDevice): Promise<ProtocolDefinitio
     } else if (codecId === 1) {
         codec = 'pcm-8';
     } else if (codecId === 10) {
-        codec = 'mu-law-16'
+        codec = 'mulaw-16'
     } else if (codecId === 11) {
-        codec = 'mu-law-8'
+        codec = 'mulaw-8'
     } else if (codecId === 20) {
         codec = 'opus'
     } else {

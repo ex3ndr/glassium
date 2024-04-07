@@ -5,14 +5,14 @@ import { Uploader } from "../streaming/Uploader";
 import { openDevice, startBluetooth } from "../wearable/bt";
 import { BTDevice } from "../wearable/bt_common";
 import { resolveProtocol } from "../wearable/protocol";
-import { AppState } from "./AppState";
+import { AppModel } from "./AppModel";
 
 export class CaptureSession {
-    readonly appState: AppState;
+    readonly appState: AppModel;
     state: 'starting' | 'online' | 'stoppping' | 'stopped' = 'starting';
     private readonly repeatKey = randomKey();
 
-    constructor(appState: AppState) {
+    constructor(appState: AppModel) {
         this.appState = appState;
     }
 

@@ -2,20 +2,25 @@ import { createStore } from "jotai";
 import { SuperClient } from "../api/client";
 import { CaptureSession } from './CaptureSession';
 import { SessionsModel } from "./SessionsModel";
+import { WearableModel } from "./WearableModel";
+import { Jotai } from "./Jotai";
 
-export class AppState {
+export class AppModel {
     readonly client: SuperClient;
     private session: CaptureSession | null = null;
-    readonly store: ReturnType<typeof createStore>;
+    readonly jotai: Jotai;
     readonly sessions: SessionsModel;
+    readonly wearable: WearableModel;
 
     constructor(client: SuperClient) {
         this.client = client;
-        this.store = createStore();
-        this.sessions = new SessionsModel(client, this.store);
+        this.jotai = createStore();
+        this.sessions = new SessionsModel(client, this.jotai);
+        this.wearable = new WearableModel(this.jotai);
 
         // Start
         this.sessions.invalidate();
+        this.wearable.start();
     }
 
     useSessions = () => {

@@ -3,7 +3,7 @@ import axios from 'axios';
 import { storage } from './storage';
 import { SuperClient } from './modules/api/client';
 import * as Notifications from 'expo-notifications';
-import { AppState } from './modules/state/AppState';
+import { AppModel } from './modules/state/AppModel';
 
 const ONBOARDING_VERSION = 1; // Increment this to reset onboarding
 
@@ -34,7 +34,7 @@ export type GlobalState = {
     kind: 'ready',
     token: string,
     client: SuperClient,
-    appState: AppState
+    appModel: AppModel
 };
 
 export const GlobalStateContext = React.createContext<GlobalState>({ kind: 'empty' });
@@ -51,12 +51,12 @@ export function useClient() {
     return state.client;
 }
 
-export function useAppState() {
+export function useAppModel() {
     let state = useGlobalState();
     if (state.kind !== 'ready') {
         throw new Error('GlobalState is not ready');
     }
-    return state.appState;
+    return state.appModel;
 };
 
 //
@@ -171,7 +171,7 @@ export function useNewGlobalController(): [GlobalState, GlobalStateController] {
                 kind: 'ready',
                 token: token,
                 client,
-                appState: new AppState(client)
+                appModel: new AppModel(client)
             };
         }
 
@@ -238,7 +238,7 @@ export function useNewGlobalController(): [GlobalState, GlobalStateController] {
                         kind: 'ready',
                         token: currentState.token,
                         client: currentState.client,
-                        appState: new AppState(currentState.client)
+                        appModel: new AppModel(currentState.client)
                     };
                     setState(currentState);
                     return;

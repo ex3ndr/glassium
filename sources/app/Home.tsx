@@ -3,12 +3,12 @@ import { ActivityIndicator, Pressable, ScrollView, Text, View } from 'react-nati
 import { RoundButton } from './components/RoundButton';
 import { useSafeAreaInsets } from 'react-native-safe-area-context';
 import { Theme } from '../theme';
-import { useAppState } from '../global';
+import { useAppModel } from '../global';
 
 export const HomeScreen = React.memo(() => {
     const safeArea = useSafeAreaInsets();
-    const appState = useAppState();
-    const sessions = appState.useSessions();
+    const appModel = useAppModel();
+    const sessions = appModel.useSessions();
     return (
         <View style={{ flexGrow: 1, justifyContent: 'center', alignItems: 'center', paddingTop: safeArea.top, paddingBottom: safeArea.bottom }}>
             <View style={{ height: 48, alignItems: 'center', justifyContent: 'center' }}>
@@ -45,7 +45,7 @@ export const HomeScreen = React.memo(() => {
                     ))}
                 </ScrollView>
             )}
-            <RoundButton title="Record" onPress={() => appState.startSession()} />
+            <RoundButton title="Record" onPress={() => appModel.startSession()} />
         </View>
     );
 });

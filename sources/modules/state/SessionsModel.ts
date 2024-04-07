@@ -1,7 +1,8 @@
-import { atom, createStore, useAtomValue } from 'jotai';
+import { atom, useAtomValue } from 'jotai';
 import { SuperClient } from "../api/client";
 import { storage } from '../../storage';
 import { InvalidateSync } from 'teslabot';
+import { Jotai } from './Jotai';
 
 export type ViewSession = {
     id: string,
@@ -12,19 +13,19 @@ export type ViewSession = {
 export class SessionsModel {
     readonly client: SuperClient;
     readonly sessions = atom<ViewSession[] | null>(null);
-    readonly store: ReturnType<typeof createStore>;
+    readonly jotai: Jotai;
     #sessions: ViewSession[] | null = null;
     #refresh: InvalidateSync
 
-    constructor(client: SuperClient, store: ReturnType<typeof createStore>) {
+    constructor(client: SuperClient, jotai: Jotai) {
         this.client = client;
-        this.store = store;
+        this.jotai = jotai;
 
         // Load initial
         let ex = storage.getString('sessions');
         if (ex) {
             this.#sessions = JSON.parse(ex);
-            this.store.set(this.sessions, this.#filter(this.#sessions!));
+            this.jotai.set(this.sessions, this.#filter(this.#sessions!));
         }
 
         // Refresh
@@ -57,7 +58,7 @@ export class SessionsModel {
         // Update
         this.#sessions = merged;
         storage.set('sessions', JSON.stringify(this.#sessions));
-        this.store.set(this.sessions, this.#filter(this.#sessions!));
+        this.jotai.set(this.sessions, this.#filter(this.#sessions!));
     }
 
     #filter = (sessions: ViewSession[]) => {

@@ -36,7 +36,7 @@ export function Boot() {
                 <GlobalStateContext.Provider value={state}>
                     <GlobalStateControllerContext.Provider value={controller}>
                         {state.kind === 'ready' && (
-                            <Provider store={state.appState.store}>
+                            <Provider store={state.appModel.jotai}>
                                 {content}
                             </Provider>
                         )}

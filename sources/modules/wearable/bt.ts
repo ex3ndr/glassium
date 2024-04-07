@@ -97,7 +97,18 @@ export async function openDevice(params: { name: string } | { services: string[]
         return null;
     }
 
-    let id = btDevice.id;
+    return connectToDevice(btDevice.id);
+}
+
+export async function connectToDevice(id: string): Promise<BTDevice | null> {
+    let m = manager();
+    let btDevice: Device;
+    try {
+        btDevice = await m.connectToDevice(id, { requestMTU: 250, timeout: 5000 });
+    } catch (error) {
+        console.error(error);
+        return null;
+    }
     let name = btDevice.name || 'Unknown';
     let services: BTService[] = [];
 

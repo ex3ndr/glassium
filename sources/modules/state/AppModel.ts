@@ -27,6 +27,10 @@ export class AppModel {
         return this.sessions.use();
     }
 
+    useWearable = () => {
+        return this.wearable.use();
+    }
+
     startSession = () => {
         if (!this.session) {
             this.session = new CaptureSession(this);

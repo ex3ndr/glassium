@@ -9,10 +9,15 @@ export const HomeScreen = React.memo(() => {
     const safeArea = useSafeAreaInsets();
     const appModel = useAppModel();
     const sessions = appModel.useSessions();
+    const wearable = appModel.useWearable();
     return (
         <View style={{ flexGrow: 1, justifyContent: 'center', alignItems: 'center', paddingTop: safeArea.top, paddingBottom: safeArea.bottom }}>
-            <View style={{ height: 48, alignItems: 'center', justifyContent: 'center' }}>
+            <View style={{ height: 48, alignItems: 'center', justifyContent: 'center', flexDirection: 'row' }}>
+                <View style={{ flexGrow: 1, flexBasis: 0 }} />
                 <Text style={{ color: Theme.text, fontSize: 24 }}>Super</Text>
+                <View style={{ flexGrow: 1, flexBasis: 0 }}>
+                    <Text>{wearable.status}</Text>
+                </View>
             </View>
             {sessions === null && (
                 <View style={{ flexGrow: 1, alignItems: 'center', justifyContent: 'center' }}>

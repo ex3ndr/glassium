@@ -5,7 +5,7 @@ import { ProtocolDefinition } from "../wearable/protocol";
 import { AsyncLock } from "teslabot";
 import { randomKey } from "../crypto/randomKey";
 import { SyncModel } from "./SyncModel";
-import { prepareAudio } from "../streaming/prepareAudio";
+import { prepareAudio } from "../media/prepareAudio";
 import { compress } from "../../../modules/audio";
 import { log } from "../../utils/logs";
 

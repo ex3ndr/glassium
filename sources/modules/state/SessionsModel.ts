@@ -1,8 +1,10 @@
-import { atom, useAtomValue } from 'jotai';
+import * as React from 'react';
+import { PrimitiveAtom, atom, useAtomValue } from 'jotai';
 import { SuperClient } from "../api/client";
 import { storage } from '../../storage';
-import { InvalidateSync } from 'teslabot';
+import { AsyncLock, InvalidateSync } from 'teslabot';
 import { Jotai } from './_types';
+import { backoff } from '../../utils/time';
 
 export type ViewSession = {
     id: string,
@@ -14,10 +16,23 @@ export type ViewSession = {
     } | null
 };
 
+export type ViewSessionFull = {
+    id: string,
+    index: number,
+    state: 'starting' | 'processing' | 'finished' | 'canceled' | 'in-progress',
+    audio: {
+        duration: number,
+        size: number
+    } | null,
+    text: string | null
+};
+
 export class SessionsModel {
     readonly client: SuperClient;
     readonly sessions = atom<ViewSession[] | null>(null);
     readonly jotai: Jotai;
+    #fullSessions = new Map<string, PrimitiveAtom<ViewSessionFull | null>>();
+    #fullSessionsLock = new AsyncLock();
     #sessions: ViewSession[] | null = null;
     #refresh: InvalidateSync
 
@@ -79,5 +94,26 @@ export class SessionsModel {
 
     use = () => {
         return useAtomValue(this.sessions);
+    }
+
+    useFull = (id: string) => {
+        let fatom = this.#fullSessions.get(id);
+        if (!fatom) {
+            fatom = atom<ViewSessionFull | null>(null);
+            this.#fullSessions.set(id, fatom);
+        }
+        React.useEffect(() => {
+            this.#fullSessionsLock.inLock(async () => {
+                let res = await this.client.getFullSession(id);
+                this.jotai.set(fatom!, {
+                    id: res.session.id,
+                    index: res.session.index,
+                    state: res.session.state,
+                    audio: res.session.audio,
+                    text: res.session.text
+                });
+            });
+        }, []);
+        return useAtomValue(fatom);
     }
 }

@@ -37,6 +37,11 @@ const session = z.object({
 });
 export type Session = z.infer<typeof session>;
 
+const fullSession = z.intersection(session, z.object({
+    text: z.string().nullable()
+}));
+export type FullSession = z.infer<typeof fullSession>;
+
 export const sseUpdate = z.object({
     seq: z.number(),
     data: z.any()
@@ -73,6 +78,10 @@ export const Schema = {
         ok: z.boolean(),
         sessions: z.array(session),
         next: z.string().nullable()
+    }),
+    getSession: z.object({
+        ok: z.literal(true),
+        session: fullSession
     }),
     getSeq: z.object({
         seq: z.number()

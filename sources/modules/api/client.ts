@@ -73,6 +73,13 @@ export class SuperClient {
         });
     }
 
+    getFullSession(id: string) {
+        return backoff(async () => {
+            let res = await this.client.post('/app/session/get', { id });
+            return Schema.getSession.parse(res.data);
+        });
+    }
+
     //
     // Updates
     //

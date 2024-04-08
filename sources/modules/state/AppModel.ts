@@ -1,11 +1,12 @@
 import { createStore } from "jotai";
 import { SuperClient } from "../api/client";
-import { CaptureSession } from './CaptureSession';
 import { SessionsModel } from "./SessionsModel";
 import { WearableModel } from "./WearableModel";
-import { Jotai } from "./Jotai";
+import { Jotai } from "./_types";
 import { UpdatesModel } from "./UpdatesModel";
 import { Update } from "../api/client.schema";
+import { CaptureModel } from "./CaptureModel";
+import { SyncModel } from "./SyncModel";
 
 export class AppModel {
     readonly client: SuperClient;
@@ -13,15 +14,21 @@ export class AppModel {
     readonly sessions: SessionsModel;
     readonly wearable: WearableModel;
     readonly updates: UpdatesModel;
-    private session: CaptureSession | null = null;
+    readonly sync: SyncModel;
+    readonly capture: CaptureModel
 
     constructor(client: SuperClient) {
         this.client = client;
         this.jotai = createStore();
         this.sessions = new SessionsModel(client, this.jotai);
         this.wearable = new WearableModel(this.jotai);
+        this.sync = new SyncModel(client);
+        this.capture = new CaptureModel(this.sync, this.jotai, this.wearable);
         this.updates = new UpdatesModel(client);
         this.updates.onUpdates = this.#handleUpdate;
+        this.wearable.onStreamingStart = this.capture.onCaptureStart;
+        this.wearable.onStreamingStop = this.capture.onCaptureStop;
+        this.wearable.onStreamingFrame = this.capture.onCaptureFrame;
 
         // Start
         this.updates.start();
@@ -45,20 +52,6 @@ export class AppModel {
             this.sessions.applyPartial({ id: update.id, state: update.state });
         } else if (update.type === 'session-audio-updated') {
             this.sessions.applyPartial({ id: update.id, audio: update.audio });
-        }
-    }
-
-    startSession = () => {
-        if (!this.session) {
-            this.session = new CaptureSession(this);
-            this.session.start();
-        }
-    }
-
-    stopSession = () => {
-        if (this.session) {
-            this.session.stop();
-            this.session = null;
         }
     }
 }

@@ -1,31 +1,23 @@
 import { AsyncLock } from "teslabot";
-import { SuperClient } from "../api/client";
-import { prepareAudio } from "./prepareAudio.worklet";
+import { prepareAudio } from "./prepareAudio";
 import { compress } from "../../../modules/audio";
-import { Uploader } from "./Uploader";
 
 export class Packetizer {
-    readonly client: SuperClient;
-    readonly session: string;
     readonly format: 'opus' | 'pcm-16' | 'pcm-8' | 'mulaw-16' | 'mulaw-8';
     readonly batchSize: number;
-    readonly uploader: Uploader;
+    readonly callback: (format: string, frame: Uint8Array) => void;
     private _batch: Uint8Array[] = [];
     private _batchLock = new AsyncLock();
-    
+
 
     constructor(
-        client: SuperClient,
-        session: string,
         format: 'opus' | 'pcm-16' | 'pcm-8' | 'mulaw-16' | 'mulaw-8',
         batchSize: number,
-        uploader: Uploader
+        callback: (format: string, frame: Uint8Array) => void
     ) {
-        this.client = client;
-        this.session = session;
         this.format = format;
         this.batchSize = batchSize;
-        this.uploader = uploader;
+        this.callback = callback;
     }
 
     async append(frame: Uint8Array) {
@@ -58,6 +50,6 @@ export class Packetizer {
             prepared = compressed;
         }
         console.log('preapred', prepared.format, prepared.data.length);
-        this.uploader.upload(prepared.format, prepared.data);
+        this.callback(prepared.format, prepared.data);
     }
 }

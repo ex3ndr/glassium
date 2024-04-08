@@ -1,5 +1,8 @@
 import { BTCharacteristic, BTDevice } from "./bt_common";
 
+export const SUPER_SERVICE = '19b10000-e8f2-537e-4f6c-d104768a1214';
+export const SUPER_CHAR = '19b10000-e8f2-537e-4f6c-d104768a1214';
+
 export type CodecType = 'pcm-16' | 'pcm-8' | 'mulaw-16' | 'mulaw-8' | 'opus';
 
 export type ProtocolDefinition = {

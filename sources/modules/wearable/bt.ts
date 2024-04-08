@@ -1,9 +1,10 @@
 import * as b64 from 'react-native-quick-base64';
 import { BleManager, Device, ScanOptions, State, Subscription } from 'react-native-ble-plx';
 import { BTDevice, BTService, BTStartResult } from './bt_common';
+import { SUPER_SERVICE } from './protocol';
 
 let _manager: BleManager | null = null;
-function manager() {
+export function manager() {
     if (_manager === null) {
         _manager = new BleManager();
     }
@@ -150,13 +151,51 @@ export async function connectToDevice(id: string): Promise<BTDevice | null> {
         });
     }
 
+    // Connected state (what about race conditions here?)
+    let connected = true;
+    let callbacks = new Set<() => void>();
+    m.onDeviceDisconnected(id, () => {
+        connected = false;
+        for (let cb of callbacks) {
+            cb();
+        }
+    });
+    connected = await btDevice.isConnected();
 
+    // Wrapper
     return {
         id,
         name,
         services,
-        close: () => {
-            btDevice.cancelConnection();
+        get connected() {
+            return connected
+        },
+        onDisconnected(callback) {
+            callbacks.add(callback);
+            return () => {
+                callbacks.delete(callback);
+            };
+        },
+        async disconnect() {
+            await btDevice.cancelConnection();
         }
     };
 }
+
+// export function startDiscovery(handler: { discovered: (device: BTDevice) => void, error: (error: Error) => void }) {
+//     let m = manager();
+//     let devices: Device[] = [];
+//     m.startDeviceScan([SUPER_SERVICE], null, (error, device) => {
+//         if (!!device) {
+//             handler.discovered();
+//             devices.push(device);
+//         }
+//         if (error) {
+//             handler.error(error);
+//         }
+//     });
+//     return () => {
+//         m.stopDeviceScan();
+//         return devices;
+//     };
+// }

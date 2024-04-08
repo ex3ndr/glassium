@@ -2,7 +2,7 @@ import { atom, useAtomValue } from 'jotai';
 import { SuperClient } from "../api/client";
 import { storage } from '../../storage';
 import { InvalidateSync } from 'teslabot';
-import { Jotai } from './Jotai';
+import { Jotai } from './_types';
 
 export type ViewSession = {
     id: string,

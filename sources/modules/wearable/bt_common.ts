@@ -4,7 +4,9 @@ export type BTDevice = {
     id: string,
     name: string,
     services: BTService[],
-    close : () => void
+    connected: boolean,
+    onDisconnected: (callback: () => void) => (() => void),
+    disconnect: () => Promise<void>
 };
 
 export type BTService = {

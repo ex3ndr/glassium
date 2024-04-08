@@ -32,7 +32,7 @@ export class Packetizer {
         this._batchLock.inLock(async () => {
 
             // Append batch
-            this._batch.push(frame);
+            this._batch.push(frame.subarray(3));
 
             // Convert if batch is full
             if (this._batch.length >= this.batchSize) {

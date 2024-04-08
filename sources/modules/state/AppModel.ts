@@ -40,9 +40,11 @@ export class AppModel {
     #handleUpdate = async (update: Update) => {
         console.warn(update);
         if (update.type === 'session-created') {
-            this.sessions.apply({ id: update.id, index: update.index, state: 'starting' });
+            this.sessions.apply({ id: update.id, index: update.index, state: 'starting', audio: null });
         } else if (update.type === 'session-updated') {
             this.sessions.applyPartial({ id: update.id, state: update.state });
+        } else if (update.type === 'session-audio-updated') {
+            this.sessions.applyPartial({ id: update.id, audio: update.audio });
         }
     }
 

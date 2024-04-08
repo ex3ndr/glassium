@@ -3,12 +3,15 @@ import { SuperClient } from "../api/client";
 import { storage } from '../../storage';
 import { InvalidateSync } from 'teslabot';
 import { Jotai } from './Jotai';
-import { Session } from '../api/client.schema';
 
 export type ViewSession = {
     id: string,
     index: number,
     state: 'starting' | 'processing' | 'finished' | 'canceled' | 'in-progress',
+    audio: {
+        duration: number,
+        size: number
+    } | null
 };
 
 export class SessionsModel {
@@ -32,24 +35,16 @@ export class SessionsModel {
         // Refresh
         this.#refresh = new InvalidateSync(async () => {
             let loaded = await this.client.listSessions();
-            this.#applySessions(loaded.sessions.map((v) => ({ id: v.id, index: v.index, state: v.state })));
+            this.#applySessions(loaded.sessions.map((v) => ({ id: v.id, index: v.index, state: v.state, audio: v.audio })));
         });
     }
 
     #applySessions = (sessions: ViewSession[]) => {
 
-        // Check if changed
-        let changed = false;
+        // Collect updated IDs
         let updated = new Set<string>();
         for (let session of sessions) {
-            let ex = this.#sessions?.find(s => s.id === session.id);
-            if (!ex || ex.state !== session.state) {
-                changed = true;
-            }
             updated.add(session.id);
-        }
-        if (!changed) {
-            return; // Nothing to do
         }
 
         // Merge

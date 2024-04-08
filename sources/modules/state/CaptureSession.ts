@@ -39,6 +39,7 @@ export class CaptureSession {
                 if (protocol === null) {
                     return; // TODO: Toast
                 }
+                console.warn(protocol);
 
                 // Starting session
                 session = (await this.appState.client.startSession(this.repeatKey)).id;
@@ -48,8 +49,9 @@ export class CaptureSession {
 
                 // Subscribe
                 this.state = 'online';
+                let batchSize = 500;
                 let uploader = new Uploader(this.appState.client, session);
-                let packetizer = new Packetizer(this.appState.client, session, protocol.codec, 64, uploader);
+                let packetizer = new Packetizer(this.appState.client, session, protocol.codec, batchSize, uploader);
 
                 // Subscribe to protocol
                 let cancel = protocol.source.subscribe((data) => {

@@ -49,6 +49,7 @@ export const HomeScreen = React.memo(() => {
                         >
                             <Text style={{ color: 'black', fontSize: 24, flexGrow: 1, flexBasis: 0, alignSelf: 'center' }}>Session #{(session.index + 1)}</Text>
                             <Text style={{ color: 'black', alignSelf: 'center' }}>{session.state}</Text>
+                            <Text>{session.audio ? (session.audio.duration / 1000).toString() : ''}</Text>
                         </Pressable>
                     ))}
                 </ScrollView>

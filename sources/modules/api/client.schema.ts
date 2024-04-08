@@ -11,15 +11,28 @@ const updateSessionUpdated = z.object({
     id: z.string(),
     state: z.union([z.literal('starting'), z.literal('in-progress'), z.literal('processing'), z.literal('finished'), z.literal('canceled')])
 });
-export const Updates = z.union([udpateSessionCreated, updateSessionUpdated]);
+const updateSessionAudio = z.object({
+    type: z.literal('session-audio-updated'),
+    id: z.string(),
+    audio: z.object({
+        duration: z.number(),
+        size: z.number(),
+    })
+});
+export const Updates = z.union([udpateSessionCreated, updateSessionUpdated, updateSessionAudio]);
 export type UpdateSessionCreated = z.infer<typeof udpateSessionCreated>;
 export type UpdateSessionUpdated = z.infer<typeof updateSessionUpdated>;
-export type Update = UpdateSessionCreated | UpdateSessionUpdated;
+export type UpdateSessionAudio = z.infer<typeof updateSessionAudio>;
+export type Update = UpdateSessionCreated | UpdateSessionUpdated | UpdateSessionAudio;
 
 const session = z.object({
     id: z.string(),
     index: z.number(),
     created: z.number(),
+    audio: z.object({
+        duration: z.number(),
+        size: z.number(),
+    }).nullable(),
     state: z.union([z.literal('starting'), z.literal('in-progress'), z.literal('processing'), z.literal('finished'), z.literal('canceled')])
 });
 export type Session = z.infer<typeof session>;

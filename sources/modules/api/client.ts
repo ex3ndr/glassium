@@ -46,7 +46,7 @@ export class SuperClient {
 
     startSession(repeatKey: string) {
         return backoff(async () => {
-            let res = await this.client.post('/app/session/start', { repeatKey, timeout: 15 }); // 15 seconds timeout
+            let res = await this.client.post('/app/session/start', { repeatKey, timeout: 45 }); // 15 seconds timeout
             return Schema.sessionStart.parse(res.data).session;
         })
     }

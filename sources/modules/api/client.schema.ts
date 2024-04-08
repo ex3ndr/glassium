@@ -1,5 +1,34 @@
 import * as z from 'zod';
 
+const udpateSessionCreated = z.object({
+    type: z.literal('session-created'),
+    id: z.string(),
+    index: z.number(),
+    created: z.number()
+});
+const updateSessionUpdated = z.object({
+    type: z.literal('session-updated'),
+    id: z.string(),
+    state: z.union([z.literal('starting'), z.literal('in-progress'), z.literal('processing'), z.literal('finished'), z.literal('canceled')])
+});
+export const Updates = z.union([udpateSessionCreated, updateSessionUpdated]);
+export type UpdateSessionCreated = z.infer<typeof udpateSessionCreated>;
+export type UpdateSessionUpdated = z.infer<typeof updateSessionUpdated>;
+export type Update = UpdateSessionCreated | UpdateSessionUpdated;
+
+const session = z.object({
+    id: z.string(),
+    index: z.number(),
+    created: z.number(),
+    state: z.union([z.literal('starting'), z.literal('in-progress'), z.literal('processing'), z.literal('finished'), z.literal('canceled')])
+});
+export type Session = z.infer<typeof session>;
+
+export const sseUpdate = z.object({
+    seq: z.number(),
+    data: z.any()
+});
+
 export const Schema = {
     preState: z.object({
         phone: z.string(),
@@ -22,19 +51,22 @@ export const Schema = {
     })]),
     sessionStart: z.object({
         ok: z.literal(true),
-        session: z.string(),
+        session: session
     }),
     uploadAudio: z.object({
         ok: z.boolean(),
     }),
     listSessions: z.object({
         ok: z.boolean(),
-        sessions: z.array(z.object({
-            id: z.string(),
-            index: z.number(),
-            created: z.number(),
-            state: z.union([z.literal('starting'), z.literal('processing'), z.literal('finished'), z.literal('canceled'), z.literal('in-progress')])
-        })),
+        sessions: z.array(session),
         next: z.string().nullable()
+    }),
+    getSeq: z.object({
+        seq: z.number()
+    }),
+    getDiff: z.object({
+        seq: z.number(),
+        hasMore: z.boolean(),
+        updates: z.array(z.any())
     })
 };

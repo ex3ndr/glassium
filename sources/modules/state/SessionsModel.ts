@@ -3,6 +3,7 @@ import { SuperClient } from "../api/client";
 import { storage } from '../../storage';
 import { InvalidateSync } from 'teslabot';
 import { Jotai } from './Jotai';
+import { Session } from '../api/client.schema';
 
 export type ViewSession = {
     id: string,
@@ -63,6 +64,18 @@ export class SessionsModel {
 
     #filter = (sessions: ViewSession[]) => {
         return sessions.filter(s => s.state !== 'canceled');
+    }
+
+    apply = (session: ViewSession) => {
+        this.#applySessions([session]);
+    }
+
+    applyPartial = (session: Partial<ViewSession>) => {
+        let s = this.#sessions?.find(s => s.id === session.id);
+        if (!s) {
+            return;
+        }
+        this.apply({ ...s, ...session });
     }
 
     invalidate = () => {

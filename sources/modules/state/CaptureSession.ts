@@ -41,7 +41,7 @@ export class CaptureSession {
                 }
 
                 // Starting session
-                session = await this.appState.client.startSession(this.repeatKey);
+                session = (await this.appState.client.startSession(this.repeatKey)).id;
                 if (this.state !== 'starting') {
                     return;
                 }

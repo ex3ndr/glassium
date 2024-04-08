@@ -32,7 +32,7 @@ export const HomeScreen = React.memo(() => {
                 </View>
             )}
             {sessions !== null && sessions.length > 0 && (
-                <ScrollView style={{ flexGrow: 1, alignSelf: 'stretch' }} contentContainerStyle={{ alignItems: 'stretch' }}>
+                <ScrollView style={{ flexGrow: 1, flexBasis: 0, alignSelf: 'stretch' }} contentContainerStyle={{ alignItems: 'stretch' }}>
                     {sessions.map((session) => (
                         <Pressable
                             key={session.id}
@@ -53,7 +53,9 @@ export const HomeScreen = React.memo(() => {
                     ))}
                 </ScrollView>
             )}
-            <RoundButton title="Record" onPress={() => appModel.startSession()} />
+            <View style={{ position: 'absolute', left: 0, bottom: safeArea.bottom, right: 0, alignItems: 'center', justifyContent: 'center' }}>
+                <RoundButton title="Record" onPress={() => appModel.startSession()} />
+            </View>
         </View>
     );
 });

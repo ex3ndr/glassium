@@ -1,6 +1,7 @@
 import { Axios } from "axios";
 import { backoff } from "../../utils/time";
-import { Schema } from "./client.schema";
+import { Schema, Update, Updates, sseUpdate } from "./client.schema";
+import { sse } from "./sse";
 
 export class SuperClient {
 
@@ -69,6 +70,36 @@ export class SuperClient {
         return backoff(async () => {
             let res = await this.client.post('/app/session/list', {});
             return Schema.listSessions.parse(res.data);
+        });
+    }
+
+    //
+    // Updates
+    //
+
+    async getUpdatesSeq() {
+        let res = await this.client.post('/app/updates/seq', {});
+        return Schema.getSeq.parse(res.data).seq;
+    }
+
+    async getUpdatesDiff(seq: number) {
+        let res = await this.client.post('/app/updates/diff', { after: seq });
+        return Schema.getDiff.parse(res.data);
+    }
+
+    updates(handler: (seq: number, update: Update | null) => void) {
+        return sse('https://super-server.korshakov.org/app/updates', this.token, (update) => {
+            let parsed = sseUpdate.safeParse(JSON.parse(update));
+            if (!parsed.success) {
+                return;
+            }
+            let parsedUpdate = Updates.safeParse(parsed.data.data);
+            if (parsedUpdate.success) {
+                handler(parsed.data.seq, parsedUpdate.data);
+            } else {
+                console.error('Failed to parse update:', JSON.parse(update));
+                handler(parsed.data.seq, null);
+            }
         });
     }
 }

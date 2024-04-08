@@ -1,6 +1,6 @@
 import EventSource, { EventSourceListener } from "react-native-sse";
 
-export function sse(url: string, token: string) {
+export function sse(url: string, token: string, handler: (update: any) => void) {
 
     // Source
     let source = new EventSource(url, {
@@ -11,7 +11,9 @@ export function sse(url: string, token: string) {
 
     // Handler
     const listener: EventSourceListener = (event) => {
-        console.warn(event);
+        if (event.type === 'message' && event.data) {
+            handler(event.data);
+        }
     };
     source.addEventListener("message", listener);
     source.addEventListener("open", listener);

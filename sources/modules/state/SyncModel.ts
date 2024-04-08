@@ -86,14 +86,18 @@ export class SyncModel {
             if (!remoteId) {
                 continue;
             }
+            let count = 0;
             for (let c of copy) {
                 let output = await this.client.uploadAudio(remoteId, 'id-' + c.index, c.format, [fromByteArray(c.data)]);
                 if (!output.ok) {
                     console.error('Frame upload rejected', output);
                     stopped.add(localId);
                     break;
+                } else {
+                    count++;
                 }
             }
+            uploaded.set(localId, count);
         }
         for (let localId of stopped) {
             this.localEnded.add(localId);

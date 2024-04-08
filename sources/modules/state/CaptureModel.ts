@@ -118,7 +118,7 @@ export class CaptureModel {
     }
 
     #handleFrame = async (protocol: ProtocolDefinition, data: Uint8Array) => {
-        log('CP', 'Frame captured');
+        // log('CP', 'Frame captured');
 
         // Push frame
         this.#frames.push(data.subarray(3));

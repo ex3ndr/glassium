@@ -16,6 +16,7 @@ export class SyncModel {
         this.client = client;
         let stored = storage.getString('sync-sessions');
         if (stored) {
+            console.warn(stored);
             let [keys, values] = JSON.parse(stored);
             for (let i = 0; i < keys.length; i++) {
                 this.localSessions.set(keys[i], values[i]);
@@ -135,6 +136,6 @@ export class SyncModel {
     }
 
     #persistSessions = () => {
-        storage.set('sync-sessions', JSON.stringify([this.localSessions.keys(), this.localSessions.values()]));
+        storage.set('sync-sessions', JSON.stringify([Array.from(this.localSessions.keys()), Array.from(this.localSessions.values())]));
     }
 }

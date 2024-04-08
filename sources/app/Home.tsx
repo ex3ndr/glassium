@@ -4,14 +4,16 @@ import { RoundButton } from './components/RoundButton';
 import { useSafeAreaInsets } from 'react-native-safe-area-context';
 import { Theme } from '../theme';
 import { useAppModel } from '../global';
+import { useRouter } from '../routing';
 
 export const HomeScreen = React.memo(() => {
     const safeArea = useSafeAreaInsets();
     const appModel = useAppModel();
     const sessions = appModel.useSessions();
     const wearable = appModel.useWearable();
+    const router = useRouter();
     return (
-        <View style={{ flexGrow: 1, justifyContent: 'center', alignItems: 'center', paddingTop: safeArea.top, paddingBottom: safeArea.bottom }}>
+        <View style={{ flexGrow: 1, justifyContent: 'center', alignItems: 'center', paddingTop: safeArea.top, paddingBottom: safeArea.bottom, backgroundColor: Theme.background }}>
             <View style={{ height: 48, alignItems: 'center', justifyContent: 'center', flexDirection: 'row' }}>
                 <View style={{ flexGrow: 1, flexBasis: 0 }} />
                 <Text style={{ color: Theme.text, fontSize: 24 }}>Super</Text>
@@ -35,7 +37,7 @@ export const HomeScreen = React.memo(() => {
                         <Pressable
                             key={session.id}
                             style={{
-                                backgroundColor: 'white',
+                                backgroundColor: '#eee',
                                 marginHorizontal: 16,
                                 marginVertical: 8,
                                 borderRadius: 16,
@@ -43,6 +45,7 @@ export const HomeScreen = React.memo(() => {
                                 paddingVertical: 18,
                                 flexDirection: 'row'
                             }}
+                            onPress={() => { router.navigate('session', { id: session.id }) }}
                         >
                             <Text style={{ color: 'black', fontSize: 24, flexGrow: 1, flexBasis: 0, alignSelf: 'center' }}>Session #{(session.index + 1)}</Text>
                             <Text style={{ color: 'black', alignSelf: 'center' }}>{session.state}</Text>

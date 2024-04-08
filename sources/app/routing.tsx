@@ -11,6 +11,7 @@ import { HomeScreen } from './Home';
 import { PreNameScreen } from './pre/PreName';
 import { PreNotificationsScreen } from './pre/PreNotifications';
 import { PreActivationScreen } from './pre/PreActivation';
+import { SessionScreen } from './session/Session';
 
 export const Stack = createNativeStackNavigator();
 
@@ -20,6 +21,11 @@ export const App = (
             name='home'
             component={HomeScreen}
             options={{ headerShown: false }}
+        />
+        <Stack.Screen
+            name='session'
+            component={SessionScreen}
+            options={{ title: 'Session' }}
         />
     </>
 );

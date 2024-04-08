@@ -7,10 +7,10 @@ import { Jotai } from "./Jotai";
 
 export class AppModel {
     readonly client: SuperClient;
-    private session: CaptureSession | null = null;
     readonly jotai: Jotai;
     readonly sessions: SessionsModel;
     readonly wearable: WearableModel;
+    private session: CaptureSession | null = null;
 
     constructor(client: SuperClient) {
         this.client = client;

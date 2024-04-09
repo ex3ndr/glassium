@@ -1,7 +1,6 @@
 import * as b64 from 'react-native-quick-base64';
 import { BleManager, Device, ScanOptions, State, Subscription } from 'react-native-ble-plx';
 import { BTDevice, BTService, BTStartResult } from './bt_common';
-import { SUPER_SERVICE } from './protocol';
 
 let _manager: BleManager | null = null;
 export function manager() {

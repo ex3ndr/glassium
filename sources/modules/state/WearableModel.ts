@@ -3,7 +3,7 @@ import { connectToDevice, manager, startBluetooth } from "../wearable/bt";
 import { Jotai } from "./_types";
 import { atom, useAtomValue } from "jotai";
 import { storage } from "../../storage";
-import { ProtocolDefinition, SUPER_SERVICE, resolveProtocol } from "../wearable/protocol";
+import { COMPASS_SERVICE, KNOWN_BT_SERVICES, ProtocolDefinition, SUPER_SERVICE, resolveProtocol } from "../wearable/protocol";
 import { DeviceModel } from "./DeviceModel";
 
 export class WearableModel {
@@ -83,7 +83,7 @@ export class WearableModel {
         if (!this.jotai.get(this.discoveryStatus)) {
             this.jotai.set(this.discoveryStatus, { devices: [] });
         }
-        manager().startDeviceScan([SUPER_SERVICE], null, (error, device) => {
+        manager().startDeviceScan(KNOWN_BT_SERVICES, null, (error, device) => {
             if (device && device.name) {
                 let devices = this.jotai.get(this.discoveryStatus)!.devices;
                 if (devices.find((v) => v.id === device.id)) {

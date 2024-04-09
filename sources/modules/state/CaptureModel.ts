@@ -118,7 +118,13 @@ export class CaptureModel {
     }
 
     #handleFrame = async (protocol: ProtocolDefinition, data: Uint8Array) => {
-        // log('CP', 'Frame captured');
+
+        // Preprocess frame
+        if (protocol.kind === 'super') {
+            data = data.subarray(3); // Cut packet ids since all frames can fit in the bt frame
+        } else if (protocol.kind === 'compass') {
+            // Nothing to do
+        }
 
         // Push frame
         this.#frames.push(data.subarray(3));

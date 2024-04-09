@@ -25,7 +25,7 @@ export const PairingScreen = React.memo(() => {
                 </View>
             )}
             {devices.length > 0 && (
-                <ScrollView style={{ flexGrow: 1, alignSelf: 'stretch' }} contentContainerStyle={{ padding: 16 }}>
+                <ScrollView style={{ flexGrow: 1, alignSelf: 'stretch' }} contentContainerStyle={{ padding: 16, paddingBottom: 128 }}>
                     {devices.map((device) => (
                         <RoundButton key={device.id} title={device.name} action={() => appModel.wearable.tryPairDevice(device.id)} />
                     ))}

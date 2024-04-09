@@ -3,8 +3,9 @@ import { connectToDevice, manager, startBluetooth } from "../wearable/bt";
 import { Jotai } from "./_types";
 import { atom, useAtomValue } from "jotai";
 import { storage } from "../../storage";
-import { COMPASS_SERVICE, KNOWN_BT_SERVICES, ProtocolDefinition, SUPER_SERVICE, resolveProtocol } from "../wearable/protocol";
+import { COMPASS_SERVICE, KNOWN_BT_SERVICES, ProtocolDefinition, SUPER_SERVICE, resolveProtocol, supportedDeviceNames } from "../wearable/protocol";
 import { DeviceModel } from "./DeviceModel";
+import { KnownBTServices } from "../wearable/bt_common";
 
 export class WearableModel {
     private lock = new AsyncLock();
@@ -83,8 +84,8 @@ export class WearableModel {
         if (!this.jotai.get(this.discoveryStatus)) {
             this.jotai.set(this.discoveryStatus, { devices: [] });
         }
-        manager().startDeviceScan(KNOWN_BT_SERVICES, null, (error, device) => {
-            if (device && device.name) {
+        manager().startDeviceScan(null, null, (error, device) => {
+            if (device && device.name && supportedDeviceNames(device.name)) {
                 let devices = this.jotai.get(this.discoveryStatus)!.devices;
                 if (devices.find((v) => v.id === device.id)) {
                     return;

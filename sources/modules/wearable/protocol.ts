@@ -12,6 +12,16 @@ export type ProtocolDefinition = {
     source: BTCharacteristic
 }
 
+export function supportedDeviceNames(name: string) {
+    if (['super', 'friend'].indexOf(name.toLowerCase()) >= 0) {
+        return true;
+    }
+    if (name.toLowerCase().startsWith('compass')) {
+        return true;
+    }
+    return false;
+}
+
 
 async function resolveSuperProtocol(device: BTDevice): Promise<ProtocolDefinition | null> {
 
@@ -92,6 +102,11 @@ async function resolveCompasProtocol(device: BTDevice): Promise<ProtocolDefiniti
 export async function resolveProtocol(device: BTDevice): Promise<ProtocolDefinition | null> {
 
     let found = await resolveSuperProtocol(device);
+    if (found) {
+        return found;
+    }
+
+    found = await resolveCompasProtocol(device);
     if (found) {
         return found;
     }

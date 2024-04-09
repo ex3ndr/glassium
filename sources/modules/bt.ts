@@ -61,7 +61,7 @@ export async function startBluetooth(): Promise<BTStartResult> {
     });
 }
 
-export async function openDevice(params: { name: string } | { services: string[] }): Promise<BTDevice | null> {
+export async function openDevice(params: { name: string[] } | { services: string[] }): Promise<BTDevice | null> {
     let m = manager();
 
     // Load device
@@ -81,7 +81,7 @@ export async function openDevice(params: { name: string } | { services: string[]
             console.log('Error:', error);
             if (!!device) {
                 if ('name' in params) {
-                    if (device.name === params.name) {
+                    if (params.name.includes(device.name!)) {
                         end(device);
                     }
                 } else {

@@ -3,7 +3,7 @@ import { BTCharacteristic, BTDevice } from "./bt_common";
 export type CodecType = 'pcm-16' | 'pcm-8' | 'mu-law-16' | 'mu-law-8' | 'opus';
 
 export type ProtocolDefinition = {
-    kind: 'super',
+    kind: 'super' | 'compass',
     codec: CodecType,
     source: BTCharacteristic
 }
@@ -56,9 +56,35 @@ async function resolveSuperProtocol(device: BTDevice): Promise<ProtocolDefinitio
     };
 }
 
+async function resolveCompasProtocol(device: BTDevice): Promise<ProtocolDefinition | null> {
+
+    // Search for service
+    let service = device.services.find((v) => v.id === '4fafc201-1fb5-459e-8fcc-c5c9c331914b')
+    if (!service) {
+        return null;
+    }
+
+    // Search for characteristic
+    let audioCharacteristic = service.characteristics.find((v) => v.id === 'beb5483e-36e1-4688-b7f5-ea07361b26a8');
+    if (!audioCharacteristic) {
+        return null;
+    }
+
+    return {
+        kind: 'compass',
+        codec: 'pcm-8' as const,
+        source: audioCharacteristic
+    };
+}
+
 export async function resolveProtocol(device: BTDevice): Promise<ProtocolDefinition | null> {
 
-    let found = resolveSuperProtocol(device);
+    let found = await resolveSuperProtocol(device);
+    if (found) {
+        return found;
+    }
+
+    found = await resolveCompasProtocol(device);
     if (found) {
         return found;
     }
@@ -66,7 +92,7 @@ export async function resolveProtocol(device: BTDevice): Promise<ProtocolDefinit
     return null;
 }
 
-export function startPacketizer() {
+export function startPacketizer(isSuper: boolean = false) {
 
     // Buffers
     let last: { p: number, f: number } | null = null;
@@ -78,46 +104,52 @@ export function startPacketizer() {
     return {
         add: (data: Uint8Array) => {
 
-            // Parse packet
-            let index = (data[0]) + (data[1] << 8);
-            let internal = data[2];
-            let content = data.subarray(3);
-            console.log('Received: ' + index + ' (' + internal + ') - ' + content.length + ' bytes');
+            if (isSuper) {
 
-            // Start of a new frame
-            if (!last && internal === 0) {
-                last = { p: index, f: internal };
-                pending = content;
-                return;
-            }
+                // Parse packet
+                let index = (data[0]) + (data[1] << 8);
+                let internal = data[2];
+                let content = data.subarray(3);
+                console.log('Received: ' + index + ' (' + internal + ') - ' + content.length + ' bytes');
 
-            // Not started yet
-            if (!last) {
-                return;
-            }
+                // Start of a new frame
+                if (!last && internal === 0) {
+                    last = { p: index, f: internal };
+                    pending = content;
+                    return;
+                }
 
-            // Lost frame - reset state
-            if (index !== last.p + 1 || (internal !== 0 && internal !== last.f + 1)) {
-                console.warn('Lost frame');
-                last = null;
-                pending = new Uint8Array();
-                lost += 1;
-                return;
-            }
+                // Not started yet
+                if (!last) {
+                    return;
+                }
 
-            // Start of a new frame
-            if (internal === 0) {// Start of a new frame
-                frames.push(pending); // Save frame
-                pending = content; // Start new frame
+                // Lost frame - reset state
+                if (index !== last.p + 1 || (internal !== 0 && internal !== last.f + 1)) {
+                    console.warn('Lost frame');
+                    last = null;
+                    pending = new Uint8Array();
+                    lost += 1;
+                    return;
+                }
+
+                // Start of a new frame
+                if (internal === 0) {// Start of a new frame
+                    frames.push(pending); // Save frame
+                    pending = content; // Start new frame
+                    last.f = internal; // Update internal frame id
+                    last.p++; // Update packet id
+                    return;
+                }
+
+                // Continue frame
+                pending = new Uint8Array([...pending, ...content]);
                 last.f = internal; // Update internal frame id
                 last.p++; // Update packet id
-                return;
+            } else {
+                frames.push(data);
+                console.log(`Received: ${data.length} bytes`);
             }
-
-            // Continue frame
-            pending = new Uint8Array([...pending, ...content]);
-            last.f = internal; // Update internal frame id
-            last.p++; // Update packet id
         },
         build: () => {
             if (pending.length > 0) {

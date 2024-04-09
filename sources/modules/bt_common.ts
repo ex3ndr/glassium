@@ -22,4 +22,4 @@ export type BTCharacteristic = {
     subscribe: (callback: (data: Uint8Array) => void) => (() => void)
 };
 
-export const KnownBTServices = ['19B10000-E8F2-537E-4F6C-D104768A1214'.toLowerCase()];
+export const KnownBTServices = ['19B10000-E8F2-537E-4F6C-D104768A1214'.toLowerCase(), '4FAFC201-1FB5-459E-8FCC-C5C9C331914B'.toLowerCase()];

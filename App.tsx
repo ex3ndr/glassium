@@ -5,7 +5,7 @@ import { openDevice, startBluetooth } from './sources/modules/bt';
 import { useDebugLog } from './sources/utils/useDebugLog';
 import { useAsyncCommand } from './sources/utils/useAsyncCommand';
 import { delay } from './sources/utils/time';
-import { BTCharacteristic, BTDevice } from './sources/modules/bt_common';
+import { BTCharacteristic, BTDevice, KnownBTServices } from './sources/modules/bt_common';
 import { connectAsync, disconnectAsync, startAsync } from './modules/hardware';
 import { WaveFile } from 'wavefile';
 import { ProtocolDefinition, resolveProtocol, startPacketizer } from './sources/modules/protocol';
@@ -31,7 +31,7 @@ export default function App() {
 
     // Open device
     log('Opening device...');
-    let device = lastDevice.current || await openDevice({ name: 'Super' });
+    let device = lastDevice.current || await openDevice({ name: ['Super', 'Friend', 'Compass'] });
     if (device === null) {
       log('Failed to open device');
       return;
@@ -52,7 +52,7 @@ export default function App() {
     let target: ProtocolDefinition | null = null;
     let protocol = await resolveProtocol(device);
     if (protocol) {
-      if (protocol.kind !== 'super') {
+      if (protocol.kind !== 'super' && protocol.kind !== 'compass') {
         log('Unsupported protocol');
       } else {
         target = protocol;
@@ -68,7 +68,7 @@ export default function App() {
     log('Waitign for data...');
     let total = 0;
     let total_packets = 0;
-    let packetizer = startPacketizer();
+    let packetizer = startPacketizer(target.kind === 'super');
     let sub = target.source.subscribe((data) => {
       total += data.length;
       total_packets += 1;

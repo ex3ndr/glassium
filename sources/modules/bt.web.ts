@@ -9,14 +9,14 @@ export async function startBluetooth(): Promise<BTStartResult> {
     return 'started';
 }
 
-export async function openDevice(params: { name: string } | { services: string[] }): Promise<BTDevice | null> {
+export async function openDevice(params: { name: string[] } | { services: string[] }): Promise<BTDevice | null> {
 
     // Request device
     let device: BluetoothDevice | null = null;
     try {
         device = await navigator.bluetooth.requestDevice({
-            filters: 'name' in params ? [{ name: params.name }] : [{ services: params.services }],
-            optionalServices: KnownBTServices
+            filters: 'name' in params ? params.name.map((v) => ({ namePrefix: v })) : params.services.map((v) => ({ services: [v] })),
+            optionalServices: KnownBTServices,
         });
     } catch (e) {
         console.error(e);

@@ -11,7 +11,7 @@ export class DeviceModel {
     readonly id: string;
     readonly #sync: InvalidateSync;
     readonly jotai: Jotai;
-    readonly state = atom<'connecting' | 'connected' | 'subscribing' | 'subscribed'>('connecting');
+    readonly state = atom<'connecting' | 'connected' | 'subscribed'>('connecting');
     onStreamingStart?: (protocol: ProtocolDefinition) => void;
     onStreamingStop?: () => void;
     onStreamingFrame?: (data: Uint8Array) => void;
@@ -104,6 +104,9 @@ export class DeviceModel {
             if (this.onStreamingStart) {
                 this.onStreamingStart(protocol);
             }
+
+            // Update state
+            this.jotai.set(this.state, 'subscribed');
         }
 
         // Handle unsubscribing
@@ -116,6 +119,9 @@ export class DeviceModel {
                     this.onStreamingStop();
                 }
             }
+
+            // Update state
+            this.jotai.set(this.state, 'connected');
         }
     }
 

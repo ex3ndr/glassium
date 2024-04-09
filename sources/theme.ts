@@ -6,5 +6,6 @@ export const Theme = {
     textInverted: '#fff',
     divider: '#C7C7C9',
     background: '#FFFFFF',
-    backgroundAccent: '#FF2E00'
+    backgroundAccent: '#FF2E00',
+    warninig: '#FF2E00',
 };

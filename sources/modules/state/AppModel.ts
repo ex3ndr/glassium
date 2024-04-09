@@ -4,7 +4,7 @@ import { SessionsModel } from "./SessionsModel";
 import { WearableModel } from "./WearableModel";
 import { Jotai } from "./_types";
 import { UpdatesModel } from "./UpdatesModel";
-import { Update } from "../api/client.schema";
+import { Update } from "../api/schema";
 import { CaptureModel } from "./CaptureModel";
 import { SyncModel } from "./SyncModel";
 
@@ -52,6 +52,8 @@ export class AppModel {
             this.sessions.applyPartial({ id: update.id, state: update.state });
         } else if (update.type === 'session-audio-updated') {
             this.sessions.applyPartial({ id: update.id, audio: update.audio });
+        } else if (update.type === 'session-transcribed') {
+            this.sessions.applyPartialFull({ id: update.id, text: update.transcription });
         }
     }
 }

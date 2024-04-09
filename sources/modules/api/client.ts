@@ -1,6 +1,6 @@
 import { Axios } from "axios";
 import { backoff } from "../../utils/time";
-import { Schema, Update, Updates, sseUpdate } from "./client.schema";
+import { Schema, Update, Updates, sseUpdate } from "./schema";
 import { sse } from "./sse";
 
 export class SuperClient {

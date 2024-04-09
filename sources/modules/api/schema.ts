@@ -19,11 +19,17 @@ const updateSessionAudio = z.object({
         size: z.number(),
     })
 });
-export const Updates = z.union([udpateSessionCreated, updateSessionUpdated, updateSessionAudio]);
+const updateSessionTranscription = z.object({
+    type: z.literal('session-transcribed'),
+    id: z.string(),
+    transcription: z.string()
+});
+export const Updates = z.union([udpateSessionCreated, updateSessionUpdated, updateSessionAudio, updateSessionTranscription]);
 export type UpdateSessionCreated = z.infer<typeof udpateSessionCreated>;
 export type UpdateSessionUpdated = z.infer<typeof updateSessionUpdated>;
 export type UpdateSessionAudio = z.infer<typeof updateSessionAudio>;
-export type Update = UpdateSessionCreated | UpdateSessionUpdated | UpdateSessionAudio;
+export type UpdateSessionTranscription = z.infer<typeof updateSessionTranscription>;
+export type Update = UpdateSessionCreated | UpdateSessionUpdated | UpdateSessionAudio | UpdateSessionTranscription;
 
 const session = z.object({
     id: z.string(),

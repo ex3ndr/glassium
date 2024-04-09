@@ -66,6 +66,18 @@ export class SessionsModel {
         let merged = [...sessions, ...(this.#sessions || [])!.filter(s => !updated.has(s.id))];
         merged.sort((a, b) => b.index - a.index);
 
+        // Merge to full sessions too
+        for (let session of sessions) {
+            let s = this.#fullSessions.get(session.id);
+            if (!s) {
+                continue;
+            }
+            let v = this.jotai.get(s);
+            if (v) {
+                this.jotai.set(s, { ...v, ...session });
+            }
+        }
+
         // Update
         this.#sessions = merged;
         storage.set('sessions', JSON.stringify(this.#sessions));
@@ -86,6 +98,17 @@ export class SessionsModel {
             return;
         }
         this.apply({ ...s, ...session });
+    }
+
+    applyPartialFull = (session: Partial<ViewSessionFull>) => {
+        let s = this.#fullSessions.get(session.id!);
+        if (!s) {
+            return;
+        }
+        let v = this.jotai.get(s);
+        if (v) {
+            this.jotai.set(s, { ...v, ...session });
+        }
     }
 
     invalidate = () => {

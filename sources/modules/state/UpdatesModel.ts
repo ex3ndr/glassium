@@ -1,8 +1,9 @@
 import { AsyncLock, InvalidateSync } from "teslabot";
 import { SuperClient } from "../api/client";
 import { backoff } from "../../utils/time";
-import { Update, Updates } from "../api/client.schema";
+import { Update, Updates } from "../api/schema";
 import { storage } from "../../storage";
+import { log } from "../../utils/logs";
 
 export class UpdatesModel {
     readonly client: SuperClient;
@@ -45,7 +46,7 @@ export class UpdatesModel {
                 if (this.#seq === null) {
                     this.#seq = await this.client.getUpdatesSeq();
                     storage.set('updates-seq', this.#seq);
-                    console.log('Initial seq:', this.#seq);
+                    log('UPD', 'Initial seq:' + this.#seq);
                 } else {
                     // Process queue
                     if (this.#queue.length > 0) {
@@ -68,7 +69,7 @@ export class UpdatesModel {
                     }
 
                     let diff = await this.client.getUpdatesDiff(this.#seq);
-                    console.log('Diff:', diff);
+                    log('UPD', 'Diff:' + diff.seq + ', hasMore:' + diff.hasMore + ', updates:' + diff.updates.length);
 
                     // Apply updates
                     if (this.onUpdates) {
@@ -77,7 +78,7 @@ export class UpdatesModel {
                             if (parsed.success) {
                                 await this.onUpdates(parsed.data);
                             } else {
-                                console.error('Failed to parse update:', upd);
+                                log('UPD', 'Failed to parse update:' + JSON.stringify(upd));
                             }
                         }
                     }

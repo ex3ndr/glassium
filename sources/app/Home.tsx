@@ -84,7 +84,6 @@ const BottomPanel = React.memo(() => {
     }
 
     // Handle ready state
-    let isConnected = wearable.device !== 'connecting';
     return (
         <View style={{ flexGrow: 1, alignSelf: 'stretch', flexDirection: 'row', alignItems: 'center' }}>
             <View style={{ flexGrow: 1, flexBasis: 0, paddingLeft: 32 }}>

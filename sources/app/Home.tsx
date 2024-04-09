@@ -7,20 +7,16 @@ import { useAppModel } from '../global';
 import { useRouter } from '../routing';
 import { Ionicons } from '@expo/vector-icons';
 import { useAtomValue } from 'jotai';
+import { TopBar } from './home/TopBar';
 
 export const HomeScreen = React.memo(() => {
     const safeArea = useSafeAreaInsets();
     const appModel = useAppModel();
     const sessions = appModel.useSessions();
-    const wearable = appModel.useWearable();
     const router = useRouter();
     return (
         <View style={{ flexGrow: 1, justifyContent: 'center', alignItems: 'center', paddingTop: safeArea.top, backgroundColor: Theme.background }}>
-            <View style={{ height: 48, alignItems: 'center', justifyContent: 'center', flexDirection: 'row' }}>
-                <View style={{ flexGrow: 1, flexBasis: 0 }} />
-                <Text style={{ color: Theme.text, fontSize: 24 }}>Super</Text>
-                <View style={{ flexGrow: 1, flexBasis: 0 }} />
-            </View>
+            <TopBar />
             {sessions === null && (
                 <View style={{ flexGrow: 1, alignItems: 'center', justifyContent: 'center', paddingBottom: safeArea.bottom, }}>
                     <ActivityIndicator size="large" color={Theme.accent} />
@@ -108,7 +104,7 @@ const BottomPanel = React.memo(() => {
                 )}
             </View>
             <View style={{ flexGrow: 1, flexBasis: 0, flexDirection: 'row', justifyContent: 'flex-end', paddingRight: 32 }}>
-                {isConnected ? <Ionicons name="bluetooth-sharp" size={24} color="#16ea79" /> : <Ionicons name="bluetooth-sharp" size={24} color="red" />}
+
             </View>
         </View>
     );

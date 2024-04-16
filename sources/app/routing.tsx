@@ -12,7 +12,7 @@ import { PreNameScreen } from './pre/PreName';
 import { PreNotificationsScreen } from './pre/PreNotifications';
 import { PreActivationScreen } from './pre/PreActivation';
 import { SessionScreen } from './session/Session';
-import { PairingScreen } from './wearable/Pairing';
+import { SettingsManageDevice } from './home/settings/SettingsManageDevice';
 import { SessionsScreens } from './home/SessionsScreen';
 
 export const Stack = createNativeStackNavigator();
@@ -35,9 +35,9 @@ export const App = (
             options={{ title: 'Sessions' }}
         />
         <Stack.Screen
-            name='pairing'
-            component={PairingScreen}
-            options={{ title: 'Connect new device', presentation: 'formSheet' }}
+            name='manage-device'
+            component={SettingsManageDevice}
+            options={{ title: 'Device Management', presentation: 'formSheet' }}
         />
     </>
 );

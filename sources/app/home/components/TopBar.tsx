@@ -1,8 +1,8 @@
 import * as React from 'react';
 import { StyleSheet, Text, View } from 'react-native';
 import { Ionicons } from '@expo/vector-icons';
-import { Theme } from '../../theme';
-import { useAppModel } from '../../global';
+import { Theme } from '../../../theme';
+import { useAppModel } from '../../../global';
 
 export const TopBar = React.memo(() => {
     const appModel = useAppModel();

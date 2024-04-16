@@ -3,25 +3,25 @@ import { connectToDevice, manager, startBluetooth } from "../wearable/bt";
 import { Jotai } from "./_types";
 import { atom, useAtomValue } from "jotai";
 import { storage } from "../../storage";
-import { COMPASS_SERVICE, KNOWN_BT_SERVICES, ProtocolDefinition, SUPER_SERVICE, resolveProtocol, supportedDeviceNames } from "../wearable/protocol";
+import { ProtocolDefinition, resolveProtocol, supportedDeviceNames } from "../wearable/protocol";
 import { DeviceModel } from "./DeviceModel";
-import { KnownBTServices } from "../wearable/bt_common";
 
 export class WearableModel {
-    private lock = new AsyncLock();
+    private static lock = new AsyncLock(); // Use static lock to prevent multiple BT operations
     readonly jotai: Jotai;
     readonly pairingStatus = atom<'loading' | 'need-pairing' | 'ready' | 'denied' | 'unavailable'>('loading');
     readonly discoveryStatus = atom<{ devices: { name: string, id: string }[] } | null>(null);
     onStreamingStart?: (protocol: ProtocolDefinition) => void;
     onStreamingStop?: () => void;
     onStreamingFrame?: (data: Uint8Array) => void;
-    private _device: DeviceModel | null = null;
+    #device: DeviceModel | null = null;
+    #needStreaming = false;
     readonly status = atom((get) => {
         let pairing = get(this.pairingStatus);
         if (pairing === 'ready') {
             return {
                 pairing: 'ready' as const,
-                device: get(this._device!.state),
+                device: get(this.#device!.state),
             };
         } else {
             return {
@@ -30,25 +30,25 @@ export class WearableModel {
             };
         }
     });
-    private _discoveryCancel: (() => void) | null = null;
+    #discoveryCancel: (() => void) | null = null;
 
     constructor(jotai: Jotai) {
         this.jotai = jotai;
         let id = storage.getString('wearable-device');
         if (id) {
-            this._device = new DeviceModel(id, jotai);
-            this._device.onStreamingStart = this.#onStreamingStart;
-            this._device.onStreamingStop = this.#onStreamingStop;
-            this._device.onStreamingFrame = this.#onStreamingFrame;
+            this.#device = new DeviceModel(id, jotai);
+            this.#device.onStreamingStart = this.#onStreamingStart;
+            this.#device.onStreamingStop = this.#onStreamingStop;
+            this.#device.onStreamingFrame = this.#onStreamingFrame;
         }
     }
 
     get device() {
-        return this._device;
+        return this.#device;
     }
 
     start = () => {
-        this.lock.inLock(async () => {
+        WearableModel.lock.inLock(async () => {
 
             // Starting bluetooth
             let result = await startBluetooth();
@@ -61,7 +61,7 @@ export class WearableModel {
             }
 
             // Not paired
-            if (!this._device) {
+            if (!this.#device) {
                 this.jotai.set(this.pairingStatus, 'need-pairing');
                 return;
             }
@@ -76,7 +76,7 @@ export class WearableModel {
     //
 
     startDiscovery = () => {
-        if (this._discoveryCancel != null) {
+        if (this.#discoveryCancel != null) {
             return;
         }
 
@@ -99,17 +99,17 @@ export class WearableModel {
         });
 
         // Stop scan
-        this._discoveryCancel = () => {
-            if (this._discoveryCancel != null) {
-                this._discoveryCancel = null;
+        this.#discoveryCancel = () => {
+            if (this.#discoveryCancel != null) {
+                this.#discoveryCancel = null;
                 manager().stopDeviceScan();
             }
         }
     }
 
     stopDiscrovery = () => {
-        if (this._discoveryCancel != null) {
-            this._discoveryCancel();
+        if (this.#discoveryCancel != null) {
+            this.#discoveryCancel();
         }
     }
 
@@ -117,9 +117,13 @@ export class WearableModel {
         this.jotai.set(this.discoveryStatus, null);
     }
 
+    //
+    // Pairing
+    //
+
     tryPairDevice = (id: string) => {
-        return this.lock.inLock(async () => {
-            if (!!this._device) {
+        return WearableModel.lock.inLock(async () => {
+            if (!!this.#device) {
                 return 'already-paired' as const;
             }
 
@@ -137,12 +141,35 @@ export class WearableModel {
             }
 
             // Save device
-            this._device = new DeviceModel(connected, this.jotai);
-            this._device.onStreamingStart = this.#onStreamingStart;
-            this._device.onStreamingStop = this.#onStreamingStop;
-            this._device.onStreamingFrame = this.#onStreamingFrame;
+            this.#device = new DeviceModel(connected, this.jotai, this.#needStreaming);
+            this.#device.onStreamingStart = this.#onStreamingStart;
+            this.#device.onStreamingStop = this.#onStreamingStop;
+            this.#device.onStreamingFrame = this.#onStreamingFrame;
+            this.#device.init();
+
+            // Update state
             storage.set('wearable-device', id);
             this.jotai.set(this.pairingStatus, 'ready');
+
+            return 'ok' as const;
+        });
+    }
+
+    disconnectDevice = () => {
+        return WearableModel.lock.inLock(async () => {
+            if (!this.#device) {
+                return 'not-paired' as const;
+            }
+
+            // Stop the device
+            // This calls streaming stop callback synchronously 
+            // and asynchronously cleanups the device
+            this.#device!.stop();
+            this.#device = null;
+
+            // Update state
+            storage.delete('wearable-device');
+            this.jotai.set(this.pairingStatus, 'need-pairing');
 
             return 'ok' as const;
         });
@@ -151,6 +178,36 @@ export class WearableModel {
     //
     // Streaming
     //
+
+    startStreaming = () => {
+        if (this.#needStreaming) {
+            return;
+        }
+        this.#needStreaming = true;
+
+        // Update device
+        return WearableModel.lock.inLock(async () => {
+            if (!this.#device) {
+                return;
+            }
+            this.#device.startStreaming();
+        });
+    }
+
+    stopStreaming = () => {
+        if (!this.#needStreaming) {
+            return;
+        }
+        this.#needStreaming = false;
+
+        // Update device
+        return WearableModel.lock.inLock(async () => {
+            if (!this.#device) {
+                return;
+            }
+            this.#device.stopStreaming();
+        });
+    }
 
     #onStreamingStart = (protocol: ProtocolDefinition) => {
         if (this.onStreamingStart) {

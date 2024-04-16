@@ -37,7 +37,7 @@ export class CaptureModel {
             return;
         }
         this.started = true;
-        this.wearables.device.startStreaming();
+        this.wearables.startStreaming();
         this.jotai.set(this.captureState, { started: Date.now(), streaming: false });
         this.asyncLock.inLock(this.#handleStart);
     }
@@ -47,7 +47,7 @@ export class CaptureModel {
             return
         }
         this.started = false;
-        this.wearables.device!.stopStreaming(); // Device can't became null
+        this.wearables.stopStreaming();
         this.jotai.set(this.captureState, null);
         this.asyncLock.inLock(this.#handleStop);
     }

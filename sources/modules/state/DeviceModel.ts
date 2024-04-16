@@ -13,7 +13,7 @@ export class DeviceModel {
     readonly id: string;
     readonly #sync: InvalidateSync;
     readonly jotai: Jotai;
-    readonly state = atom<{ status: 'disconnected' | 'connecting' } | { status: 'connected' | 'subscribed', battery: number | null }>({ status: 'connecting' });
+    readonly state = atom<{ status: 'disconnected' | 'connecting' } | { status: 'connected' | 'subscribed', battery: number | null, muted: boolean }>({ status: 'connecting' });
     onStreamingStart?: (protocol: ProtocolDefinition) => void;
     onStreamingStop?: () => void;
     onStreamingFrame?: (data: Uint8Array) => void;
@@ -24,6 +24,8 @@ export class DeviceModel {
     #deviceStreaming: { ptocol: ProtocolDefinition, subscription: () => void } | null = null;
     #deviceBattery: number | null = null;
     #deviceBatterySubscription: (() => void) | null = null;
+    #deviceMuted: boolean | null = null;
+    #deviceMutedSubscription: (() => void) | null = null;
 
     constructor(id: string | BTDevice, jotai: Jotai, needStreaming = false) {
         this.#needStreaming = needStreaming;
@@ -45,9 +47,9 @@ export class DeviceModel {
         if (this.#device) {
             if (this.#deviceReady) {
                 if (this.#deviceStreaming) {
-                    this.jotai.set(this.state, { status: 'subscribed', battery: this.#deviceBattery });
+                    this.jotai.set(this.state, { status: 'subscribed', battery: this.#deviceBattery, muted: !(this.#deviceMuted !== true) });
                 } else {
-                    this.jotai.set(this.state, { status: 'connected', battery: this.#deviceBattery });
+                    this.jotai.set(this.state, { status: 'connected', battery: this.#deviceBattery, muted: !(this.#deviceMuted !== true) });
                 }
             } else {
                 this.jotai.set(this.state, { status: 'connecting' });
@@ -57,11 +59,6 @@ export class DeviceModel {
         } else {
             this.jotai.set(this.state, { status: 'connecting' });
         }
-        // if (this.#device.connected) {
-        //     this.jotai.set(this.state, { status: 'connected', battery: null });
-        // } else {
-        //     this.jotai.set(this.state, { status: 'connecting' });
-        // }
     }
 
     #cleanupDevice = () => {
@@ -69,6 +66,7 @@ export class DeviceModel {
         // Device is disconnected
         this.#device = null;
         this.#deviceBattery = null;
+        this.#deviceMuted = null;
 
         // Cleanup subscriptions
         if (this.#deviceStreaming) {
@@ -139,8 +137,31 @@ export class DeviceModel {
                 }
             }
 
+            // Handling mute state
+            let mutedLoaded = this.#deviceMutedSubscription !== null;
+            if (!mutedLoaded) {
+                let muteService = this.#device.services.find((v) => v.id === '19b10000-e8f2-537e-4f6c-d104768a1214');
+                if (muteService) {
+                    let muteChar = muteService.characteristics.find((v) => v.id === '19b10003-e8f2-537e-4f6c-d104768a1214' && v.canRead && v.canNotify);
+                    if (muteChar) {
+                        let muted = (await muteChar.read())[0] === 0;
+                        log('BT', 'Muted:' + muted);
+                        this.#deviceMuted = muted;
+                        this.#deviceMutedSubscription = muteChar.subscribe(async (data) => {
+                            log('BT', 'Muted:' + (data[0] === 0));
+                            this.#deviceMuted = data[0] === 0;
+                            this.#flushUI();
+                        });
+                    } else {
+                        mutedLoaded = true;
+                    }
+                } else {
+                    mutedLoaded = true;
+                }
+            }
+
             // Flush UI if we became ready
-            if (!this.#deviceReady && batteryLoaded) {
+            if (!this.#deviceReady && batteryLoaded && mutedLoaded) {
                 this.#flushUI();
                 this.#deviceReady = true;
             }

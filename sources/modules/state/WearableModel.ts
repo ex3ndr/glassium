@@ -40,6 +40,7 @@ export class WearableModel {
             this.#device.onStreamingStart = this.#onStreamingStart;
             this.#device.onStreamingStop = this.#onStreamingStop;
             this.#device.onStreamingFrame = this.#onStreamingFrame;
+            this.#device.init();
         }
     }
 

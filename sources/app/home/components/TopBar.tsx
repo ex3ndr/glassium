@@ -23,14 +23,23 @@ export const TopBar = React.memo(() => {
     } else if (wearable.pairing === 'loading') {
         subtitle = 'loading';
     } else if (wearable.pairing === 'ready') {
-        if (wearable.device === 'connecting') {
+        if (wearable.device.status === 'connecting') {
             subtitle = 'connecting...';
             subtitleStyle = 'warning';
         } else {
-            if (wearable.device === 'connected') {
-                subtitle = 'connected';
-            } else if (wearable.device === 'subscribed') {
-                subtitle = 'listening';
+            let battery = 'unknown';
+            if (wearable.device.status === 'disconnected') {
+                // Should not happen
+            } else if (wearable.device.status === 'connected') {
+                if (wearable.device.battery) {
+                    battery = wearable.device.battery.toString() + '%';
+                }
+                subtitle = 'connected (' + battery + ')';
+            } else if (wearable.device.status === 'subscribed') {
+                if (wearable.device.battery) {
+                    battery = wearable.device.battery.toString() + '%';
+                }
+                subtitle = 'listening (' + battery + ')';
                 subtitleStyle = 'active';
             }
         }

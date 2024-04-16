@@ -150,6 +150,8 @@ export async function connectToDevice(id: string): Promise<BTDevice | null> {
         });
     }
 
+    console.warn(services);
+
     // Connected state (what about race conditions here?)
     let connected = true;
     let callbacks = new Set<() => void>();

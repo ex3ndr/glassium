@@ -7,6 +7,7 @@ import { UpdatesModel } from "./UpdatesModel";
 import { Update } from "../api/schema";
 import { CaptureModel } from "./CaptureModel";
 import { SyncModel } from "./SyncModel";
+import { RealtimeModel } from "./RealtimeModel";
 
 export class AppModel {
     readonly client: SuperClient;
@@ -16,6 +17,7 @@ export class AppModel {
     readonly updates: UpdatesModel;
     readonly sync: SyncModel;
     readonly capture: CaptureModel
+    readonly realtime: RealtimeModel;
 
     constructor(client: SuperClient) {
         this.client = client;
@@ -23,7 +25,8 @@ export class AppModel {
         this.sessions = new SessionsModel(client, this.jotai);
         this.wearable = new WearableModel(this.jotai);
         this.sync = new SyncModel(client);
-        this.capture = new CaptureModel(this.sync, this.jotai, this.wearable);
+        this.realtime = new RealtimeModel(client, this.jotai);
+        this.capture = new CaptureModel(this.sync, this.realtime, this.jotai, this.wearable);
         this.updates = new UpdatesModel(client);
         this.updates.onUpdates = this.#handleUpdate;
         this.wearable.onStreamingStart = this.capture.onCaptureStart;

@@ -96,5 +96,9 @@ export const Schema = {
         seq: z.number(),
         hasMore: z.boolean(),
         updates: z.array(z.any())
-    })
+    }),
+    deepgramToken: z.object({
+        ok: z.literal(true),
+        token: z.string()
+    }),
 };

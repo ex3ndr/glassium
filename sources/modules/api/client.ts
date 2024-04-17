@@ -109,4 +109,13 @@ export class SuperClient {
             }
         });
     }
+
+    //
+    // Services
+    //
+
+    async getDeepgramToken() {
+        let res = await this.client.post('/app/services/deepgram/token', {});
+        return Schema.deepgramToken.parse(res.data).token;
+    }
 }

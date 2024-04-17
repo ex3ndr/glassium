@@ -8,12 +8,14 @@ import { SyncModel } from "./SyncModel";
 import { prepareAudio } from "../media/prepareAudio";
 import { compress } from "../../../modules/audio";
 import { log } from "../../utils/logs";
+import { RealtimeModel } from "./RealtimeModel";
 
 export class CaptureModel {
 
     // Sync state
     readonly jotai: Jotai;
     readonly wearables: WearableModel;
+    readonly realtime: RealtimeModel;
     readonly captureState = atom<{ started: number, streaming: boolean } | null>(null);
     private started = false;
 
@@ -23,8 +25,9 @@ export class CaptureModel {
     private asyncLock = new AsyncLock();
     private asyncLocalId: string | null = null;
 
-    constructor(sync: SyncModel, jotai: Jotai, wearables: WearableModel) {
+    constructor(sync: SyncModel, realtime: RealtimeModel, jotai: Jotai, wearables: WearableModel) {
         this.sync = sync;
+        this.realtime = realtime;
         this.jotai = jotai;
         this.wearables = wearables;
     }
@@ -63,6 +66,7 @@ export class CaptureModel {
         }
         this.started = true;
         console.warn('Start capture with codec ' + protocol.codec);
+        this.realtime.onCaptureStart();
 
         // Update UI
         let ex = this.jotai.get(this.captureState);
@@ -87,6 +91,7 @@ export class CaptureModel {
         }
         this.started = false;
         console.warn('Stop capture');
+        this.realtime.onCaptureStop();
 
         // Update UI
         let ex = this.jotai.get(this.captureState);
@@ -124,6 +129,11 @@ export class CaptureModel {
             data = data.subarray(3); // Cut packet ids since all frames can fit in the bt frame
         } else if (protocol.kind === 'compass') {
             // Nothing to do
+        }
+
+        // Realtime
+        if (protocol.codec === 'mulaw-8' || protocol.codec === 'mulaw-16') {
+            this.realtime.onCaptureFrame(data, protocol.codec);
         }
 
         // Push frame

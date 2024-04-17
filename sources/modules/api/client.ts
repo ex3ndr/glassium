@@ -111,6 +111,15 @@ export class SuperClient {
     }
 
     //
+    // Memories
+    //
+
+    async getMemories() {
+        let res = await this.client.post('/app/memories/list', {});
+        return Schema.listMemories.parse(res.data).memories;
+    }
+
+    //
     // Services
     //
 

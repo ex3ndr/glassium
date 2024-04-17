@@ -14,6 +14,7 @@ import { PreActivationScreen } from './pre/PreActivation';
 import { SessionScreen } from './session/Session';
 import { SettingsManageDevice } from './home/settings/SettingsManageDevice';
 import { SessionsScreens } from './home/SessionsScreen';
+import { MemoryScreen } from './memories/MemoryScreen';
 
 export const Stack = createNativeStackNavigator();
 
@@ -38,6 +39,11 @@ export const App = (
             name='manage-device'
             component={SettingsManageDevice}
             options={{ title: 'Device Management', presentation: 'formSheet' }}
+        />
+        <Stack.Screen
+            name='memory'
+            component={MemoryScreen}
+            options={{ headerShown: false, presentation: 'formSheet' }}
         />
     </>
 );

@@ -1,5 +1,19 @@
 import * as z from 'zod';
 
+const memoryContent = z.object({
+    title: z.string(),
+    summary: z.string(),
+    image: z.string().nullable(),
+});
+export type MemoryContent = z.infer<typeof memoryContent>;
+
+const memory = z.intersection(memoryContent, z.object({
+    id: z.string(),
+    index: z.number(),
+    createdAt: z.number()
+}));
+export type Memory = z.infer<typeof memory>;
+
 const udpateSessionCreated = z.object({
     type: z.literal('session-created'),
     id: z.string(),
@@ -24,12 +38,26 @@ const updateSessionTranscription = z.object({
     id: z.string(),
     transcription: z.string()
 });
-export const Updates = z.union([udpateSessionCreated, updateSessionUpdated, updateSessionAudio, updateSessionTranscription]);
+const updateMemoryCreated = z.object({
+    type: z.literal('memory-created'),
+    id: z.string(),
+    index: z.number(),
+    memory: memoryContent
+});
+const updateMemoryUpdated = z.object({
+    type: z.literal('memory-updated'),
+    id: z.string(),
+    index: z.number(),
+    memory: memoryContent
+});
+export const Updates = z.union([udpateSessionCreated, updateSessionUpdated, updateSessionAudio, updateSessionTranscription, updateMemoryCreated, updateMemoryUpdated]);
 export type UpdateSessionCreated = z.infer<typeof udpateSessionCreated>;
 export type UpdateSessionUpdated = z.infer<typeof updateSessionUpdated>;
 export type UpdateSessionAudio = z.infer<typeof updateSessionAudio>;
 export type UpdateSessionTranscription = z.infer<typeof updateSessionTranscription>;
-export type Update = UpdateSessionCreated | UpdateSessionUpdated | UpdateSessionAudio | UpdateSessionTranscription;
+export type UpdateMemoryCreated = z.infer<typeof updateMemoryCreated>;
+export type UpdateMemoryUpdated = z.infer<typeof updateMemoryUpdated>;
+export type Update = UpdateSessionCreated | UpdateSessionUpdated | UpdateSessionAudio | UpdateSessionTranscription | UpdateMemoryCreated | UpdateMemoryUpdated;
 
 const session = z.object({
     id: z.string(),
@@ -101,4 +129,8 @@ export const Schema = {
         ok: z.literal(true),
         token: z.string()
     }),
+    listMemories: z.object({
+        ok: z.boolean(),
+        memories: z.array(memory)
+    })
 };

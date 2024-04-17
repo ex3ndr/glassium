@@ -80,6 +80,10 @@ export class DeviceModel {
             this.#deviceBatterySubscription();
             this.#deviceBatterySubscription = null;
         }
+        if (this.#deviceMutedSubscription) {
+            this.#deviceMutedSubscription();
+            this.#deviceMutedSubscription = null;
+        }
     }
 
     #update = async () => {
@@ -162,8 +166,8 @@ export class DeviceModel {
 
             // Flush UI if we became ready
             if (!this.#deviceReady && batteryLoaded && mutedLoaded) {
-                this.#flushUI();
                 this.#deviceReady = true;
+                this.#flushUI();
             }
 
             // Handling streaming start

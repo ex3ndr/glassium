@@ -61,7 +61,6 @@ export class RealtimeModel {
     }
 
     #flushUI = () => {
-        console.warn(this.#transcripts);
         let data = [...this.#transcripts];
         if (this.#pendingTranscript) {
             data.push(this.#pendingTranscript);
@@ -69,7 +68,7 @@ export class RealtimeModel {
         if (data.length > 3) { // Keep last 3
             data = data.slice(data.length - 3);
         }
-        this.jotai.set(this.state, this.#transcripts.join("\n") + (this.#pendingTranscript ? ('\n' + this.#pendingTranscript) : ''));
+        this.jotai.set(this.state, data.join("\n"));
     }
 
     #doSync = async () => {

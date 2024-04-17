@@ -5,14 +5,18 @@ import { createClient, LiveClient, LiveTranscriptionEvents } from '@deepgram/sdk
 import { SuperClient } from "../api/client";
 import { log } from "../../utils/logs";
 import { backoff } from "../../utils/time";
+import { atom, useAtomValue } from "jotai";
 
 export class RealtimeModel {
     readonly jotai: Jotai;
     readonly client: SuperClient;
     readonly #sync: InvalidateSync;
+    readonly state = atom('');
     #buffer: { data: Uint8Array, format: 'mulaw-8' | 'mulaw-16' } | null = null;
     #client: LiveClient | null = null;
     #capturing = false;
+    #transcripts: string[] = [];
+    #pendingTranscript: string | null = null;
 
     constructor(client: SuperClient, jotai: Jotai) {
         this.jotai = jotai;
@@ -56,6 +60,18 @@ export class RealtimeModel {
         this.#sync.invalidate();
     }
 
+    #flushUI = () => {
+        console.warn(this.#transcripts);
+        let data = [...this.#transcripts];
+        if (this.#pendingTranscript) {
+            data.push(this.#pendingTranscript);
+        }
+        if (data.length > 3) { // Keep last 3
+            data = data.slice(data.length - 3);
+        }
+        this.jotai.set(this.state, this.#transcripts.join("\n") + (this.#pendingTranscript ? ('\n' + this.#pendingTranscript) : ''));
+    }
+
     #doSync = async () => {
 
         // Clear buffer if not active
@@ -65,6 +81,9 @@ export class RealtimeModel {
                 log('DG', "Closing connection");
                 this.#client.finish();
                 this.#client = null;
+                this.#transcripts = [];
+                this.#pendingTranscript = null;
+                this.#flushUI();
             }
             return;
         }
@@ -93,36 +112,45 @@ export class RealtimeModel {
                 model: "nova",
                 interim_results: true,
                 smart_format: true,
+                diarize: true,
                 encoding: 'mulaw',
                 sample_rate: format === 'mulaw-8' ? 8000 : 16000,
                 channels: 1,
             });
 
             this.#client.on(LiveTranscriptionEvents.Open, () => {
-                console.log("connection established");
+                log('DG', "connection established");
             });
 
             this.#client.on(LiveTranscriptionEvents.Close, () => {
-                console.log("connection closed");
+                log('DG', "connection closed");
             });
 
             this.#client.on(LiveTranscriptionEvents.Transcript, (data) => {
-                console.log(data.channel);
-                console.log(data.channel.alternatives[0].words);
-                const words = data.channel.alternatives[0].words;
-                const caption = words
-                    .map((word: any) => word.punctuated_word ?? word.word)
-                    .join(" ");
-                if (caption !== "") {
-                    console.log(caption);
+                const isFinal = data.is_final as boolean;
+                const words = data.channel.alternatives[0].words as { word: string, speaker: number }[];
+                if (words.length === 0) {
+                    this.#pendingTranscript = null;
+                } else {
+                    let transcript = words.map(w => w.word).join(" ");
+                    if (isFinal) {
+                        this.#transcripts.push(transcript);
+                        this.#pendingTranscript = null;
+                    } else {
+                        this.#pendingTranscript = transcript;
+                    }
                 }
+                this.#flushUI();
             });
 
             log('DG', "Connection created");
         }
 
         // Push data to client
-        log('DG', "Sending data " + buffer.length + " bytes");
         this.#client.send(buffer);
     };
+
+    use() {
+        return useAtomValue(this.state);
+    }
 }

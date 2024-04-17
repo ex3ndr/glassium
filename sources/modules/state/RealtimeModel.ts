@@ -15,8 +15,8 @@ export class RealtimeModel {
     #buffer: { data: Uint8Array, format: 'mulaw-8' | 'mulaw-16' } | null = null;
     #client: LiveClient | null = null;
     #capturing = false;
-    #transcripts: string[] = [];
-    #pendingTranscript: string | null = null;
+    #transcripts: { speaker: number, transcript: string }[] = [];
+    #pendingTranscript: { speaker: number, transcript: string }[] = [];
 
     constructor(client: SuperClient, jotai: Jotai) {
         this.jotai = jotai;
@@ -62,13 +62,20 @@ export class RealtimeModel {
 
     #flushUI = () => {
         let data = [...this.#transcripts];
-        if (this.#pendingTranscript) {
-            data.push(this.#pendingTranscript);
+        if (this.#transcripts.length > 0 && this.#pendingTranscript.length > 0) {
+            if (this.#transcripts[data.length - 1].speaker === this.#pendingTranscript[0].speaker) {
+                data[data.length - 1].transcript += ' ' + this.#pendingTranscript[0].transcript;
+                data = [...data, ...this.#pendingTranscript.slice(1)];
+            } else {
+                data = [...data, ...this.#pendingTranscript];
+            }
+        } else {
+            data = [...data, ...this.#pendingTranscript];
         }
         if (data.length > 3) { // Keep last 3
             data = data.slice(data.length - 3);
         }
-        this.jotai.set(this.state, data.join("\n"));
+        this.jotai.set(this.state, data.map((v) => 'Speaker ' + (v.speaker + 1) + ': ' + v.transcript).join("\n"));
     }
 
     #doSync = async () => {
@@ -81,7 +88,7 @@ export class RealtimeModel {
                 this.#client.finish();
                 this.#client = null;
                 this.#transcripts = [];
-                this.#pendingTranscript = null;
+                this.#pendingTranscript = [];
                 this.#flushUI();
             }
             return;
@@ -129,14 +136,25 @@ export class RealtimeModel {
                 const isFinal = data.is_final as boolean;
                 const words = data.channel.alternatives[0].words as { word: string, speaker: number }[];
                 if (words.length === 0) {
-                    this.#pendingTranscript = null;
+                    this.#pendingTranscript = [];
                 } else {
-                    let transcript = words.map(w => w.word).join(" ");
-                    if (isFinal) {
-                        this.#transcripts.push(transcript);
-                        this.#pendingTranscript = null;
-                    } else {
-                        this.#pendingTranscript = transcript;
+                    function appendWord(to: { transcript: string, speaker: number }[], word: string, speaker: number) {
+                        if (to.length === 0) {
+                            to.push({ transcript: word, speaker });
+                        } else {
+                            if (to[to.length - 1].speaker === speaker) {
+                                to[to.length - 1].transcript += ' ' + word;
+                            } else {
+                                to.push({ transcript: word, speaker });
+                            }
+                        }
+                    }
+                    for (let w of words) {
+                        if (isFinal) {
+                            appendWord(this.#transcripts, w.word, w.speaker);
+                        } else {
+                            appendWord(this.#pendingTranscript, w.word, w.speaker);
+                        }
                     }
                 }
                 this.#flushUI();

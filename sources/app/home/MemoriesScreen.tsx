@@ -54,42 +54,38 @@ export const MemoriesScreen = React.memo(() => {
                         </View>
                     )}
                     <View style={{ marginHorizontal: 16, paddingHorizontal: 16, backgroundColor: '#445ef1', borderRadius: 32, paddingVertical: 16, marginVertical: 16, height: 128 }}>
-                        <Text style={{ color: 'white', fontSize: 24 }} numberOfLines={3}>{realtime ? realtime : '...'}</Text>
+                        <Text style={{ color: 'white', fontSize: 24, minHeight: 128 - 32, position: 'absolute', bottom: 16, left: 16, right: 16 }}>{realtime ? realtime : '...'}</Text>
                     </View>
                 </>
             )}
-            {!captureState && (
-                <>
-                    {memories === null && (
-                        <View style={{ marginHorizontal: 16, flexGrow: 1, justifyContent: 'center', flexDirection: 'column', alignItems: 'center' }}>
-                            <ActivityIndicator />
-                        </View>
-                    )}
-                    {memories !== null && memories.length == 0 && (
-                        <View style={{ marginHorizontal: 16, flexGrow: 1, justifyContent: 'center', flexDirection: 'column', alignItems: 'center' }}>
-                            <Text style={{ textAlign: 'center', fontSize: 20, marginVertical: 16, marginHorizontal: 16, color: Theme.textSecondary }}>
-                                To start capturing your memories, press the button below.
-                            </Text>
-                        </View>
-                    )}
-                    {memories !== null && memories.length > 0 && (
-                        <ScrollView style={{}} contentContainerStyle={{ paddingBottom: 64 + safeArea.bottom }} scrollIndicatorInsets={{ top: 0, bottom: 64 }}>
-                            {memories.map((memory) => (
-                                <Pressable key={memory.id} style={{ borderRadius: 32, marginHorizontal: 16, marginVertical: 16, flexDirection: 'row' }} onPress={() => router.navigate('memory', { data: memory })}>
-                                    {memory.image ? (
-                                        <Image source={{ uri: memory.image }} style={{ width: 64, height: 64, borderRadius: 32, borderWidth: 0.5, borderColor: '#e9e9e9' }} />
-                                    ) : <View style={{ width: 64, height: 64, borderRadius: 32, backgroundColor: Theme.textSecondary }} />}
-                                    <View style={{ flexDirection: 'column', flexGrow: 1, flexBasis: 0, marginLeft: 16 }}>
-                                        <Text style={{ fontSize: 24 }}>{memory.title}</Text>
-                                        <Text style={{ fontSize: 16, opacity: 0.7 }}>{memory.summary}</Text>
-                                    </View>
-                                </Pressable>
-                            ))}
-                        </ScrollView>
-                    )}
 
-                </>
+            {memories === null && (
+                <View style={{ marginHorizontal: 16, flexGrow: 1, justifyContent: 'center', flexDirection: 'column', alignItems: 'center' }}>
+                    <ActivityIndicator />
+                </View>
             )}
-        </View>
+            {memories !== null && memories.length == 0 && (
+                <View style={{ marginHorizontal: 16, flexGrow: 1, justifyContent: 'center', flexDirection: 'column', alignItems: 'center' }}>
+                    <Text style={{ textAlign: 'center', fontSize: 20, marginVertical: 16, marginHorizontal: 16, color: Theme.textSecondary }}>
+                        To start capturing your memories, press the button below.
+                    </Text>
+                </View>
+            )}
+            {memories !== null && memories.length > 0 && (
+                <ScrollView style={{}} contentContainerStyle={{ paddingBottom: 64 + safeArea.bottom }} scrollIndicatorInsets={{ top: 0, bottom: 64 }}>
+                    {memories.map((memory) => (
+                        <Pressable key={memory.id} style={{ borderRadius: 32, marginHorizontal: 16, marginVertical: 16, flexDirection: 'row' }} onPress={() => router.navigate('memory', { data: memory })}>
+                            {memory.image ? (
+                                <Image source={{ uri: memory.image }} style={{ width: 64, height: 64, borderRadius: 32, borderWidth: 0.5, borderColor: '#e9e9e9' }} />
+                            ) : <View style={{ width: 64, height: 64, borderRadius: 32, backgroundColor: Theme.textSecondary }} />}
+                            <View style={{ flexDirection: 'column', flexGrow: 1, flexBasis: 0, marginLeft: 16 }}>
+                                <Text style={{ fontSize: 24 }}>{memory.title}</Text>
+                                <Text style={{ fontSize: 16, opacity: 0.7 }}>{memory.summary}</Text>
+                            </View>
+                        </Pressable>
+                    ))}
+                </ScrollView>
+            )}
+        </View >
     );
 });

@@ -40,6 +40,7 @@ export class CaptureModel {
             return;
         }
         this.started = true;
+        this.realtime.onCaptureStart();
         this.wearables.startStreaming();
         this.jotai.set(this.captureState, { started: Date.now(), streaming: false });
         this.asyncLock.inLock(this.#handleStart);
@@ -50,6 +51,7 @@ export class CaptureModel {
             return
         }
         this.started = false;
+        this.realtime.onCaptureStop();
         this.wearables.stopStreaming();
         this.jotai.set(this.captureState, null);
         this.asyncLock.inLock(this.#handleStop);
@@ -66,7 +68,6 @@ export class CaptureModel {
         }
         this.started = true;
         console.warn('Start capture with codec ' + protocol.codec);
-        this.realtime.onCaptureStart();
 
         // Update UI
         let ex = this.jotai.get(this.captureState);
@@ -91,7 +92,6 @@ export class CaptureModel {
         }
         this.started = false;
         console.warn('Stop capture');
-        this.realtime.onCaptureStop();
 
         // Update UI
         let ex = this.jotai.get(this.captureState);

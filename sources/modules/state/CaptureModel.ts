@@ -137,7 +137,7 @@ export class CaptureModel {
         }
 
         // Push frame
-        this.#frames.push(data.subarray(3));
+        this.#frames.push(data);
 
         // Convert if batch is full
         if (this.#frames.length >= 500) {

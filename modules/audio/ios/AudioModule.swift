@@ -8,7 +8,7 @@ public class AudioModule: Module {
           let fileManager = FileManager.default
           
           // Source and destinations
-          let sourceURL = URL(fileURLWithPath: NSTemporaryDirectory()).appendingPathComponent("source.aac")
+          let sourceURL = URL(fileURLWithPath: NSTemporaryDirectory()).appendingPathComponent("source.wav")
           let outputURL = URL(fileURLWithPath: NSTemporaryDirectory()).appendingPathComponent("output.m4a")
           if fileManager.fileExists(atPath: sourceURL.path) {
             do {

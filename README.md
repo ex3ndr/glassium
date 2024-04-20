@@ -1,6 +1,6 @@
-# Super
+# 🫧 Bubble
 
-The ultimate failed project.
+A mobile app for AI Wearables.
 
 # License
 

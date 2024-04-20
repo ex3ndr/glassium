@@ -15,9 +15,9 @@
             <BuildableReference
                BuildableIdentifier = "primary"
                BlueprintIdentifier = "13B07F861A680F5B00A75B9A"
-               BuildableName = "Super.app"
-               BlueprintName = "Super"
-               ReferencedContainer = "container:Super.xcodeproj">
+               BuildableName = "Bubble.app"
+               BlueprintName = "Bubble"
+               ReferencedContainer = "container:Bubble.xcodeproj">
             </BuildableReference>
          </BuildActionEntry>
       </BuildActionEntries>
@@ -33,9 +33,9 @@
             <BuildableReference
                BuildableIdentifier = "primary"
                BlueprintIdentifier = "00E356ED1AD99517003FC87E"
-               BuildableName = "SuperTests.xctest"
-               BlueprintName = "SuperTests"
-               ReferencedContainer = "container:Super.xcodeproj">
+               BuildableName = "BubbleTests.xctest"
+               BlueprintName = "BubbleTests"
+               ReferencedContainer = "container:Bubble.xcodeproj">
             </BuildableReference>
          </TestableReference>
       </Testables>
@@ -55,9 +55,9 @@
          <BuildableReference
             BuildableIdentifier = "primary"
             BlueprintIdentifier = "13B07F861A680F5B00A75B9A"
-            BuildableName = "Super.app"
-            BlueprintName = "Super"
-            ReferencedContainer = "container:Super.xcodeproj">
+            BuildableName = "Bubble.app"
+            BlueprintName = "Bubble"
+            ReferencedContainer = "container:Bubble.xcodeproj">
          </BuildableReference>
       </BuildableProductRunnable>
    </LaunchAction>
@@ -72,9 +72,9 @@
          <BuildableReference
             BuildableIdentifier = "primary"
             BlueprintIdentifier = "13B07F861A680F5B00A75B9A"
-            BuildableName = "Super.app"
-            BlueprintName = "Super"
-            ReferencedContainer = "container:Super.xcodeproj">
+            BuildableName = "Bubble.app"
+            BlueprintName = "Bubble"
+            ReferencedContainer = "container:Bubble.xcodeproj">
          </BuildableReference>
       </BuildableProductRunnable>
    </ProfileAction>

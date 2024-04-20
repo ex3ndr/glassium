@@ -27,12 +27,12 @@ export const Splash = React.memo(() => {
                 }}
             >
                 <View style={{ flexGrow: 1 }} />
-                <Image source={require('./assets/splash_logo.png')} style={{ width: 256, height: 256 }} />
+                <Image source={require('./assets/splash.png')} style={{ width: 256, height: 256 }} />
                 <Text style={{ fontSize: 32, color: Theme.text, marginTop: 16, fontWeight: '600' }}>
-                    Super
+                    Bubble AI
                 </Text>
                 <Text style={{ fontSize: 18, color: Theme.text, textAlign: 'center', marginTop: 8 }}>
-                    Listen to everything
+                    All-in-one app for AI Wearable devices
                 </Text>
                 <View style={{ flexGrow: 1 }} />
                 <RoundButton display="default" title={"Start"} style={{ width: 300, marginBottom: 16 }} onPress={doStart} />

@@ -17,9 +17,9 @@ const displays: { [key in RoundButtonDisplay]: {
     borderColor: string,
 } } = {
     default: {
-        backgroundColor: Theme.accent,
-        borderColor: Theme.accent,
-        textColor: '#fff'
+        backgroundColor: '#fff',
+        borderColor: '#fff',
+        textColor: 'black'
     },
     inverted: {
         backgroundColor: 'white',

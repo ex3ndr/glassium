@@ -1,20 +1,20 @@
 {
   "expo": {
-    "name": "Super",
-    "slug": "super",
+    "name": "Bubble",
+    "slug": "bubble",
     "version": "1.0.0",
     "orientation": "portrait",
     "icon": "./assets/icon.png",
-    "userInterfaceStyle": "light",
+    "userInterfaceStyle": "dark",
     "splash": {
-      "backgroundColor": "#ffffff"
+      "backgroundColor": "#000"
     },
     "assetBundlePatterns": [
       "**/*"
     ],
     "ios": {
       "supportsTablet": true,
-      "bundleIdentifier": "com.superapp.ios",
+      "bundleIdentifier": "com.bubbleapp.ios",
       "infoPlist": {
         "UIBackgroundModes": [
           "fetch",
@@ -32,7 +32,7 @@
         "foregroundImage": "./assets/adaptive-icon.png",
         "backgroundColor": "#ffffff"
       },
-      "package": "com.superapp.android",
+      "package": "com.bubbleapp.android",
       "permissions": [
         "android.permission.BLUETOOTH",
         "android.permission.BLUETOOTH_ADMIN",

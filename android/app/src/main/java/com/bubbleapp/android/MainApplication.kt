@@ -1,4 +1,4 @@
-package com.superapp.android
+package com.bubbleapp.android
 
 import android.app.Application
 import android.content.res.Configuration

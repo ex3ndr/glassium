@@ -17,6 +17,9 @@ export function Boot() {
                     headerShadowVisible: false,
                     headerBackTitle: 'Back',
                     headerTintColor: Theme.accent,
+                    headerStyle: {
+                        backgroundColor: Theme.background,
+                    },
                     title: ''
                 }}
             >

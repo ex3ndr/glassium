@@ -1,4 +1,4 @@
-package com.superapp.android
+package com.bubbleapp.android
 
 import android.os.Build
 import android.os.Bundle

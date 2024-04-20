@@ -83,9 +83,9 @@ android {
     buildToolsVersion rootProject.ext.buildToolsVersion
     compileSdk rootProject.ext.compileSdkVersion
 
-    namespace 'com.superapp.android'
+    namespace 'com.bubbleapp.android'
     defaultConfig {
-        applicationId 'com.superapp.android'
+        applicationId 'com.bubbleapp.android'
         minSdkVersion rootProject.ext.minSdkVersion
         targetSdkVersion rootProject.ext.targetSdkVersion
         versionCode 1

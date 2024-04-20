@@ -22,9 +22,9 @@ const displays: { [key in RoundButtonDisplay]: {
         textColor: 'black'
     },
     inverted: {
-        backgroundColor: 'white',
-        borderColor: 'white',
-        textColor: Theme.accent,
+        backgroundColor: 'transparent',
+        borderColor: 'transparent',
+        textColor: Theme.text,
     }
 }
 
@@ -64,7 +64,7 @@ export const RoundButton = React.memo((props: { size?: RoundButtonSize, display?
                     opacity: props.disabled ? 0.5 : 1
                 },
                 {
-                    transform: [{ scale: p.pressed ? 0.98 : 1 }]
+                    opacity: p.pressed ? 0.9 : 1
                 },
                 props.style])}
             onPress={doAction}

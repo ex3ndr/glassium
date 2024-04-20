@@ -81,7 +81,7 @@ export const PhoneScreen = React.memo(() => {
                 <View style={{ justifyContent: 'space-between', flexGrow: 1, flexBasis: 0, alignSelf: 'stretch' }}>
                     <View />
                     <View>
-                        <Text style={{ fontSize: 36, alignSelf: 'center', marginBottom: 8 }}>Your Phone</Text>
+                        <Text style={{ fontSize: 36, alignSelf: 'center', marginBottom: 8, color: Theme.text }}>Your Phone</Text>
                         <Text style={{ fontSize: 22, color: Theme.text, alignSelf: 'center', lineHeight: 30 }}>Please, confirm your country code</Text>
                         <Text style={{ fontSize: 22, color: Theme.text, alignSelf: 'center', lineHeight: 30 }}>and enter your phone number.</Text>
                         <SButton title={country.label + ' ' + country.emoji} style={{ alignSelf: 'stretch', marginTop: 48, marginBottom: 12 }} onPress={openCountryPicker} disabled={requesting} />

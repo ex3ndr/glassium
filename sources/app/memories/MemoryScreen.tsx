@@ -11,8 +11,8 @@ export const MemoryScreen = React.memo(() => {
             {memory.image && <Image style={{ height: 256 }} source={{ uri: memory.image }} />}
             {!memory.image && <View style={{ height: 16 }} />}
             <View style={{ flexDirection: 'column', flexGrow: 1, flexBasis: 0, marginLeft: 16, paddingTop: 16, paddingHorizontal: 16 }}>
-                <Text style={{ fontSize: 24, marginBottom: 16 }}>{memory.title}</Text>
-                <Text style={{ fontSize: 16, opacity: 0.7 }}>{memory.summary}</Text>
+                <Text style={{ fontSize: 24, marginBottom: 16, color: Theme.text }}>{memory.title}</Text>
+                <Text style={{ fontSize: 16, opacity: 0.7, color: Theme.text }}>{memory.summary}</Text>
             </View>
         </View>
     );

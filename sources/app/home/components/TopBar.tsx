@@ -10,7 +10,7 @@ export const TopBar = React.memo(() => {
     const wearable = appModel.useWearable();
 
     // Resolve title and subtitle
-    let title = 'Super';
+    let title = 'Bubble';
     let subtitle = 'idle';
     let subtitleStyle: 'secondary' | 'warning' | 'active' = 'secondary';
 

@@ -26,7 +26,7 @@ export const CodeScreen = React.memo(() => {
             router.goBack();
             return;
         }
-        
+
         // Successful login
         controller.login(output);
     })
@@ -50,9 +50,9 @@ export const CodeScreen = React.memo(() => {
                 <View style={{ justifyContent: 'space-between', flexGrow: 1, flexBasis: 0, alignSelf: 'stretch' }}>
                     <View />
                     <View style={{ alignItems: 'center' }} >
-                        <Text style={{ fontSize: 36, alignSelf: 'center', marginBottom: 8 }}>Enter code</Text>
-                        <Text style={{ fontSize: 22, alignSelf: 'center', lineHeight: 30 }}>We've sent the code</Text>
-                        <Text style={{ fontSize: 22, alignSelf: 'center', lineHeight: 30 }}>to <Text style={{ fontWeight: '600' }}>{number}</Text>.</Text>
+                        <Text style={{ fontSize: 36, alignSelf: 'center', marginBottom: 8, color: Theme.text }}>Enter code</Text>
+                        <Text style={{ fontSize: 22, alignSelf: 'center', lineHeight: 30, color: Theme.text }}>We've sent the code</Text>
+                        <Text style={{ fontSize: 22, alignSelf: 'center', lineHeight: 30, color: Theme.text }}>to <Text style={{ fontWeight: '600' }}>{number}</Text>.</Text>
                         <TextInput
                             ref={inputRef}
                             value={code}

@@ -11,8 +11,8 @@ const Row = React.memo((props: { item: Country, callback: (item: Country) => voi
     return (
         <Pressable style={(props) => ({ opacity: props.pressed ? 0.3 : 1 })} onPress={() => props.callback(props.item)}>
             <View style={{ height: 44, alignItems: 'center', paddingHorizontal: 16, flexDirection: 'row' }}>
-                <Text style={{ flexGrow: 1, flexBasis: 0, paddingRight: 16, fontSize: 16 }}>{props.item.emoji} {props.item.label}</Text>
-                <Text style={{ fontSize: 17, color: Theme.textSecondary }}>{props.item.value}</Text>
+                <Text style={{ flexGrow: 1, flexBasis: 0, paddingRight: 16, fontSize: 16, color: Theme.text }}>{props.item.emoji} {props.item.label}</Text>
+                <Text style={{ fontSize: 17, color: Theme.text }}>{props.item.value}</Text>
             </View>
         </Pressable>
     );
@@ -56,7 +56,7 @@ export const CountryPicker = React.memo(() => {
                     />
                 </View>
                 <View style={{ paddingTop: 4, paddingLeft: 4 }}>
-                    <Button title='Cancel' onPress={() => router.goBack()} color={Theme.accent} />
+                    <Button title='Cancel' onPress={() => router.goBack()} color={'#000'} />
                 </View>
             </View>
             <View style={{ height: 0.5, backgroundColor: Theme.divider }} />

@@ -7,7 +7,7 @@ import { CodeScreen } from './auth/CodeScreen';
 import { OnboardingState } from '../global';
 import { PreUsernameScreen } from './pre/PreUsername';
 import { PrePreparingScreen } from './pre/PrePreparing';
-import { HomeScreen } from './Home';
+import { RootScreen } from './Root';
 import { PreNameScreen } from './pre/PreName';
 import { PreNotificationsScreen } from './pre/PreNotifications';
 import { PreActivationScreen } from './pre/PreActivation';
@@ -21,8 +21,8 @@ export const Stack = createNativeStackNavigator();
 export const App = (
     <>
         <Stack.Screen
-            name='home'
-            component={HomeScreen}
+            name='root'
+            component={RootScreen}
             options={{ headerShown: false }}
         />
         <Stack.Screen

@@ -63,7 +63,6 @@ export const TopBar = React.memo(() => {
                         {subtitle}
                     </Text>
                 </View>
-
             </View>
             <View style={{ flexGrow: 1, flexBasis: 0, flexDirection: 'row', justifyContent: 'flex-end', paddingHorizontal: 32 }}>
                 {/* {wearable.device !== 'connecting' ? <Ionicons name="bluetooth-sharp" size={24} color="#16ea79" /> : <Ionicons name="bluetooth-sharp" size={24} color="red" />} */}

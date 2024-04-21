@@ -14,7 +14,7 @@ export const SessionScreen = React.memo(() => {
     let session = appModel.sessions.useFull(id);
     if (!session) {
         return (
-            <View style={{ flexGrow: 1, flexBasis: 0, justifyContent: 'center', alignItems: 'center' }}>
+            <View style={{ flexGrow: 1, flexBasis: 0, justifyContent: 'center', alignItems: 'center', backgroundColor: Theme.background }}>
                 <ActivityIndicator size="large" color={Theme.accent} />
             </View>
         )

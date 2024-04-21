@@ -1,8 +1,7 @@
 import { WaveFile } from 'wavefile';
 import { Worklets } from 'react-native-worklets-core';
 
-export function prepareAudio(format: 'opus' | 'pcm-16' | 'pcm-8' | 'mulaw-16' | 'mulaw-8', frames: Uint8Array[]) {
-    'worklet';
+export function prepareAudio(format: 'pcm-16' | 'pcm-8' | 'mulaw-16' | 'mulaw-8', frames: Uint8Array[]) {
 
     // PCM
     if (format === 'pcm-8' || format === 'pcm-16') {
@@ -66,20 +65,20 @@ export function prepareAudio(format: 'opus' | 'pcm-16' | 'pcm-8' | 'mulaw-16' | 
     }
 
     // Opus
-    if (format === 'opus') {
-        const totalLength = frames.reduce((sum, frame) => sum + frame.length, 0) + frames.length * 2;
-        const samples = new Uint8Array(totalLength);
-        let sampleIndex = 0;
-        for (let i = 0; i < frames.length; i++) {
-            samples[sampleIndex++] = frames[i].length & 0xFF;
-            samples[sampleIndex++] = (frames[i].length >> 8) & 0xFF;
-            for (let j = 0; j < frames[i].length; j++) {
-                samples[sampleIndex++] = frames[i][j];
-            }
-        }
+    // if (format === 'opus') {
+    //     const totalLength = frames.reduce((sum, frame) => sum + frame.length, 0) + frames.length * 2;
+    //     const samples = new Uint8Array(totalLength);
+    //     let sampleIndex = 0;
+    //     for (let i = 0; i < frames.length; i++) {
+    //         samples[sampleIndex++] = frames[i].length & 0xFF;
+    //         samples[sampleIndex++] = (frames[i].length >> 8) & 0xFF;
+    //         for (let j = 0; j < frames[i].length; j++) {
+    //             samples[sampleIndex++] = frames[i][j];
+    //         }
+    //     }
 
-        return { format: 'opus-frames', data: samples };
-    }
+    //     return { format: 'opus-frames', data: samples };
+    // }
 
     throw new Error('Unsupported format');
 }

@@ -1,10 +1,10 @@
 import { AsyncLock, InvalidateSync } from "teslabot";
-import { BTDevice } from "../wearable/bt_common";
-import { connectToDevice } from "../wearable/bt";
+import { BTDevice } from "./protocol/bt_common";
+import { connectToDevice } from "./protocol/bt";
 import { log } from "../../utils/logs";
-import { Jotai } from "./_types";
+import { Jotai } from "../state/_types";
 import { atom } from "jotai";
-import { ProtocolDefinition, resolveProtocol } from "../wearable/protocol";
+import { ProtocolDefinition, resolveProtocol } from "./protocol/protocol";
 import { backoff } from "../../utils/time";
 
 export class DeviceModel {
@@ -14,9 +14,10 @@ export class DeviceModel {
     readonly #sync: InvalidateSync;
     readonly jotai: Jotai;
     readonly state = atom<{ status: 'disconnected' | 'connecting' } | { status: 'connected' | 'subscribed', battery: number | null, muted: boolean }>({ status: 'connecting' });
-    onStreamingStart?: (protocol: ProtocolDefinition) => void;
-    onStreamingStop?: () => void;
+    onStreamingStart?: (protocol: ProtocolDefinition, muted: boolean) => void;
+    onStreamingMute?: (muted: boolean) => void;
     onStreamingFrame?: (data: Uint8Array) => void;
+    onStreamingStop?: () => void;
     #needStop = false;
     #needStreaming = false;
     #device: BTDevice | null = null;
@@ -155,6 +156,9 @@ export class DeviceModel {
                             log('BT', 'Muted:' + (data[0] === 0));
                             this.#deviceMuted = data[0] === 0;
                             this.#flushUI();
+                            if (this.#deviceStreaming && this.onStreamingMute && !this.#needStop) {
+                                this.onStreamingMute(data[0] === 0);
+                            }
                         });
                     } else {
                         mutedLoaded = true;
@@ -191,7 +195,7 @@ export class DeviceModel {
                 // Save subscription
                 this.#deviceStreaming = { ptocol: protocol, subscription: sub };
                 if (this.onStreamingStart && !this.#needStop) { // NOTE: No scheduling here to avoid race conditions
-                    this.onStreamingStart(protocol);
+                    this.onStreamingStart(protocol, this.#deviceMuted === true);
                 }
 
                 // Update state

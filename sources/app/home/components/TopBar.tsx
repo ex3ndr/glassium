@@ -7,7 +7,7 @@ import { BatteryComponent } from './BatteryComponent';
 
 export const TopBar = React.memo(() => {
     const appModel = useAppModel();
-    const sessions = appModel.useSessions();
+    const capture = appModel.capture.use();
     const wearable = appModel.useWearable();
 
     // Resolve title and subtitle
@@ -15,6 +15,7 @@ export const TopBar = React.memo(() => {
     let subtitle = 'idle';
     let subtitleStyle: 'secondary' | 'warning' | 'active' = 'secondary';
     let battery: number | null = null;
+    let enableMuteButton = false;
 
     if (wearable.pairing === 'denied') {
         subtitle = 'pairing denied';
@@ -23,24 +24,32 @@ export const TopBar = React.memo(() => {
         subtitle = 'bluetooth unavailable';
         subtitleStyle = 'warning';
     } else if (wearable.pairing === 'loading') {
-        subtitle = 'loading';
+        subtitle = 'loading'; // Rarely happen for brief moment
     } else if (wearable.pairing === 'ready') {
         if (wearable.device.status === 'connecting') {
             subtitle = 'connecting...';
-            subtitleStyle = 'warning';
+            // subtitleStyle = 'warning';
         } else {
             if (wearable.device.status === 'disconnected') {
                 // Should not happen
-            } else if (wearable.device.status === 'connected') {
+            } else if (wearable.device.status === 'connected' || wearable.device.status === 'subscribed') {
+
+                // Update battery value
                 if (wearable.device.battery) {
                     battery = wearable.device.battery;
                 }
-                subtitle = 'connected';
-            } else if (wearable.device.status === 'subscribed') {
-                if (wearable.device.battery) {
-                    battery = wearable.device.battery;
+
+                // Resolve mute button
+                if (wearable.profile && (!wearable.profile.features || (!wearable.profile.features.hasMuteSwitch && !wearable.profile.features.hasOffSwitch))) {
+                    enableMuteButton = true;
                 }
-                subtitle = 'listening';
+
+                // Update subtitle
+                if (capture.streaming) {
+                    subtitle = 'listening';
+                } else {
+                    subtitle = 'connected';
+                }
                 subtitleStyle = 'active';
             }
         }

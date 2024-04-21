@@ -1,22 +1,27 @@
 import { AsyncLock } from "teslabot";
-import { connectToDevice, manager, startBluetooth } from "../wearable/bt";
-import { Jotai } from "./_types";
+import { connectToDevice, manager, startBluetooth } from "./protocol/bt";
+import { Jotai } from "../state/_types";
 import { atom, useAtomValue } from "jotai";
 import { storage } from "../../storage";
-import { ProtocolDefinition, resolveProtocol, supportedDeviceNames } from "../wearable/protocol";
+import { ProtocolDefinition, resolveProtocol, supportedDeviceNames } from "./protocol/protocol";
 import { DeviceModel } from "./DeviceModel";
-import { DeviceProfile, loadDeviceProfile, profileCodec } from "../wearable/profile";
+import { DeviceProfile, loadDeviceProfile, profileCodec } from "./protocol/profile";
+import { fromMulaw } from "./protocol/mulaw";
 
-export class WearableModel {
+export class WearableModule {
     private static lock = new AsyncLock(); // Use static lock to prevent multiple BT operations
     readonly jotai: Jotai;
     readonly pairingStatus = atom<'loading' | 'need-pairing' | 'ready' | 'denied' | 'unavailable'>('loading');
     readonly discoveryStatus = atom<{ devices: { name: string, id: string }[] } | null>(null);
-    onStreamingStart?: (protocol: ProtocolDefinition) => void;
+    onStreamingStart?: (sr: 8000 | 16000) => void;
     onStreamingStop?: () => void;
-    onStreamingFrame?: (data: Uint8Array) => void;
+    onStreamingFrame?: (data: Int16Array) => void;
     #device: DeviceModel | null = null;
     #profile: DeviceProfile | null = null;
+    #protocol: ProtocolDefinition | null = null;
+    #protocolMuted: boolean | null = null;
+    #protocolTimeout: any | null = null;
+    #protocolStarted = false;
     #needStreaming = false;
     readonly status = atom((get) => {
         let pairing = get(this.pairingStatus);
@@ -53,6 +58,7 @@ export class WearableModel {
                 this.#device.onStreamingStart = this.#onStreamingStart;
                 this.#device.onStreamingStop = this.#onStreamingStop;
                 this.#device.onStreamingFrame = this.#onStreamingFrame;
+                this.#device.onStreamingMute = this.#onStreamingMute;
                 this.#device.init();
             }
         }
@@ -62,8 +68,12 @@ export class WearableModel {
         return this.#device;
     }
 
+    get profile() {
+        return this.#profile;
+    }
+
     start = () => {
-        WearableModel.lock.inLock(async () => {
+        WearableModule.lock.inLock(async () => {
 
             // Starting bluetooth
             let result = await startBluetooth();
@@ -137,7 +147,7 @@ export class WearableModel {
     //
 
     tryPairDevice = (id: string) => {
-        return WearableModel.lock.inLock(async () => {
+        return WearableModule.lock.inLock(async () => {
             if (!!this.#device) {
                 return 'already-paired' as const;
             }
@@ -167,6 +177,7 @@ export class WearableModel {
             this.#device.onStreamingStart = this.#onStreamingStart;
             this.#device.onStreamingStop = this.#onStreamingStop;
             this.#device.onStreamingFrame = this.#onStreamingFrame;
+            this.#device.onStreamingMute = this.#onStreamingMute;
             this.#device.init();
 
             // Update state
@@ -179,7 +190,7 @@ export class WearableModel {
     }
 
     disconnectDevice = () => {
-        return WearableModel.lock.inLock(async () => {
+        return WearableModule.lock.inLock(async () => {
             if (!this.#device) {
                 return 'not-paired' as const;
             }
@@ -209,7 +220,7 @@ export class WearableModel {
         this.#needStreaming = true;
 
         // Update device
-        return WearableModel.lock.inLock(async () => {
+        return WearableModule.lock.inLock(async () => {
             if (!this.#device) {
                 return;
             }
@@ -224,7 +235,7 @@ export class WearableModel {
         this.#needStreaming = false;
 
         // Update device
-        return WearableModel.lock.inLock(async () => {
+        return WearableModule.lock.inLock(async () => {
             if (!this.#device) {
                 return;
             }
@@ -232,21 +243,105 @@ export class WearableModel {
         });
     }
 
-    #onStreamingStart = (protocol: ProtocolDefinition) => {
-        if (this.onStreamingStart) {
-            this.onStreamingStart(protocol);
+    #streamTimeoutCancel = () => {
+        if (this.#protocolTimeout) {
+            clearTimeout(this.#protocolTimeout);
+            this.#protocolTimeout = null;
         }
     }
 
-    #onStreamingStop = () => {
-        if (this.onStreamingStop) {
-            this.onStreamingStop();
+    #streamTimeoutBump = () => {
+        this.#streamTimeoutCancel();
+        this.#protocolTimeout = setTimeout(() => {
+            if (this.#protocolStarted) {
+                this.#protocolStarted = false;
+                if (this.onStreamingStop) {
+                    this.onStreamingStop();
+                }
+            }
+        }, 5000);
+    }
+
+    #onStreamingStart = (protocol: ProtocolDefinition, mute: boolean) => {
+        this.#protocolMuted = mute;
+        this.#protocol = protocol;
+    }
+
+    #onStreamingMute = (mute: boolean) => {
+        if (this.#protocolMuted === mute) {
+            return;
+        }
+        this.#protocolMuted = mute;
+
+        // Stop if muted
+        if (mute) {
+            this.#streamTimeoutCancel();
+            if (this.#protocolStarted) {
+                this.#protocolStarted = false;
+                if (this.onStreamingStop) {
+                    this.onStreamingStop();
+                }
+            }
         }
     }
 
     #onStreamingFrame = (data: Uint8Array) => {
+        if (!this.#protocol || this.#protocolMuted) {
+            return;
+        }
+
+        // If not started, start
+        if (!this.#protocolStarted) {
+            this.#protocolStarted = true;
+            if (this.onStreamingStart) {
+                let sr = (this.#protocol.codec === 'mulaw-8' || this.#protocol.codec === 'pcm-8') ? 8000 as const : 16000 as const;
+                this.onStreamingStart(sr);
+            }
+        }
+
+        // Update last frame time
+        this.#streamTimeoutBump();
+
+        // Callback
         if (this.onStreamingFrame) {
-            this.onStreamingFrame(data);
+
+            // Source
+            if (this.#protocol.kind === 'super') {
+                // Cut the first 3 bytes
+                data = data.subarray(3);
+            }
+
+            // Convert to frames
+            let frames: Int16Array;
+            if (this.#protocol.codec === 'pcm-16' || this.#protocol.codec === 'pcm-8') {
+                frames = new Int16Array(data.length / 2);
+                for (let f = 0; f < frames.length; f++) {
+                    frames[f] = data[f * 2] | (data[f * 2 + 1] << 8);
+                }
+            } else {
+                // Decode MuLaw
+                frames = new Int16Array(data.length);
+                for (let f = 0; f < frames.length; f++) {
+                    frames[f] = fromMulaw(data[f]);
+                }
+            }
+
+            // Callback
+            this.onStreamingFrame(frames);
+        }
+    }
+
+    #onStreamingStop = () => {
+
+        // Reset state
+        let wasStarted = this.#protocolStarted;
+        this.#protocol = null;
+        this.#protocolStarted = false;
+        this.#streamTimeoutCancel();
+
+        // Callback
+        if (this.onStreamingStop && wasStarted) {
+            this.onStreamingStop();
         }
     }
 

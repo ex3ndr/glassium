@@ -1,32 +1,35 @@
 import { createStore } from "jotai";
 import { SuperClient } from "../api/client";
 import { SessionsModel } from "./SessionsModel";
-import { WearableModel } from "./WearableModel";
+import { WearableModule } from "../wearable/WearableModule";
 import { Jotai } from "./_types";
 import { UpdatesModel } from "./UpdatesModel";
 import { Update } from "../api/schema";
-import { CaptureModel } from "./CaptureModel";
-import { SyncModel } from "./SyncModel";
+import { CaptureModule } from "../capture/CaptureModule";
+import { SyncModel } from "../capture/SyncModel";
 import { RealtimeModel } from "./RealtimeModel";
+import { EndpointingModule } from "../capture/EndpointingModule";
 
 export class AppModel {
     readonly client: SuperClient;
     readonly jotai: Jotai;
     readonly sessions: SessionsModel;
-    readonly wearable: WearableModel;
+    readonly wearable: WearableModule;
     readonly updates: UpdatesModel;
     readonly sync: SyncModel;
-    readonly capture: CaptureModel
+    readonly capture: CaptureModule
     readonly realtime: RealtimeModel;
+    readonly endpointing: EndpointingModule;
 
     constructor(client: SuperClient) {
         this.client = client;
         this.jotai = createStore();
         this.sessions = new SessionsModel(client, this.jotai);
-        this.wearable = new WearableModel(this.jotai);
+        this.wearable = new WearableModule(this.jotai);
         this.sync = new SyncModel(client);
         this.realtime = new RealtimeModel(client, this.jotai);
-        this.capture = new CaptureModel(this.sync, this.realtime, this.jotai, this.wearable);
+        this.endpointing = new EndpointingModule(this.sync);
+        this.capture = new CaptureModule(this.jotai, this.wearable, this.endpointing);
         this.updates = new UpdatesModel(client);
         this.updates.onUpdates = this.#handleUpdate;
         this.wearable.onStreamingStart = this.capture.onCaptureStart;

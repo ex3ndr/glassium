@@ -42,20 +42,13 @@ export const HomeScreen = React.memo(() => {
     const app = useAppModel();
     const realtime = app.realtime.use();
     const captureState = useAtomValue(app.capture.captureState);
-    const wearable = app.wearable.use();
     const memories = useMemories();
-    let muted = !!(wearable.device?.status === 'connected' && wearable.device.muted);
     return (
         <View style={{ flexGrow: 1 }}>
             <ScrollView style={{}} contentContainerStyle={{ paddingBottom: 64 + safeArea.bottom, flexGrow: 1 }} alwaysBounceVertical={false} scrollIndicatorInsets={{ top: 0, bottom: 64 }}>
                 <HomeNotification />
-                {captureState && (
+                {captureState.streaming && (
                     <>
-                        {muted && (
-                            <View style={{ marginHorizontal: 16, paddingHorizontal: 16, backgroundColor: Theme.accent, borderRadius: 32, paddingVertical: 16, marginVertical: 16 }}>
-                                <Text style={{ color: 'white', fontSize: 24 }}>Please, allow microphone access by pressing a button on device</Text>
-                            </View>
-                        )}
                         <View style={{ marginHorizontal: 16, paddingHorizontal: 16, backgroundColor: '#445ef1', borderRadius: 32, paddingVertical: 16, marginVertical: 16, height: 128 }}>
                             <Text style={{ color: 'white', fontSize: 24, minHeight: 128 - 32, position: 'absolute', bottom: 16, left: 16, right: 16 }}>{realtime ? realtime : '...'}</Text>
                         </View>

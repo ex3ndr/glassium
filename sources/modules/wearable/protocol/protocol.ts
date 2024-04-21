@@ -4,7 +4,7 @@ export const SUPER_SERVICE = '19b10000-e8f2-537e-4f6c-d104768a1214';
 export const COMPASS_SERVICE = '4fafc201-1fb5-459e-8fcc-c5c9c331914b';
 export const KNOWN_BT_SERVICES = [SUPER_SERVICE, COMPASS_SERVICE];
 
-export type CodecType = 'pcm-16' | 'pcm-8' | 'mulaw-16' | 'mulaw-8' | 'opus';
+export type CodecType = 'pcm-16' | 'pcm-8' | 'mulaw-16' | 'mulaw-8';
 
 export type ProtocolDefinition = {
     kind: 'super' | 'compass',
@@ -56,12 +56,12 @@ async function resolveSuperProtocol(device: BTDevice): Promise<ProtocolDefinitio
         codec = 'mulaw-16'
     } else if (codecId === 11) {
         codec = 'mulaw-8'
-    } else if (codecId === 20) {
-        codec = 'opus'
     } else {
         console.warn('Unknown codec: ' + codecId);
         return null;
     }
+    // } else if (codecId === 20) {
+    //     codec = 'opus'
 
     return {
         kind: 'super',

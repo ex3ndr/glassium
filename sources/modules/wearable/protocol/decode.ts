@@ -1,6 +1,6 @@
 import { WaveFile } from "wavefile";
 import { CodecType } from "./protocol";
-import { decodeOpus } from "./opus";
+// import { decodeOpus } from "./opus";
 
 export async function decode(codec: CodecType, frames: Uint8Array[]) {
     console.warn(frames);
@@ -26,7 +26,7 @@ export async function decode(codec: CodecType, frames: Uint8Array[]) {
             return wav;
         }
     }
-    if (codec === 'mu-law-16' || codec === 'mu-law-8') {
+    if (codec === 'mulaw-16' || codec === 'mulaw-8') {
         const totalLength = frames.reduce((sum, frame) => sum + frame.length, 0);
         const samples = new Uint8Array(totalLength);
         let sampleIndex = 0;
@@ -36,7 +36,7 @@ export async function decode(codec: CodecType, frames: Uint8Array[]) {
             }
         }
 
-        if (codec === 'mu-law-16') {
+        if (codec === 'mulaw-16') {
             const wav = new WaveFile();
             wav.fromScratch(1, 16000, '8m', samples);
             wav.fromMuLaw();
@@ -48,8 +48,8 @@ export async function decode(codec: CodecType, frames: Uint8Array[]) {
             return wav;
         }
     }
-    if (codec === 'opus') {
-        return decodeOpus(frames);
-    }
+    // if (codec === 'opus') {
+    //     return decodeOpus(frames);
+    // }
     return null;
 }

@@ -6,15 +6,33 @@ import { useAppModel } from '../../global';
 import { RoundButton } from '../components/RoundButton';
 import { Theme } from '../../theme';
 import { DeviceComponent } from '../components/DeviceComponent';
-import { isDevMode } from '../../devmode';
+import { isDevMode, setDevMode } from '../../devmode';
 import { randomQuote } from '../../modules/fun/randomQuote';
+import * as Application from 'expo-application';
+import * as Update from 'expo-updates';
+import { useSafeAreaInsets } from 'react-native-safe-area-context';
 
 export const SettingsScreen = React.memo(() => {
+    const safeArea = useSafeAreaInsets();
     const appModel = useAppModel();
     const wearable = appModel.wearable.use();
     const router = useRouter();
+    const updates = Update.useUpdates();
+    const restartApp = async () => {
+        await Update.reloadAsync();
+    };
+
+    const versionPresCount = React.useRef(0);
+    const onVersionPress = () => {
+        versionPresCount.current++;
+        if (versionPresCount.current >= 10) {
+            versionPresCount.current = 0;
+            setDevMode(true);
+            Update.reloadAsync();
+        }
+    };
     return (
-        <View>
+        <View style={{ flexGrow: 1, paddingBottom: 64 + safeArea.bottom }}>
             <Item title="Device" />
             {wearable.pairing === 'loading' && (
                 <View style={{ alignItems: 'flex-start', paddingHorizontal: 16, flexDirection: 'column' }}>
@@ -58,16 +76,41 @@ export const SettingsScreen = React.memo(() => {
                 <Text style={{ fontSize: 18, color: Theme.text, marginBottom: 8, opacity: 0.8 }}>Data that is collected by your wearable.</Text>
                 <RoundButton title={'View sessions'} size='small' onPress={() => { router.navigate('sessions') }} />
             </View>
+            {(Update.releaseChannel !== 'production' || isDevMode()) && (
+                <>
+                    <View style={{ height: 16 }} />
+                    <Item title={'Updates (' + Update.releaseChannel + ')'} />
+                    <View style={{ alignItems: 'flex-start', paddingHorizontal: 16, flexDirection: 'column' }}>
+                        {updates.isChecking && (
+                            <Text style={{ fontSize: 18, color: Theme.text, marginBottom: 16, opacity: 0.8 }}>Checking for updates...</Text>
+                        )}
+                        {updates.isDownloading && (
+                            <Text style={{ fontSize: 18, color: Theme.text, marginBottom: 16, opacity: 0.8 }}>Downloading and update...</Text>
+                        )}
+                        {updates.isUpdatePending && (
+                            <>
+                                <Text style={{ fontSize: 18, color: Theme.text, marginBottom: 16, opacity: 0.8 }}>New update ready. Please, restart app to apply.</Text>
+                                <RoundButton title={'Restart and update'} size='small' action={restartApp} />
+                            </>
+                        )}
+                    </View>
+                </>
+            )}
             {isDevMode() && (
                 <>
                     <View style={{ height: 16 }} />
                     <Item title="Developer Mode" />
                     <View style={{ alignItems: 'flex-start', paddingHorizontal: 16, flexDirection: 'column' }}>
                         <Text style={{ fontSize: 18, color: Theme.text, marginBottom: 16, opacity: 0.8 }}>{randomQuote().text}</Text>
-                        <RoundButton title={'Reload app'} size='small' onPress={() => { router.navigate('dev-settings') }} />
+                        <RoundButton title={'Reload app'} size='small' action={restartApp} />
                     </View>
                 </>
             )}
+
+            <View style={{ flexGrow: 1 }} />
+            <Pressable onPress={onVersionPress}>
+                <Text style={{ color: Theme.textSecondary, paddingHorizontal: 16, paddingVertical: 16, alignSelf: 'center' }}>{Application.applicationName} v{Application.nativeApplicationVersion} ({Application.nativeBuildVersion})</Text>
+            </Pressable>
         </View>
     );
 });

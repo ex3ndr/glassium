@@ -51,6 +51,10 @@
         "projectId": "37bd4d62-0528-40ac-9dfb-4a9b2d172597"
       }
     },
-    "owner": "bulkacorp"
+    "owner": "bulkacorp",
+    "runtimeVersion": "1.0.0",
+    "updates": {
+      "url": "https://u.expo.dev/37bd4d62-0528-40ac-9dfb-4a9b2d172597"
+    }
   }
 }

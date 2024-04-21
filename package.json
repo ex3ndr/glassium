@@ -9,7 +9,7 @@
     "web": "expo start --web",
     "prebuild": "expo prebuild",
     "build-web": "expo export -p web",
-    "ota:next": "eas update --branch next",
+    "ota": "eas update --branch next",
     "submit:next": "eas build --platform ios --profile next --no-wait --non-interactive --auto-submit",
     "submit:release": "eas build --platform ios --profile production --no-wait --non-interactive --auto-submit"
   },

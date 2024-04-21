@@ -21,7 +21,6 @@ export const SettingsScreen = React.memo(() => {
     const restartApp = async () => {
         await Update.reloadAsync();
     };
-
     const versionPresCount = React.useRef(0);
     const onVersionPress = () => {
         versionPresCount.current++;
@@ -31,6 +30,7 @@ export const SettingsScreen = React.memo(() => {
             Update.reloadAsync();
         }
     };
+    const quote = React.useMemo(() => randomQuote(), []);
     return (
         <View style={{ flexGrow: 1, paddingBottom: 64 + safeArea.bottom }}>
             <Item title="Device" />
@@ -76,22 +76,25 @@ export const SettingsScreen = React.memo(() => {
                 <Text style={{ fontSize: 18, color: Theme.text, marginBottom: 8, opacity: 0.8 }}>Data that is collected by your wearable.</Text>
                 <RoundButton title={'View sessions'} size='small' onPress={() => { router.navigate('sessions') }} />
             </View>
-            {(Update.releaseChannel !== 'production' || isDevMode()) && (
+            {(isDevMode() || updates.isUpdatePending) && (
                 <>
                     <View style={{ height: 16 }} />
-                    <Item title={'Updates (' + Update.releaseChannel + ')'} />
+                    <Item title={'Updates'} />
                     <View style={{ alignItems: 'flex-start', paddingHorizontal: 16, flexDirection: 'column' }}>
                         {updates.isChecking && (
-                            <Text style={{ fontSize: 18, color: Theme.text, marginBottom: 16, opacity: 0.8 }}>Checking for updates...</Text>
+                            <Text style={{ fontSize: 18, color: Theme.text, opacity: 0.8 }}>Checking for updates...</Text>
                         )}
                         {updates.isDownloading && (
-                            <Text style={{ fontSize: 18, color: Theme.text, marginBottom: 16, opacity: 0.8 }}>Downloading and update...</Text>
+                            <Text style={{ fontSize: 18, color: Theme.text, opacity: 0.8 }}>Downloading and update...</Text>
                         )}
                         {updates.isUpdatePending && (
                             <>
                                 <Text style={{ fontSize: 18, color: Theme.text, marginBottom: 16, opacity: 0.8 }}>New update ready. Please, restart app to apply.</Text>
                                 <RoundButton title={'Restart and update'} size='small' action={restartApp} />
                             </>
+                        )}
+                        {(!updates.isUpdatePending && !updates.isDownloading && !updates.isChecking) && (
+                            <Text style={{ fontSize: 18, color: Theme.text, opacity: 0.8 }}>Bubble is up-to-date.</Text>
                         )}
                     </View>
                 </>
@@ -101,8 +104,8 @@ export const SettingsScreen = React.memo(() => {
                     <View style={{ height: 16 }} />
                     <Item title="Developer Mode" />
                     <View style={{ alignItems: 'flex-start', paddingHorizontal: 16, flexDirection: 'column' }}>
-                        <Text style={{ fontSize: 18, color: Theme.text, marginBottom: 16, opacity: 0.8 }}>{randomQuote().text}</Text>
-                        <RoundButton title={'Reload app'} size='small' action={restartApp} />
+                        <Text style={{ fontSize: 18, color: Theme.text, marginBottom: 16, opacity: 0.8 }}>{quote.text}{'\n\n'}<Text style={{ fontStyle: 'italic' }}>{quote.from}</Text></Text>
+                        <RoundButton title={'Restart app'} size='small' action={restartApp} />
                     </View>
                 </>
             )}

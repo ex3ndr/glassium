@@ -6,6 +6,8 @@ import { useAppModel } from '../../global';
 import { RoundButton } from '../components/RoundButton';
 import { Theme } from '../../theme';
 import { DeviceComponent } from '../components/DeviceComponent';
+import { isDevMode } from '../../devmode';
+import { randomQuote } from '../../modules/fun/randomQuote';
 
 export const SettingsScreen = React.memo(() => {
     const appModel = useAppModel();
@@ -56,6 +58,16 @@ export const SettingsScreen = React.memo(() => {
                 <Text style={{ fontSize: 18, color: Theme.text, marginBottom: 8, opacity: 0.8 }}>Data that is collected by your wearable.</Text>
                 <RoundButton title={'View sessions'} size='small' onPress={() => { router.navigate('sessions') }} />
             </View>
+            {isDevMode() && (
+                <>
+                    <View style={{ height: 16 }} />
+                    <Item title="Developer Mode" />
+                    <View style={{ alignItems: 'flex-start', paddingHorizontal: 16, flexDirection: 'column' }}>
+                        <Text style={{ fontSize: 18, color: Theme.text, marginBottom: 16, opacity: 0.8 }}>{randomQuote().text}</Text>
+                        <RoundButton title={'Reload app'} size='small' onPress={() => { router.navigate('dev-settings') }} />
+                    </View>
+                </>
+            )}
         </View>
     );
 });

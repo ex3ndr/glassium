@@ -30,6 +30,7 @@
     "expo-notifications": "~0.27.6",
     "expo-status-bar": "~1.11.1",
     "expo-system-ui": "~2.9.3",
+    "expo-updates": "~0.24.12",
     "humanize-duration": "^3.32.0",
     "jotai": "^2.7.2",
     "libphonenumber-js": "^1.10.59",

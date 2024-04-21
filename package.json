@@ -8,7 +8,9 @@
     "ios": "expo run:ios",
     "web": "expo start --web",
     "prebuild": "expo prebuild",
-    "build-web": "expo export -p web"
+    "build-web": "expo export -p web",
+    "submit:next": "eas build --platform ios --profile next --no-wait --non-interactive --auto-submit",
+    "submit:release": "eas build --platform ios --profile production --no-wait --non-interactive --auto-submit"
   },
   "dependencies": {
     "@deepgram/sdk": "^3.2.0",
@@ -53,7 +55,6 @@
     "react-native-worklets-core": "^0.4.0",
     "teslabot": "^1.5.0",
     "wavefile": "^11.0.0",
-    "yarn": "^1.22.22",
     "zod": "^3.22.4"
   },
   "devDependencies": {

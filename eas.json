@@ -1,27 +1,38 @@
 {
   "cli": {
-    "version": ">= 4.1.2"
+    "version": ">= 4.1.2",
+    "appVersionSource": "remote"
   },
   "build": {
-    "development": {
-      "distribution": "internal",
-      "android": {
-        "gradleCommand": ":app:assembleDebug"
+    "next": {
+      "channel": "next",
+      "env": {
+        "APP_ENV": "next"
       },
-      "ios": {
-        "buildConfiguration": "Debug"
-      },
-      "channel": "development"
-    },
-    "preview": {
-      "distribution": "internal",
-      "channel": "preview"
+      "autoIncrement": true
     },
     "production": {
-      "channel": "production"
+      "channel": "production",
+      "env": {
+        "APP_ENV": "production"
+      },
+      "autoIncrement": true
     }
   },
   "submit": {
-    "production": {}
+    "production": {
+      "ios": {
+        "appleId": "steve@bulkovo.com",
+        "ascAppId": "126165711",
+        "appleTeamId": "466DQWDR8C"
+      }
+    },
+    "next": {
+      "ios": {
+        "appleId": "steve@bulkovo.com",
+        "ascAppId": "126165711",
+        "appleTeamId": "466DQWDR8C"
+      }
+    }
   }
 }

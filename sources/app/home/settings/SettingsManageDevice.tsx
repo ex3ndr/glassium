@@ -32,7 +32,7 @@ const DiscoveryDevice = React.memo(() => {
                     <ScrollView style={{ flexGrow: 1, alignSelf: 'stretch' }} contentContainerStyle={{ padding: 16, paddingBottom: 128 + safeArea.bottom, justifyContent: 'center', flexGrow: 1 }} alwaysBounceVertical={false}>
                         <Text style={{ paddingHorizontal: 16, paddingVertical: 32, fontSize: 24, color: Theme.text, alignSelf: 'center' }}>{devices.length === 1 ? 'One device' : devices.length + ' devices'} found</Text>
                         {devices.map((device) => (
-                            <DeviceComponent key={device.id} title={device.name} kind='bubble' subtitle={device.id} onPress={() => appModel.wearable.tryPairDevice(device.id)} />
+                            <DeviceComponent key={device.id} title={device.name} kind='bubble' subtitle={device.id} action={() => appModel.wearable.tryPairDevice(device.id)} />
                         ))}
                     </ScrollView>
                 </>

@@ -5,6 +5,7 @@ import { atom, useAtomValue } from "jotai";
 import { storage } from "../../storage";
 import { ProtocolDefinition, resolveProtocol, supportedDeviceNames } from "../wearable/protocol";
 import { DeviceModel } from "./DeviceModel";
+import { DeviceProfile, loadDeviceProfile, profileCodec } from "../wearable/profile";
 
 export class WearableModel {
     private static lock = new AsyncLock(); // Use static lock to prevent multiple BT operations
@@ -15,6 +16,7 @@ export class WearableModel {
     onStreamingStop?: () => void;
     onStreamingFrame?: (data: Uint8Array) => void;
     #device: DeviceModel | null = null;
+    #profile: DeviceProfile | null = null;
     #needStreaming = false;
     readonly status = atom((get) => {
         let pairing = get(this.pairingStatus);
@@ -22,11 +24,13 @@ export class WearableModel {
             return {
                 pairing: 'ready' as const,
                 device: get(this.#device!.state),
+                profile: this.#profile
             };
         } else {
             return {
                 pairing,
-                device: null
+                device: null,
+                profile: null
             };
         }
     });
@@ -34,13 +38,23 @@ export class WearableModel {
 
     constructor(jotai: Jotai) {
         this.jotai = jotai;
-        let id = storage.getString('wearable-device');
-        if (id) {
-            this.#device = new DeviceModel(id, jotai);
-            this.#device.onStreamingStart = this.#onStreamingStart;
-            this.#device.onStreamingStop = this.#onStreamingStop;
-            this.#device.onStreamingFrame = this.#onStreamingFrame;
-            this.#device.init();
+        let profile = storage.getString('wearable-device');
+        if (profile) {
+            let js;
+            try {
+                js = JSON.parse(profile);
+            } catch (e) {
+                return;
+            }
+            let parsed = profileCodec.safeParse(js);
+            if (parsed.success) {
+                this.#profile = parsed.data;
+                this.#device = new DeviceModel(parsed.data.id, jotai);
+                this.#device.onStreamingStart = this.#onStreamingStart;
+                this.#device.onStreamingStop = this.#onStreamingStop;
+                this.#device.onStreamingFrame = this.#onStreamingFrame;
+                this.#device.init();
+            }
         }
     }
 
@@ -135,8 +149,15 @@ export class WearableModel {
             }
 
             // Check protocols
-            const protocol = resolveProtocol(connected);
+            const protocol = await resolveProtocol(connected);
             if (!protocol) {
+                connected.disconnect();
+                return 'unsupported' as const;
+            }
+
+            // Check profile
+            let profile = await loadDeviceProfile(protocol, connected);
+            if (!profile) {
                 connected.disconnect();
                 return 'unsupported' as const;
             }
@@ -149,7 +170,8 @@ export class WearableModel {
             this.#device.init();
 
             // Update state
-            storage.set('wearable-device', id);
+            this.#profile = profile;
+            storage.set('wearable-device', JSON.stringify(profile));
             this.jotai.set(this.pairingStatus, 'ready');
 
             return 'ok' as const;

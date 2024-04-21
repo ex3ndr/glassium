@@ -3,6 +3,7 @@ import { StyleSheet, Text, View } from 'react-native';
 import { Ionicons } from '@expo/vector-icons';
 import { Theme } from '../../../theme';
 import { useAppModel } from '../../../global';
+import { BatteryComponent } from './BatteryComponent';
 
 export const TopBar = React.memo(() => {
     const appModel = useAppModel();
@@ -13,6 +14,7 @@ export const TopBar = React.memo(() => {
     let title = 'Bubble';
     let subtitle = 'idle';
     let subtitleStyle: 'secondary' | 'warning' | 'active' = 'secondary';
+    let battery: number | null = null;
 
     if (wearable.pairing === 'denied') {
         subtitle = 'pairing denied';
@@ -27,19 +29,18 @@ export const TopBar = React.memo(() => {
             subtitle = 'connecting...';
             subtitleStyle = 'warning';
         } else {
-            let battery = 'unknown';
             if (wearable.device.status === 'disconnected') {
                 // Should not happen
             } else if (wearable.device.status === 'connected') {
                 if (wearable.device.battery) {
-                    battery = wearable.device.battery.toString() + '%';
+                    battery = wearable.device.battery;
                 }
-                subtitle = 'connected (' + battery + ')';
+                subtitle = 'connected';
             } else if (wearable.device.status === 'subscribed') {
                 if (wearable.device.battery) {
-                    battery = wearable.device.battery.toString() + '%';
+                    battery = wearable.device.battery;
                 }
-                subtitle = 'listening (' + battery + ')';
+                subtitle = 'listening';
                 subtitleStyle = 'active';
             }
         }
@@ -51,7 +52,9 @@ export const TopBar = React.memo(() => {
 
     return (
         <View style={{ height: 48, alignItems: 'center', justifyContent: 'center', flexDirection: 'row' }}>
-            <View style={{ flexGrow: 1, flexBasis: 0, flexDirection: 'row', justifyContent: 'flex-start', paddingHorizontal: 32 }} />
+            <View style={{ flexGrow: 1, flexBasis: 0, flexDirection: 'row', justifyContent: 'flex-start', paddingHorizontal: 32 }}>
+                {battery !== null && (<BatteryComponent level={battery} />)}
+            </View>
             <View style={{ flexDirection: 'column', justifyContent: 'center', alignItems: 'center' }}>
                 <Text style={{ color: Theme.text, fontSize: 20, fontWeight: '600' }}>{title}</Text>
                 <View style={{ flexDirection: 'row' }}>

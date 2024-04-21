@@ -17,7 +17,7 @@ export const PreNotificationsScreen = React.memo(() => {
     }, []);
     return (
         <View style={{ flexGrow: 1, backgroundColor: Theme.background, justifyContent: 'center' }}>
-            <Text style={{ color: Theme.text, fontSize: 32, alignSelf: 'center', textAlign: 'center' }}>Super works best{'\n'}with notifications on</Text>
+            <Text style={{ color: Theme.text, fontSize: 32, alignSelf: 'center', textAlign: 'center' }}>Bubble works best{'\n'}with notifications on</Text>
             <RoundButton title={'Enable notifications'} style={{ width: 250, alignSelf: 'center', marginTop: 32 }} action={action} />
             <RoundButton title={'Not now'} style={{ width: 250, alignSelf: 'center', marginTop: 32 }} action={skip} />
         </View>

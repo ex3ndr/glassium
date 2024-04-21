@@ -27,20 +27,19 @@ export const SessionsScreens = React.memo(() => {
                     {sessions.map((session) => (
                         <Pressable
                             key={session.id}
-                            style={{
-                                backgroundColor: '#eee',
+                            style={(p) => ({
+                                backgroundColor: p.pressed ? '#111111' : '#1c1c1c',
                                 marginHorizontal: 16,
                                 marginVertical: 8,
                                 borderRadius: 16,
                                 paddingHorizontal: 16,
                                 paddingVertical: 18,
                                 flexDirection: 'row'
-                            }}
+                            })}
                             onPress={() => { router.navigate('session', { id: session.id }) }}
                         >
-                            <Text style={{ color: 'black', fontSize: 24, flexGrow: 1, flexBasis: 0, alignSelf: 'center' }}>Session #{(session.index + 1)}</Text>
-                            <Text style={{ color: 'black', alignSelf: 'center' }}>{session.state}</Text>
-                            <Text>{session.audio ? (session.audio.duration / 1000).toString() : ''}</Text>
+                            <Text style={{ color: Theme.text, fontSize: 24, flexGrow: 1, flexBasis: 0, alignSelf: 'center' }}>Session #{(session.index + 1)}</Text>
+                            <Text style={{ color: Theme.text, alignSelf: 'center' }}>Status: {session.state}</Text>
                         </Pressable>
                     ))}
                 </ScrollView>

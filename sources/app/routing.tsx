@@ -11,7 +11,7 @@ import { RootScreen } from './Root';
 import { PreNameScreen } from './pre/PreName';
 import { PreNotificationsScreen } from './pre/PreNotifications';
 import { PreActivationScreen } from './pre/PreActivation';
-import { SessionScreen } from './session/Session';
+import { SessionScreen } from './home/settings/Session';
 import { SettingsManageDevice } from './home/settings/SettingsManageDevice';
 import { SessionsScreens } from './home/SessionsScreen';
 import { MemoryScreen } from './memories/MemoryScreen';

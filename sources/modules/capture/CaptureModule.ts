@@ -15,7 +15,7 @@ export class CaptureModule {
 
     // State
     private muted = false;
-    private lastSR: number | null = null;
+    private lastSR: 8000 | 16000 | null = null;
     private asyncLock = new AsyncLock();
 
     constructor(jotai: Jotai, wearables: WearableModule, endpointing: EndpointingModule) {
@@ -59,7 +59,7 @@ export class CaptureModule {
     // Capture Callbacks
     //
 
-    onCaptureStart = (sr: number) => {
+    onCaptureStart = (sr: 8000 | 16000) => {
         this.asyncLock.inLock(async () => {
             this.lastSR = sr;
             if (!this.muted) {

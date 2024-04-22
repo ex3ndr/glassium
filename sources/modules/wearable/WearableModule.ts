@@ -8,6 +8,7 @@ import { DeviceModel } from "./DeviceModel";
 import { DeviceProfile, loadDeviceProfile, profileCodec } from "./protocol/profile";
 import { fromMulaw } from "./protocol/mulaw";
 import { log } from "../../utils/logs";
+import { Platform } from "react-native";
 
 export class WearableModule {
     private static lock = new AsyncLock(); // Use static lock to prevent multiple BT operations
@@ -45,7 +46,7 @@ export class WearableModule {
     constructor(jotai: Jotai) {
         this.jotai = jotai;
         let profile = storage.getString('wearable-device');
-        if (profile) {
+        if (profile && Platform.OS !== 'web') {
             let js;
             try {
                 js = JSON.parse(profile);

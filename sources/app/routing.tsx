@@ -16,6 +16,7 @@ import { SettingsManageDevice } from './home/settings/SettingsManageDevice';
 import { SessionsScreens } from './home/SessionsScreen';
 import { MemoryScreen } from './memories/MemoryScreen';
 import { LogsScreen } from './home/settings/Logs';
+import { Platform } from 'react-native';
 
 export const Stack = createNativeStackNavigator();
 
@@ -39,12 +40,12 @@ export const App = (
         <Stack.Screen
             name='manage-device'
             component={SettingsManageDevice}
-            options={{ title: 'Device Management', presentation: 'formSheet' }}
+            options={{ title: 'Device Management', presentation: Platform.OS === 'ios' ? 'formSheet' : 'card' }}
         />
         <Stack.Screen
             name='memory'
             component={MemoryScreen}
-            options={{ headerShown: false, presentation: 'formSheet' }}
+            options={{ headerShown: Platform.OS !== 'ios', presentation: Platform.OS === 'ios' ? 'formSheet' : 'card' }}
         />
         <Stack.Screen
             name='logs'

@@ -1,6 +1,7 @@
 import * as b64 from 'react-native-quick-base64';
 import { BleManager, Device, ScanOptions, State, Subscription } from 'react-native-ble-plx';
 import { BTDevice, BTService, BTStartResult } from './bt_common';
+import { Platform } from 'react-native';
 
 let _manager: BleManager | null = null;
 export function manager() {
@@ -11,6 +12,9 @@ export function manager() {
 }
 
 export async function startBluetooth(): Promise<BTStartResult> {
+    if (Platform.OS === 'web') {
+        return 'started';
+    }
 
     let m = manager();
     return new Promise<BTStartResult>((resolve, reject) => {

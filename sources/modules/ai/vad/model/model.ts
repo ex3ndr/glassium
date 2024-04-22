@@ -6,18 +6,11 @@ export class VADModel {
     static async create() {
 
         // Resolve local path
-        let modelPath: string;
         let loaded = (await Asset.loadAsync(require('./model.onnx')))[0];
-        if (loaded.localUri) {
-            modelPath = loaded.localUri.substring('file://'.length);
-        } else {
-            let localUri = (await loaded.downloadAsync()).localUri!;
-            modelPath = localUri.substring('file://'.length);
-        }
-        log('VAD', 'Model path: ' + modelPath);
+        log('VAD', 'Model URI: ' + loaded.uri);
 
         // Create inference session
-        const session: InferenceSession = await InferenceSession.create(modelPath);
+        const session: InferenceSession = await InferenceSession.create(loaded.uri);
         return new VADModel(session);
     }
 

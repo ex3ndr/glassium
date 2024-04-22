@@ -7,10 +7,10 @@ export class VADModel {
 
         // Resolve local path
         let loaded = (await Asset.loadAsync(require('./model.onnx')))[0];
-        log('VAD', 'Model URI: ' + loaded.uri);
+        log('VAD', 'Model URI: ' + loaded.localUri);
 
         // Create inference session
-        const session: InferenceSession = await InferenceSession.create(loaded.uri);
+        const session: InferenceSession = await InferenceSession.create(loaded.localUri!);
         return new VADModel(session);
     }
 

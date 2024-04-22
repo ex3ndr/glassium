@@ -65,6 +65,7 @@ export class DeviceModel {
     #cleanupDevice = () => {
 
         // Device is disconnected
+        this.#device?.disconnect();
         this.#device = null;
         this.#deviceBattery = null;
         this.#deviceMuted = null;

@@ -3,7 +3,7 @@
     "name": "Bubble",
     "slug": "bubble",
     "version": "1.0.0",
-    "runtimeVersion": "2",
+    "runtimeVersion": "3",
     "orientation": "portrait",
     "icon": "./assets/icon.png",
     "userInterfaceStyle": "dark",
@@ -47,7 +47,8 @@
     "plugins": [
       "react-native-ble-plx",
       "expo-localization",
-      "onnxruntime-react-native"
+      "onnxruntime-react-native",
+      "react-native-vision-camera"
     ],
     "extra": {
       "eas": {

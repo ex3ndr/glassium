@@ -1,5 +1,6 @@
 import { Asset } from 'expo-asset';
 import { InferenceSession, Tensor } from "onnxruntime-react-native";
+import { log } from '../../../../utils/logs';
 
 export class VADModel {
     static async create() {
@@ -13,6 +14,7 @@ export class VADModel {
             let localUri = (await loaded.downloadAsync()).localUri!;
             modelPath = localUri.substring('file://'.length);
         }
+        log('VAD', 'Model path: ' + modelPath);
 
         // Create inference session
         const session: InferenceSession = await InferenceSession.create(modelPath);

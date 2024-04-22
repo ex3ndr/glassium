@@ -12,10 +12,11 @@ export class EndpointingModule {
     readonly options = {
         positiveProb: 0.5,
         negativeProb: 0.5 - 0.15,
-        minSpeechFrames: 3,
+        minSpeechFrames: 5,
+        speechRestartFrames: 5,
 
         preSpeechPadDuration: 5, // 5 seconds
-        redemptionDuration: 1, // 5 seconds
+        redemptionDuration: 5, // 5 seconds
         cooldownDuration: 60, // 60 seconds
         bufferTruncateDuration: 15, // 15 seconds NOTE: Must be greater preSpeechPadDuration, but bigger to avoid truncation on every frame
     };
@@ -123,13 +124,23 @@ export class EndpointingModule {
                 if (voiceProb > this.options.positiveProb) {
                     if (state.vad.end !== null) {
                         state.vad.resumeVoiceFrames++;
-                        log('END', 'Voice resumed');
-                        this.jotai.set(this.state, 'voice');
+                        if (state.vad.resumeVoiceFrames > this.options.speechRestartFrames) {
+                            log('END', 'Voice resumed ' + state.vad.voiceFrames);
+                            this.jotai.set(this.state, 'voice');
+                            state.vad.voiceFrames++;
+                            state.vad.voiceFrames += state.vad.resumeVoiceFrames;
+                            state.vad.resumeVoiceFrames = 0;
+                            state.vad.redemption = 0;
+                            state.vad.cooldown = 0;
+                            state.vad.end = null;
+                        }
+                    } else {
+                        state.vad.voiceFrames++;
+                        state.vad.redemption = 0;
+                        state.vad.cooldown = 0;
+                        state.vad.resumeVoiceFrames = 0;
+                        state.vad.end = null;
                     }
-                    state.vad.voiceFrames++;
-                    state.vad.redemption = 0;
-                    state.vad.cooldown = 0;
-                    state.vad.end = null;
                 }
 
                 // If has no voice - increment redemption
@@ -141,10 +152,10 @@ export class EndpointingModule {
                 if (state.vad.redemption > redemptionFrames && state.vad.end === null) {
                     state.vad.end = state.processed;
                     if (state.vad.voiceFrames < this.options.minSpeechFrames) {
+                        log('END', 'Voice canceled ' + state.vad.voiceFrames);
                         state.vad = null;
-                        log('END', 'Voice canceled');
                     } else {
-                        log('END', 'Voice paused');
+                        log('END', 'Voice paused ' + state.vad.voiceFrames);
                     }
                     this.jotai.set(this.state, 'idle');
                 }

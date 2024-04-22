@@ -47,13 +47,13 @@ export const HomeScreen = React.memo(() => {
         <View style={{ flexGrow: 1 }}>
             <ScrollView style={{}} contentContainerStyle={{ paddingBottom: 64 + safeArea.bottom, flexGrow: 1 }} alwaysBounceVertical={false} scrollIndicatorInsets={{ top: 0, bottom: 64 }}>
                 <HomeNotification />
-                {captureState.streaming && (
+                {/* {captureState.streaming && (
                     <>
                         <View style={{ marginHorizontal: 16, paddingHorizontal: 16, backgroundColor: '#445ef1', borderRadius: 32, paddingVertical: 16, marginVertical: 16, height: 128 }}>
                             <Text style={{ color: 'white', fontSize: 24, minHeight: 128 - 32, position: 'absolute', bottom: 16, left: 16, right: 16 }}>{realtime ? realtime : '...'}</Text>
                         </View>
                     </>
-                )}
+                )} */}
                 {memories === null && (
                     <View style={{ marginHorizontal: 16, flexGrow: 1, justifyContent: 'center', flexDirection: 'column', alignItems: 'center' }}>
                         <ActivityIndicator />

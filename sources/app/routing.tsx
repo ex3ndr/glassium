@@ -15,6 +15,7 @@ import { SessionScreen } from './home/settings/Session';
 import { SettingsManageDevice } from './home/settings/SettingsManageDevice';
 import { SessionsScreens } from './home/SessionsScreen';
 import { MemoryScreen } from './memories/MemoryScreen';
+import { LogsScreen } from './home/settings/Logs';
 
 export const Stack = createNativeStackNavigator();
 
@@ -44,6 +45,11 @@ export const App = (
             name='memory'
             component={MemoryScreen}
             options={{ headerShown: false, presentation: 'formSheet' }}
+        />
+        <Stack.Screen
+            name='logs'
+            component={LogsScreen}
+            options={{ title: 'Logs' }}
         />
     </>
 );

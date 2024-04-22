@@ -106,6 +106,8 @@ export const SettingsScreen = React.memo(() => {
                     <View style={{ alignItems: 'flex-start', paddingHorizontal: 16, flexDirection: 'column' }}>
                         <Text style={{ fontSize: 18, color: Theme.text, marginBottom: 16, opacity: 0.8 }}>{quote.text}{'\n\n'}<Text style={{ fontStyle: 'italic' }}>{quote.from}</Text></Text>
                         <RoundButton title={'Restart app'} size='small' action={restartApp} />
+                        <View style={{ height: 16 }} />
+                        <RoundButton title={'View logs'} size='small' onPress={() => router.navigate('logs')} />
                     </View>
                 </>
             )}

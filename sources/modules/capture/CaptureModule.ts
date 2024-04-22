@@ -45,9 +45,15 @@ export class CaptureModule {
                     await this.endpointing.onDeviceStreamStart(this.lastSR);
                 }
             }
+            if (!mute) {
+                this.wearables.startStreaming();
+            } else {
+                this.wearables.stopStreaming();
+            }
             this.muted = mute;
             storage.set('settings-local-mute', mute);
             this.jotai.set(this.captureState, { localMute: mute, streaming: this.lastSR !== null });
+            
         });
     }
 

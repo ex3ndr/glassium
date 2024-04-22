@@ -25,6 +25,7 @@ function useMemories() {
             }
             setList(memories);
         }, { backoff });
+        sync.invalidate();
         let inteval = setInterval(() => {
             sync.invalidate();
         }, 5000);

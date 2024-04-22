@@ -1,6 +1,6 @@
 import { Asset } from 'expo-asset';
-import { InferenceSession, Tensor } from "onnxruntime-react-native";
 import { log } from '../../../../utils/logs';
+import { Tensor, InferenceSession } from 'isomorphic-onnxruntime';
 
 export class VADModel {
     static async create() {

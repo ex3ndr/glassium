@@ -32,7 +32,7 @@ export const BottomBar = React.memo((props: {
     active: 'home' | 'search' | 'sessions' | 'settings'
 }) => {
     return (
-        <View style={{ height: 64, flexDirection: 'row', alignItems: 'stretch', backgroundColor: Theme.background }}>
+        <View style={{ height: 64, flexDirection: 'row', alignItems: 'stretch', alignSelf: 'stretch', backgroundColor: Theme.background }}>
             {/* <TabBarItem icon={require('../../assets/toolbox_3d.png')} active={props.active === 'search'} title="Devices" onPress={() => props.onPress('search')} /> */}
             <TabBarItem icon={require('../../assets/house_with_garden_3d.png')} active={props.active === 'home'} title="Home" onPress={() => props.onPress('home')} />
             {/* <TabBarItem icon={require('../../assets/magnifying_glass_tilted_left_3d.png')} active={props.active === 'search'} title="Search" onPress={() => props.onPress('search')} /> */}

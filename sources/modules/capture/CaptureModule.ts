@@ -34,29 +34,33 @@ export class CaptureModule {
 
     setLocalMute = async (mute: boolean) => {
         log('CPT', 'setLocalMute(' + mute + ')');
-        await this.asyncLock.inLock(async () => {
-            if (this.muted === mute) {
-                return;
-            }
-            if (mute) {
-                if (this.lastSR !== null) {
-                    await this.endpointing.onDeviceStreamStop();
+        try {
+            await this.asyncLock.inLock(async () => {
+                if (this.muted === mute) {
+                    return;
                 }
-            } else {
-                if (this.lastSR !== null) {
-                    await this.endpointing.onDeviceStreamStart(this.lastSR);
+                if (mute) {
+                    if (this.lastSR !== null) {
+                        await this.endpointing.onDeviceStreamStop();
+                    }
+                } else {
+                    if (this.lastSR !== null) {
+                        await this.endpointing.onDeviceStreamStart(this.lastSR);
+                    }
                 }
-            }
-            if (!mute) {
-                this.wearables.startStreaming();
-            } else {
-                this.wearables.stopStreaming();
-            }
-            this.muted = mute;
-            storage.set('settings-local-mute', mute);
-            this.jotai.set(this.captureState, { localMute: mute, streaming: this.lastSR !== null });
+                if (!mute) {
+                    this.wearables.startStreaming();
+                } else {
+                    this.wearables.stopStreaming();
+                }
+                this.muted = mute;
+                storage.set('settings-local-mute', mute);
+                this.jotai.set(this.captureState, { localMute: mute, streaming: this.lastSR !== null });
 
-        });
+            });
+        } catch (e) {
+            log('CPT', 'setLocalMute Error: ' + e);
+        }
     }
 
     use = () => {

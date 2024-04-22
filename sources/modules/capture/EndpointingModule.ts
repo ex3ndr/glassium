@@ -89,6 +89,7 @@ export class EndpointingModule {
 
             // Run VAD
             let voiceProb = await this.#vadPredict(state.buffer.slice(state.processed, state.processed + vadFrameSize));
+            state.processed += vadFrameSize;
 
             // Handle non-active state
             if (state.vad === null) {
@@ -125,24 +126,27 @@ export class EndpointingModule {
 
                 // Check if redepmtion is over
                 if (state.vad.redemption > redemptionFrames && state.vad.end === null) {
-                    state.vad.end = state.processed + vadFrameSize;
-                    log('END', 'Voice paused');
+                    state.vad.end = state.processed;
+                    if (state.vad.voiceFrames < this.options.minSpeechFrames) {
+                        state.vad = null;
+                        log('END', 'Voice canceled');
+                    } else {
+                        log('END', 'Voice paused');
+                    }
                 }
 
                 // Check if cooldown is over
-                if (state.vad.end !== null) {
+                if (state.vad && state.vad.end !== null) {
                     state.vad.cooldown++;
                     if (state.vad.cooldown > cooldownFrames) {
                         log('END', 'Voice ended');
                         let buffer = state.buffer.slice(state.vad.from, state.vad.end);
                         await this.#flush(state.sr, buffer);
+                        this.#advance(state.vad.end);
                         state.vad = null;
                     }
                 }
             }
-
-            // Advance
-            state.processed += vadFrameSize;
         }
 
         // Check flush
@@ -164,6 +168,7 @@ export class EndpointingModule {
         let timeDelta = offset / state.sr;
         state.start += timeDelta;
         state.buffer = state.buffer.slice(offset);
+        state.processed -= offset;
     }
 
     // TODO: Move this to worklet

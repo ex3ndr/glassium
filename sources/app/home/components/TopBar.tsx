@@ -1,5 +1,5 @@
 import * as React from 'react';
-import { StyleSheet, Text, View } from 'react-native';
+import { Pressable, StyleSheet, Text, View } from 'react-native';
 import { Ionicons } from '@expo/vector-icons';
 import { Theme } from '../../../theme';
 import { useAppModel } from '../../../global';
@@ -46,7 +46,7 @@ export const TopBar = React.memo(() => {
                 }
 
                 // Update subtitle
-                if (capture.streaming) {
+                if (capture.streaming && !capture.localMute) {
                     if (endpointing === 'idle') {
                         subtitle = 'listening';
                     } else {
@@ -79,6 +79,7 @@ export const TopBar = React.memo(() => {
                 </View>
             </View>
             <View style={{ flexGrow: 1, flexBasis: 0, flexDirection: 'row', justifyContent: 'flex-end', paddingHorizontal: 32 }}>
+                {enableMuteButton && <Pressable onPress={() => appModel.capture.setLocalMute(!capture.localMute)}><Ionicons name={capture.localMute ? 'mic-off' : 'mic'} size={24} color={Theme.accent} /></Pressable>}
                 {/* {wearable.device !== 'connecting' ? <Ionicons name="bluetooth-sharp" size={24} color="#16ea79" /> : <Ionicons name="bluetooth-sharp" size={24} color="red" />} */}
             </View>
         </View>

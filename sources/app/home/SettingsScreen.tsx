@@ -1,5 +1,5 @@
 import * as React from 'react';
-import { ActivityIndicator, Pressable, Text, View } from 'react-native';
+import { ActivityIndicator, Platform, Pressable, Text, View } from 'react-native';
 import { useRouter } from '../../routing';
 import { Item } from '../components/Item';
 import { useAppModel } from '../../global';
@@ -76,7 +76,7 @@ export const SettingsScreen = React.memo(() => {
                 <Text style={{ fontSize: 18, color: Theme.text, marginBottom: 8, opacity: 0.8 }}>Data that is collected by your wearable.</Text>
                 <RoundButton title={'View sessions'} size='small' onPress={() => { router.navigate('sessions') }} />
             </View>
-            {(isDevMode() || updates.isUpdatePending) && (
+            {(isDevMode() || updates.isUpdatePending) && (Platform.OS !== 'web') && (
                 <>
                     <View style={{ height: 16 }} />
                     <Item title={'Updates'} />
@@ -114,7 +114,9 @@ export const SettingsScreen = React.memo(() => {
 
             <View style={{ flexGrow: 1 }} />
             <Pressable onPress={onVersionPress}>
-                <Text style={{ color: Theme.textSecondary, paddingHorizontal: 16, paddingVertical: 16, alignSelf: 'center' }}>{Application.applicationName} v{Application.nativeApplicationVersion} ({Application.nativeBuildVersion})</Text>
+                <Text style={{ color: Theme.textSecondary, paddingHorizontal: 16, paddingVertical: 16, alignSelf: 'center' }}>
+                    {Platform.OS === 'web' ? 'Web Client' : `${Application.applicationName} v${Application.nativeApplicationVersion} (${Application.nativeBuildVersion})}`}
+                </Text>
             </Pressable>
         </View>
     );

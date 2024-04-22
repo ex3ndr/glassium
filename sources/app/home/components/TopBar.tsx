@@ -9,6 +9,7 @@ export const TopBar = React.memo(() => {
     const appModel = useAppModel();
     const capture = appModel.capture.use();
     const wearable = appModel.useWearable();
+    const endpointing = appModel.endpointing.use();
 
     // Resolve title and subtitle
     let title = 'Bubble';
@@ -46,7 +47,11 @@ export const TopBar = React.memo(() => {
 
                 // Update subtitle
                 if (capture.streaming) {
-                    subtitle = 'listening';
+                    if (endpointing === 'idle') {
+                        subtitle = 'listening';
+                    } else {
+                        subtitle = 'voice detected';
+                    }
                 } else {
                     subtitle = 'connected';
                 }

@@ -28,7 +28,7 @@ export class AppModel {
         this.wearable = new WearableModule(this.jotai);
         this.sync = new SyncModel(client);
         this.realtime = new RealtimeModel(client, this.jotai);
-        this.endpointing = new EndpointingModule(this.sync);
+        this.endpointing = new EndpointingModule(this.sync, this.jotai);
         this.capture = new CaptureModule(this.jotai, this.wearable, this.endpointing);
         this.updates = new UpdatesModel(client);
         this.updates.onUpdates = this.#handleUpdate;

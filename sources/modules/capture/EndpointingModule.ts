@@ -4,6 +4,8 @@ import { SyncModel } from "./SyncModel";
 import { WaveFile } from "wavefile";
 import { compress } from "../../../modules/audio";
 import { randomKey } from "../crypto/randomKey";
+import { atom, useAtomValue } from "jotai";
+import { Jotai } from "../state/_types";
 
 export class EndpointingModule {
 
@@ -18,6 +20,8 @@ export class EndpointingModule {
         bufferTruncateDuration: 15, // 15 seconds NOTE: Must be greater preSpeechPadDuration, but bigger to avoid truncation on every frame
     };
     readonly sync: SyncModel;
+    readonly jotai: Jotai;
+    readonly state = atom<'idle' | 'voice'>('idle');
 
     #model: VADModel | null = null;
     #state: {
@@ -25,11 +29,16 @@ export class EndpointingModule {
         processed: number,
         sr: number,
         start: number,
-        vad: { from: number, redemption: number, voiceFrames: number, end: number | null, cooldown: number } | null,
+        vad: { from: number, redemption: number, voiceFrames: number, resumeVoiceFrames: number, end: number | null, cooldown: number } | null,
     } | null = null;
 
-    constructor(sync: SyncModel) {
+    constructor(sync: SyncModel, jotai: Jotai) {
         this.sync = sync;
+        this.jotai = jotai;
+    }
+
+    use = () => {
+        return useAtomValue(this.state);
     }
 
     onDeviceStreamStart = async (sr: 8000 | 16000) => {
@@ -102,8 +111,10 @@ export class EndpointingModule {
                         redemption: 0,
                         end: null,
                         cooldown: 0,
+                        resumeVoiceFrames: 0,
                     };
                     log('END', 'Voice detected');
+                    this.jotai.set(this.state, 'voice');
                 }
 
             } else {
@@ -111,7 +122,9 @@ export class EndpointingModule {
                 // If has voice - reset redemption and increment voice frames
                 if (voiceProb > this.options.positiveProb) {
                     if (state.vad.end !== null) {
+                        state.vad.resumeVoiceFrames++;
                         log('END', 'Voice resumed');
+                        this.jotai.set(this.state, 'voice');
                     }
                     state.vad.voiceFrames++;
                     state.vad.redemption = 0;
@@ -133,6 +146,7 @@ export class EndpointingModule {
                     } else {
                         log('END', 'Voice paused');
                     }
+                    this.jotai.set(this.state, 'idle');
                 }
 
                 // Check if cooldown is over

@@ -7,6 +7,7 @@ import { ProtocolDefinition, resolveProtocol, supportedDeviceNames } from "./pro
 import { DeviceModel } from "./DeviceModel";
 import { DeviceProfile, loadDeviceProfile, profileCodec } from "./protocol/profile";
 import { fromMulaw } from "./protocol/mulaw";
+import { log } from "../../utils/logs";
 
 export class WearableModule {
     private static lock = new AsyncLock(); // Use static lock to prevent multiple BT operations
@@ -218,6 +219,7 @@ export class WearableModule {
             return;
         }
         this.#needStreaming = true;
+        log('BT', 'Need streaming = true');
 
         // Update device
         return WearableModule.lock.inLock(async () => {
@@ -233,6 +235,7 @@ export class WearableModule {
             return;
         }
         this.#needStreaming = false;
+        log('BT', 'Need streaming = false');
 
         // Update device
         return WearableModule.lock.inLock(async () => {

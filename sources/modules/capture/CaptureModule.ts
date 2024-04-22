@@ -4,6 +4,7 @@ import { WearableModule } from "../wearable/WearableModule";
 import { AsyncLock } from "teslabot";
 import { EndpointingModule } from "./EndpointingModule";
 import { storage } from "../../storage";
+import { log } from "../../utils/logs";
 
 export class CaptureModule {
 
@@ -32,6 +33,7 @@ export class CaptureModule {
     }
 
     setLocalMute = async (mute: boolean) => {
+        log('CPT', 'setLocalMute(' + mute + ')');
         await this.asyncLock.inLock(async () => {
             if (this.muted === mute) {
                 return;
@@ -53,7 +55,7 @@ export class CaptureModule {
             this.muted = mute;
             storage.set('settings-local-mute', mute);
             this.jotai.set(this.captureState, { localMute: mute, streaming: this.lastSR !== null });
-            
+
         });
     }
 

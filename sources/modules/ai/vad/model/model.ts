@@ -2,6 +2,7 @@ import { Asset } from 'expo-asset';
 import { log } from '../../../../utils/logs';
 import { Tensor, InferenceSession } from 'isomorphic-onnxruntime';
 import * as fs from 'expo-file-system';
+import * as crypto from 'expo-crypto';
 
 export class VADModel {
     static async create() {
@@ -12,10 +13,12 @@ export class VADModel {
         log('VAD', 'Model URI: ' + path);
         let info = await fs.getInfoAsync(path);
         log('VAD', 'Model Exists:' + info.exists);
-        let load = Buffer.from(await fs.readAsStringAsync(path, { encoding: 'base64' }), 'base64');
+        let model64 = await fs.readAsStringAsync(path, { encoding: 'base64' });
+        let model = Buffer.from(model64, 'base64');
+        log('VAD', 'Model hash: ' + await crypto.digestStringAsync(crypto.CryptoDigestAlgorithm.SHA256, model64, { encoding: crypto.CryptoEncoding.BASE64 }));
 
         // Create inference session
-        const session: InferenceSession = await InferenceSession.create(load);
+        const session: InferenceSession = await InferenceSession.create(model);
         return new VADModel(session);
     }
 

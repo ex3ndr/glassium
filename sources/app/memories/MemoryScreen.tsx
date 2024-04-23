@@ -1,6 +1,7 @@
 import { useRoute } from '@react-navigation/native';
 import * as React from 'react';
-import { Image, ScrollView, Text, View } from 'react-native';
+import { ScrollView, Text, View } from 'react-native';
+import { Image } from 'expo-image';
 import { Memory } from '../../modules/api/schema';
 import { Theme } from '../../theme';
 

@@ -1,5 +1,6 @@
 import * as React from 'react';
-import { ActivityIndicator, Image, Pressable, ScrollView, Text, View } from 'react-native';
+import { ActivityIndicator, Pressable, ScrollView, Text, View } from 'react-native';
+import { Image } from 'expo-image';
 import { useAppModel } from '../../global';
 import { Theme } from '../../theme';
 import { useAtomValue } from 'jotai';

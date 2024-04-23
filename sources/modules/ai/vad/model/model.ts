@@ -1,6 +1,7 @@
 import { Asset } from 'expo-asset';
 import { log } from '../../../../utils/logs';
 import { Tensor, InferenceSession } from 'isomorphic-onnxruntime';
+import * as fs from 'expo-file-system';
 
 export class VADModel {
     static async create() {
@@ -9,6 +10,8 @@ export class VADModel {
         let loaded = (await Asset.loadAsync(require('./model.onnx')))[0];
         let path = loaded.localUri!.replace('%20', ' ').replace('file://', ''); // Hack to fix path
         log('VAD', 'Model URI: ' + path);
+        let info = await fs.getInfoAsync(path);
+        log('VAD', 'Model Exists:' + info.exists);
 
         // Create inference session
         const session: InferenceSession = await InferenceSession.create(path);

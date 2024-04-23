@@ -1,25 +1,35 @@
 import { Asset } from 'expo-asset';
 import { log } from '../../../../utils/logs';
-import { Tensor, InferenceSession } from 'isomorphic-onnxruntime';
+import { Tensor, InferenceSession } from 'onnxruntime-react-native';
 import * as fs from 'expo-file-system';
-import * as crypto from 'expo-crypto';
+// import * as crypto from 'expo-crypto';
+// import * as b64 from 'react-native-quick-base64';
 
 export class VADModel {
     static async create() {
 
-        // Resolve local path
-        let loaded = (await Asset.loadAsync(require('./model.onnx')))[0];
-        let path = loaded.localUri!.replace('%20', ' ').replace('file://', ''); // Hack to fix path
-        log('VAD', 'Model URI: ' + path);
-        let info = await fs.getInfoAsync(path);
-        log('VAD', 'Model Exists:' + info.exists);
-        let model64 = await fs.readAsStringAsync(path, { encoding: 'base64' });
-        let model = Buffer.from(model64, 'base64');
-        log('VAD', 'Model hash: ' + await crypto.digestStringAsync(crypto.CryptoDigestAlgorithm.SHA256, model64, { encoding: crypto.CryptoEncoding.BASE64 }));
+        try {
 
-        // Create inference session
-        const session: InferenceSession = await InferenceSession.create(model);
-        return new VADModel(session);
+            // Resolve local path
+            log('VAD', 'Loading VAD model');
+            let loaded = (await Asset.loadAsync(require('./model.onnx')))[0];
+            let path = loaded.localUri!.replace('%20', ' ').replace('file://', ''); // Hack to fix path
+            log('VAD', 'Model URI: ' + path);
+            let info = await fs.getInfoAsync(path);
+            log('VAD', 'Model Exists:' + info.exists);
+            // let model64 = await fs.readAsStringAsync(path, { encoding: 'base64' });
+            // let model = b64.toByteArray(model64);
+            // log('VAD', 'Model hash: ' + await crypto.digestStringAsync(crypto.CryptoDigestAlgorithm.SHA256, model64, { encoding: crypto.CryptoEncoding.BASE64 }));
+
+            // Create inference session
+            const session: InferenceSession = await InferenceSession.create(path);
+            log('VAD', 'Model loaded');
+            return new VADModel(session);
+        } catch (e) {
+            console.warn(e);
+            log('VAD', 'Failed to load VAD model: ' + (e as any).message);
+            throw new Error('Failed to load VAD model');
+        }
     }
 
     #session: InferenceSession;

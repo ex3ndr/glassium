@@ -11,7 +11,8 @@
     "build-web": "expo export -p web",
     "ota": "eas update --branch next",
     "submit:next": "eas build --platform ios --profile next --no-wait --non-interactive --auto-submit",
-    "submit:release": "eas build --platform ios --profile production --no-wait --non-interactive --auto-submit"
+    "submit:release": "eas build --platform ios --profile production --no-wait --non-interactive --auto-submit",
+    "postinstall": "patch-package"
   },
   "dependencies": {
     "@deepgram/sdk": "^3.2.0",
@@ -53,10 +54,10 @@
     "jest": "^29.7.0",
     "jotai": "^2.7.2",
     "libphonenumber-js": "^1.10.59",
-    "onnxruntime-common": "1.16.3",
-    "onnxruntime-react-native": "1.16.3",
-    "onnxruntime-web": "1.16.3",
+    "onnxruntime-react-native": "1.17.3",
+    "onnxruntime-web": "1.17.3",
     "opus-decoder": "^0.7.6",
+    "patch-package": "^8.0.0",
     "react": "18.2.0",
     "react-dom": "18.2.0",
     "react-native": "0.73.6",

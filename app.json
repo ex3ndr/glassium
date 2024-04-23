@@ -3,7 +3,7 @@
     "name": "Bubble",
     "slug": "bubble",
     "version": "1.0.0",
-    "runtimeVersion": "4",
+    "runtimeVersion": "5",
     "orientation": "portrait",
     "icon": "./assets/icon.png",
     "userInterfaceStyle": "dark",

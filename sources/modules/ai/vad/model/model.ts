@@ -12,9 +12,10 @@ export class VADModel {
         log('VAD', 'Model URI: ' + path);
         let info = await fs.getInfoAsync(path);
         log('VAD', 'Model Exists:' + info.exists);
+        let load = Buffer.from(await fs.readAsStringAsync(path, { encoding: 'base64' }), 'base64');
 
         // Create inference session
-        const session: InferenceSession = await InferenceSession.create(path);
+        const session: InferenceSession = await InferenceSession.create(load);
         return new VADModel(session);
     }
 

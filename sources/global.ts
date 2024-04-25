@@ -159,7 +159,7 @@ export function useNewGlobalController(): [GlobalState, GlobalStateController] {
 
         // Create client with tokenq
         let client = new SuperClient(axios.create({
-            baseURL: 'https://super-server.korshakov.org',
+            baseURL: 'https://mobile-api.getbubble.org',
             headers: {
                 Authorization: `Bearer ${token}`,
             },
@@ -196,7 +196,7 @@ export function useNewGlobalController(): [GlobalState, GlobalStateController] {
 
                 // Create client
                 let client = new SuperClient(axios.create({
-                    baseURL: 'https://super-server.korshakov.org',
+                    baseURL: 'https://mobile-api.getbubble.org',
                     headers: {
                         Authorization: `Bearer ${token}`,
                     },

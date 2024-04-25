@@ -9,7 +9,7 @@ export async function requestPhoneAuth(phone: string, key: string) {
         ok: z.literal(false),
         error: z.union([z.literal('too_many_attempts'), z.literal('invalid_number')])
     })]);
-    let res = await axios.post('https://super-server.korshakov.org/auth/start', { phone, key });
+    let res = await axios.post('https://mobile-api.getbubble.org/auth/start', { phone, key });
     let body = schema.safeParse(res.data);
     if (!body.success) {
         throw new Error('Invalid response');
@@ -33,7 +33,7 @@ export async function requestPhoneAuthVerify(phone: string, key: string, code: s
         ok: z.literal(false),
         error: z.union([z.literal('invalid_number'), z.literal('invalid_code'), z.literal('expired_code')])
     })]);
-    let res = await axios.post('https://super-server.korshakov.org/auth/verify', { phone, key, code });
+    let res = await axios.post('https://mobile-api.getbubble.org/auth/verify', { phone, key, code });
     let body = schema.safeParse(res.data);
     if (!body.success) {
         throw new Error('Invalid response');

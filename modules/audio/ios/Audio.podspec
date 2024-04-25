@@ -10,12 +10,14 @@ Pod::Spec.new do |s|
   s.static_framework = true
 
   s.dependency 'ExpoModulesCore'
-
-  # Swift/Objective-C compatibility
   s.pod_target_xcconfig = {
     'DEFINES_MODULE' => 'YES',
-    'SWIFT_COMPILATION_MODE' => 'wholemodule'
+    'SWIFT_COMPILATION_MODE' => 'wholemodule',
   }
-
-  s.source_files = "**/*.{h,m,mm,swift,hpp,cpp}"
+  s.vendored_frameworks = "opus.xcframework"
+  s.public_header_files = 'Audio-Bridging-Header.h'
+  s.source_files = [
+    "AudioModule.swift",
+    "Audio-Bridging-Header.h"
+  ]
 end

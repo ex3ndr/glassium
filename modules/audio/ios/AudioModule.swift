@@ -2,6 +2,8 @@ import ExpoModulesCore
 import AVFoundation
 
 public class AudioModule: Module {
+  var opusDecoder: OpaquePointer? = nil
+    
   public func definition() -> ModuleDefinition {
     Name("Audio")
       AsyncFunction("convert") { (source: Data, promise: Promise) in
@@ -50,6 +52,27 @@ public class AudioModule: Module {
                 promise.reject(error)
               }
           }
+      }
+      
+      // Opus Codec
+      Function("opusStart") {
+          var error: Int32 = 0
+          self.opusDecoder = opus_decoder_create(16000, 1, &error) // Always succeedes - no need to check for error
+      }
+      Function("opusDecode") { (frame: Data) in
+          var pcm = Data(count: 5760 * 2)
+          var output: Int = frame.withUnsafeBytes { (unsafeBytes: UnsafeRawBufferPointer) in
+            let frameBytes = unsafeBytes.bindMemory(to: UInt8.self)
+            return pcm.withUnsafeMutableBytes { (unsafePcm: UnsafeMutableRawBufferPointer) in
+                var pcmRaw = unsafePcm.bindMemory(to: Int16.self)
+                return Int(opus_decode(self.opusDecoder!, frameBytes.baseAddress, opus_int32(frameBytes.count), pcmRaw.baseAddress!, 5760, 0))
+            }
+          }
+          return pcm.subdata(in: 0..<output*2)
+      }
+      Function("opusStop") {
+          opus_decoder_destroy(self.opusDecoder)
+          self.opusDecoder = nil
       }
   }
 }

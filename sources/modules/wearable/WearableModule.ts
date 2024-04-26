@@ -6,9 +6,9 @@ import { storage } from "../../storage";
 import { ProtocolDefinition, resolveProtocol, supportedDeviceNames } from "./protocol/protocol";
 import { DeviceModel } from "./DeviceModel";
 import { DeviceProfile, loadDeviceProfile, profileCodec } from "./protocol/profile";
-import { fromMulaw } from "./protocol/mulaw";
 import { log } from "../../utils/logs";
 import { Platform } from "react-native";
+import { AudioCodec, createCodec } from "../media/audioCodec";
 
 export class WearableModule {
     private static lock = new AsyncLock(); // Use static lock to prevent multiple BT operations
@@ -21,6 +21,7 @@ export class WearableModule {
     #device: DeviceModel | null = null;
     #profile: DeviceProfile | null = null;
     #protocol: ProtocolDefinition | null = null;
+    #protocolCodec: AudioCodec | null = null;
     #protocolMuted: boolean | null = null;
     #protocolTimeout: any | null = null;
     #protocolStarted = false;
@@ -168,13 +169,14 @@ export class WearableModule {
             }
 
             // Check profile
-            let profile = await loadDeviceProfile(protocol, connected);
+            const profile = await loadDeviceProfile(protocol, connected);
             if (!profile) {
                 connected.disconnect();
                 return 'unsupported' as const;
             }
 
             // Save device
+            this.#profile = profile;
             this.#device = new DeviceModel(connected, this.jotai, this.#needStreaming);
             this.#device.onStreamingStart = this.#onStreamingStart;
             this.#device.onStreamingStop = this.#onStreamingStop;
@@ -183,7 +185,6 @@ export class WearableModule {
             this.#device.init();
 
             // Update state
-            this.#profile = profile;
             storage.set('wearable-device', JSON.stringify(profile));
             this.jotai.set(this.pairingStatus, 'ready');
 
@@ -269,6 +270,18 @@ export class WearableModule {
     #onStreamingStart = (protocol: ProtocolDefinition, mute: boolean) => {
         this.#protocolMuted = mute;
         this.#protocol = protocol;
+        let codec: AudioCodec;
+        if (protocol.codec === 'pcm-16' || protocol.codec === 'pcm-8') {
+            codec = createCodec('pcm');
+        } else if (protocol.codec === 'mulaw-8' || protocol.codec === 'mulaw-16') {
+            codec = createCodec('mulaw');
+        } else if (protocol.codec === 'opus-16') {
+            codec = createCodec('opus');
+        } else {
+            throw Error('Impossible');
+        }
+        codec.start();
+        this.#protocolCodec = codec;
     }
 
     #onStreamingMute = (mute: boolean) => {
@@ -315,23 +328,11 @@ export class WearableModule {
                 data = data.subarray(3);
             }
 
-            // Convert to frames
-            let frames: Int16Array;
-            if (this.#protocol.codec === 'pcm-16' || this.#protocol.codec === 'pcm-8') {
-                frames = new Int16Array(data.length / 2);
-                for (let f = 0; f < frames.length; f++) {
-                    frames[f] = data[f * 2] | (data[f * 2 + 1] << 8);
-                }
-            } else {
-                // Decode MuLaw
-                frames = new Int16Array(data.length);
-                for (let f = 0; f < frames.length; f++) {
-                    frames[f] = fromMulaw(data[f]);
-                }
-            }
+            // Convert to samples
+            let samples = this.#protocolCodec!.decode(data);
 
             // Callback
-            this.onStreamingFrame(frames);
+            this.onStreamingFrame(samples);
         }
     }
 
@@ -342,6 +343,10 @@ export class WearableModule {
         this.#protocol = null;
         this.#protocolStarted = false;
         this.#streamTimeoutCancel();
+        if (this.#protocolCodec) {
+            this.#protocolCodec.stop();
+            this.#protocolCodec = null;
+        }
 
         // Callback
         if (this.onStreamingStop && wasStarted) {

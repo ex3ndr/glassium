@@ -11,6 +11,7 @@ import { randomQuote } from '../../modules/fun/randomQuote';
 import * as Application from 'expo-application';
 import * as Update from 'expo-updates';
 import { useSafeAreaInsets } from 'react-native-safe-area-context';
+import { opusStart } from '../../../modules/audio';
 
 export const SettingsScreen = React.memo(() => {
     const safeArea = useSafeAreaInsets();
@@ -108,6 +109,8 @@ export const SettingsScreen = React.memo(() => {
                         <RoundButton title={'Restart app'} size='small' action={restartApp} />
                         <View style={{ height: 16 }} />
                         <RoundButton title={'View logs'} size='small' onPress={() => router.navigate('logs')} />
+                        <View style={{ height: 16 }} />
+                        <RoundButton title={'Test Opus'} size='small' onPress={() => opusStart()} />
                     </View>
                 </>
             )}

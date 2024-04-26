@@ -7,3 +7,15 @@ export function compress(value: Uint8Array): Promise<{ format: string, data: Uin
     return { format: 'aac', data: await AudioModule.convert(value) };
   });
 }
+
+export function opusStart() {
+  AudioModule.opusStart();
+}
+
+export function opusStop() {
+  AudioModule.opusStop();
+}
+
+export function opusDecode(src: Uint8Array): Int16Array {
+  return new Int16Array((AudioModule.opusDecode(src) as Uint8Array).buffer);
+}

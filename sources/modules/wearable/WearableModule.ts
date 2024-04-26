@@ -8,7 +8,7 @@ import { DeviceModel } from "./DeviceModel";
 import { DeviceProfile, loadDeviceProfile, profileCodec } from "./protocol/profile";
 import { log } from "../../utils/logs";
 import { Platform } from "react-native";
-import { AudioCodec, createCodec } from "../media/audioCodec";
+import { AudioCodec, createCodec, createSkipCodec } from "../media/audioCodec";
 
 export class WearableModule {
     private static lock = new AsyncLock(); // Use static lock to prevent multiple BT operations
@@ -280,6 +280,7 @@ export class WearableModule {
         } else {
             throw Error('Impossible');
         }
+        codec = createSkipCodec(codec, protocol.codec === 'mulaw-8' || protocol.codec === 'pcm-8' ? 1600 : 3200); // Skip 200ms
         if (!mute) {
             codec.start();
         }

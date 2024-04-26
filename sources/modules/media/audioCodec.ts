@@ -7,7 +7,7 @@ export type AudioCodec = {
     decode(src: Uint8Array): Int16Array;
 }
 
-export function createCodec(type: 'pcm' | 'mulaw' | 'opus') {
+export function createCodec(type: 'pcm' | 'mulaw' | 'opus'): AudioCodec {
     return {
         start: () => {
             if (type === 'opus') {
@@ -31,6 +31,38 @@ export function createCodec(type: 'pcm' | 'mulaw' | 'opus') {
             } else {
                 return opusDecode(src);
             }
+        }
+    }
+}
+
+export function createSkipCodec(codec: AudioCodec, skip: number): AudioCodec {
+    let skipCounter = skip;
+    return {
+        start: () => {
+            codec.start();
+            skipCounter = skip;
+        },
+        stop: () => {
+            codec.stop();
+        },
+        decode: (src: Uint8Array): Int16Array => {
+
+            // Convert to PCM
+            let output = codec.decode(src);
+            if (skipCounter <= 0) {
+                return output;
+            }
+
+            // If we need to discard all
+            if (output.length < skipCounter) {
+                skipCounter -= output.length;
+                return new Int16Array(0);
+            }
+
+            // If we need reached the end
+            let res = output.slice(skipCounter);
+            skipCounter = 0;
+            return res;
         }
     }
 }

@@ -280,7 +280,9 @@ export class WearableModule {
         } else {
             throw Error('Impossible');
         }
-        codec.start();
+        if (!mute) {
+            codec.start();
+        }
         this.#protocolCodec = codec;
     }
 
@@ -289,6 +291,15 @@ export class WearableModule {
             return;
         }
         this.#protocolMuted = mute;
+
+        // Update codec
+        if (this.#protocolCodec) {
+            if (mute) {
+                this.#protocolCodec.stop();
+            } else {
+                this.#protocolCodec.start();
+            }
+        }
 
         // Stop if muted
         if (mute) {
@@ -344,7 +355,9 @@ export class WearableModule {
         this.#protocolStarted = false;
         this.#streamTimeoutCancel();
         if (this.#protocolCodec) {
-            this.#protocolCodec.stop();
+            if (!this.#protocolMuted) {
+                this.#protocolCodec.stop();
+            }
             this.#protocolCodec = null;
         }
 

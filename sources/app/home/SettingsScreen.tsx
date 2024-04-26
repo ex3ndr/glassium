@@ -118,7 +118,7 @@ export const SettingsScreen = React.memo(() => {
             <View style={{ flexGrow: 1 }} />
             <Pressable onPress={onVersionPress}>
                 <Text style={{ color: Theme.textSecondary, paddingHorizontal: 16, paddingVertical: 16, alignSelf: 'center' }}>
-                    {Platform.OS === 'web' ? 'Web Client' : `${Application.applicationName} v${Application.nativeApplicationVersion} (${Application.nativeBuildVersion})}`}
+                    {Platform.OS === 'web' ? 'Web Client' : `${Application.applicationName} v${Application.nativeApplicationVersion} (${Application.nativeBuildVersion})`}
                 </Text>
             </Pressable>
         </View>

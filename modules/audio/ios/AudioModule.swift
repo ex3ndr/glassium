@@ -59,7 +59,7 @@ public class AudioModule: Module {
           var error: Int32 = 0
           self.opusDecoder = opus_decoder_create(16000, 1, &error) // Always succeedes - no need to check for error
       }
-      Function("opusDecode") { (frame: Data) in
+      Function("opusDecode") { (frame: Data) -> Data in
           var pcm = Data(count: 5760 * 2)
           var output: Int = frame.withUnsafeBytes { (unsafeBytes: UnsafeRawBufferPointer) in
             let frameBytes = unsafeBytes.bindMemory(to: UInt8.self)

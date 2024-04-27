@@ -12,6 +12,8 @@ import * as Application from 'expo-application';
 import * as Update from 'expo-updates';
 import { useSafeAreaInsets } from 'react-native-safe-area-context';
 import { opusStart } from '../../../modules/audio';
+import { storage } from '../../storage';
+import { alert } from '../helpers/alert';
 
 export const SettingsScreen = React.memo(() => {
     const safeArea = useSafeAreaInsets();
@@ -31,6 +33,22 @@ export const SettingsScreen = React.memo(() => {
             Update.reloadAsync();
         }
     };
+    const deleteAction = async () => {
+
+        // Confirm
+        let res = await alert('Are you sure?', 'This action will delete your account and all associated data.', [{ text: 'Delete', style: 'destructive' }, { text: 'Cancel', style: 'cancel' }]);
+        if (res !== 1) {
+            return;
+        }
+
+        // Delete
+        await appModel.client.profileDelete();
+
+        // Reset app
+        storage.clearAll();
+        await Update.reloadAsync();
+    };
+
     const quote = React.useMemo(() => randomQuote(), []);
     return (
         <View style={{ flexGrow: 1, paddingBottom: 64 + safeArea.bottom }}>
@@ -105,7 +123,7 @@ export const SettingsScreen = React.memo(() => {
                     <View style={{ height: 16 }} />
                     <Item title="Developer Mode" />
                     <View style={{ alignItems: 'flex-start', paddingHorizontal: 16, flexDirection: 'column' }}>
-                        <Text style={{ fontSize: 18, color: Theme.text, marginBottom: 16, opacity: 0.8 }}>{quote.text}{'\n\n'}<Text style={{ fontStyle: 'italic' }}>{quote.from}</Text></Text>
+                        {/* <Text style={{ fontSize: 18, color: Theme.text, marginBottom: 16, opacity: 0.8 }}>{quote.text}{'\n\n'}<Text style={{ fontStyle: 'italic' }}>{quote.from}</Text></Text> */}
                         <RoundButton title={'Restart app'} size='small' action={restartApp} />
                         <View style={{ height: 16 }} />
                         <RoundButton title={'View logs'} size='small' onPress={() => router.navigate('logs')} />
@@ -114,6 +132,12 @@ export const SettingsScreen = React.memo(() => {
                     </View>
                 </>
             )}
+            <View style={{ height: 16 }} />
+            <Item title="Delete Account" />
+            <View style={{ alignItems: 'flex-start', paddingHorizontal: 16, flexDirection: 'column' }}>
+                <Text style={{ fontSize: 18, color: Theme.text, marginBottom: 8, opacity: 0.8 }}>Delete your account and all associated data.</Text>
+                <RoundButton title={'Delete Account'} size='small' action={deleteAction} />
+            </View>
 
             <View style={{ flexGrow: 1 }} />
             <Pressable onPress={onVersionPress}>

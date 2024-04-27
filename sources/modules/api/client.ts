@@ -127,4 +127,12 @@ export class SuperClient {
         let res = await this.client.post('/app/services/deepgram/token', {});
         return Schema.deepgramToken.parse(res.data).token;
     }
+
+    //
+    // Profile
+    //
+
+    async profileDelete() {
+        await this.client.post('/app/profile/delete', {});
+    }
 }

@@ -65,7 +65,7 @@ export const TopBar = React.memo(() => {
 
 
     return (
-        <View style={{ height: 48, alignItems: 'center', justifyContent: 'center', flexDirection: 'row' }}>
+        <View style={{ height: 48, alignItems: 'center', justifyContent: 'center', flexDirection: 'row', alignSelf: 'stretch' }}>
             <View style={{ flexGrow: 1, flexBasis: 0, flexDirection: 'row', justifyContent: 'flex-start', paddingHorizontal: 32 }}>
                 {battery !== null && (<BatteryComponent level={battery} />)}
             </View>

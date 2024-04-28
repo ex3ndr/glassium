@@ -6,6 +6,7 @@ import { ProtocolDefinition, resolveProtocol } from "./protocol/protocol";
 import { backoff } from "../../utils/time";
 import { BTDevice } from "./bluetooth/types";
 import { BluetoothModel } from "./bluetooth/bt";
+import { bluetoothServices } from "./protocol/services";
 
 export class DeviceModel {
     static #lock = new AsyncLock(); // Use static lock to prevent multiple BT operations
@@ -125,7 +126,7 @@ export class DeviceModel {
             // Handling battery state
             let batteryLoaded = !!this.#deviceBatterySubscription;
             if (!batteryLoaded) {
-                let batteryService = this.#device.services.find((v) => v.id === '0000180f-0000-1000-8000-00805f9b34fb');
+                let batteryService = this.#device.services.find((v) => v.id === bluetoothServices.battery);
                 if (batteryService) {
                     let batteryChar = batteryService.characteristics.find((v) => v.id === '00002a19-0000-1000-8000-00805f9b34fb' && v.canRead && v.canNotify);
                     if (batteryChar) {
@@ -148,7 +149,7 @@ export class DeviceModel {
             // Handling mute state
             let mutedLoaded = this.#deviceMutedSubscription !== null;
             if (!mutedLoaded) {
-                let muteService = this.#device.services.find((v) => v.id === '19b10000-e8f2-537e-4f6c-d104768a1214');
+                let muteService = this.#device.services.find((v) => v.id === bluetoothServices.super);
                 if (muteService) {
                     let muteChar = muteService.characteristics.find((v) => v.id === '19b10003-e8f2-537e-4f6c-d104768a1214' && v.canRead && v.canNotify);
                     if (muteChar) {

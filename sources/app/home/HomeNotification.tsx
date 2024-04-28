@@ -28,10 +28,7 @@ export const HomeNotification = React.memo(() => {
         if (app.wearable.bluetooth.supportsScan) {
             router.navigate('manage-device')
         } else if (app.wearable.bluetooth.supportsPick) {
-            let picked = await app.wearable.bluetooth.pick();
-            if (picked) {
-                await app.wearable.tryPairDevice(picked.id);
-            }
+            await app.wearable.pick();
         }
     };
 

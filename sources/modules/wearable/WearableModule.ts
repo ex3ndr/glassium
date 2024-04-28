@@ -10,6 +10,7 @@ import { Platform } from "react-native";
 import { AudioCodec, createCodec, createSkipCodec } from "../media/audioCodec";
 import { BluetoothModel } from "./bluetooth/bt";
 import { isDiscoveredDeviceSupported } from "./protocol/scan";
+import { bluetoothServices } from "./protocol/services";
 
 export class WearableModule {
     private static lock = new AsyncLock(); // Use static lock to prevent multiple BT operations
@@ -143,6 +144,13 @@ export class WearableModule {
 
     resetDiscoveredDevices = () => {
         this.jotai.set(this.discoveryStatus, null);
+    }
+
+    pick = async () => {
+        let picked = await this.bluetooth.pick(Object.values(bluetoothServices));
+        if (picked) {
+            return this.tryPairDevice(picked.id);
+        }
     }
 
     //

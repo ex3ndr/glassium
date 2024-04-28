@@ -1,8 +1,5 @@
 import { BTCharacteristic, BTDevice } from "../bluetooth/types";
-
-export const SUPER_SERVICE = '19b10000-e8f2-537e-4f6c-d104768a1214';
-export const COMPASS_SERVICE = '4fafc201-1fb5-459e-8fcc-c5c9c331914b';
-export const KNOWN_BT_SERVICES = [SUPER_SERVICE, COMPASS_SERVICE];
+import { bluetoothServices } from "./services";
 
 export type CodecType = 'pcm-16' | 'pcm-8' | 'mulaw-16' | 'mulaw-8' | 'opus-16';
 
@@ -26,7 +23,7 @@ export function supportedDeviceNames(name: string) {
 async function resolveSuperProtocol(device: BTDevice): Promise<ProtocolDefinition | null> {
 
     // Search for service
-    let superService = device.services.find((v) => v.id === '19b10000-e8f2-537e-4f6c-d104768a1214')
+    let superService = device.services.find((v) => v.id === bluetoothServices.super)
     if (!superService) {
         return null;
     }
@@ -74,7 +71,7 @@ async function resolveSuperProtocol(device: BTDevice): Promise<ProtocolDefinitio
 async function resolveCompasProtocol(device: BTDevice): Promise<ProtocolDefinition | null> {
 
     // Search for service
-    let service = device.services.find((v) => v.id === '4fafc201-1fb5-459e-8fcc-c5c9c331914b')
+    let service = device.services.find((v) => v.id === bluetoothServices.compass)
     if (!service) {
         return null;
     }

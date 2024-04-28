@@ -1,5 +1,5 @@
-import { opusDecode, opusStart, opusStop } from "../../../modules/audio"
 import { fromMulaw } from "./mulaw";
+import { createOpusCodec } from "./opus";
 
 export type AudioCodec = {
     start(): void;
@@ -8,16 +8,15 @@ export type AudioCodec = {
 }
 
 export function createCodec(type: 'pcm' | 'mulaw' | 'opus'): AudioCodec {
+    if (type === 'opus') {
+        return createOpusCodec();
+    }
     return {
         start: () => {
-            if (type === 'opus') {
-                opusStart();
-            }
+
         },
         stop: () => {
-            if (type === 'opus') {
-                opusStop();
-            }
+
         },
         decode: (src: Uint8Array): Int16Array => {
             if (type === 'pcm') {
@@ -29,7 +28,7 @@ export function createCodec(type: 'pcm' | 'mulaw' | 'opus'): AudioCodec {
                 }
                 return res;
             } else {
-                return opusDecode(src);
+                throw new Error('Unknown codec: ' + type);
             }
         }
     }

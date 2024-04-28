@@ -63,10 +63,7 @@ export const SettingsScreen = React.memo(() => {
         if (appModel.wearable.bluetooth.supportsScan) {
             router.navigate('manage-device')
         } else if (appModel.wearable.bluetooth.supportsPick) {
-            let picked = await appModel.wearable.bluetooth.pick();
-            if (picked) {
-                await appModel.wearable.tryPairDevice(picked.id);
-            }
+            await appModel.wearable.pick();
         }
     };
 

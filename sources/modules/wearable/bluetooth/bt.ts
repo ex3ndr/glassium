@@ -181,7 +181,7 @@ export class BluetoothModel implements BluetoothModelInterface {
         };
     }
 
-    async pick(): Promise<BTDiscoveredDevice | null> {
+    async pick(services: string[]): Promise<BTDiscoveredDevice | null> {
         throw new Error('Not supported');
     }
 

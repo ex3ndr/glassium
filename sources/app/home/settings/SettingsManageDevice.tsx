@@ -18,6 +18,7 @@ const DiscoveryDevice = React.memo(() => {
         };
     }, []);
     const devices = discovery?.devices ?? [];
+    devices.sort((a, b) => a.name.localeCompare(b.name));
 
     return (
         <View style={{ flexGrow: 1, backgroundColor: Theme.background }}>

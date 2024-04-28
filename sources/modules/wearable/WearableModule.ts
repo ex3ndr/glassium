@@ -121,7 +121,7 @@ export class WearableModule {
         this.bluetooth.startScan((device) => {
             if (isDiscoveredDeviceSupported(device)) {
                 let devices = this.jotai.get(this.discoveryStatus)!.devices;
-                devices = [{ name: device.name, id: device.id }, ...devices];
+                devices = [{ name: device.name, id: device.id }, ...devices.filter((v) => v.id !== device.id)];
                 this.jotai.set(this.discoveryStatus, { devices });
             }
         });

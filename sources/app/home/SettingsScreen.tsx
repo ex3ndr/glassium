@@ -1,5 +1,5 @@
 import * as React from 'react';
-import { ActivityIndicator, Platform, Pressable, Text, View } from 'react-native';
+import { ActivityIndicator, Platform, Pressable, ScrollView, Text, View } from 'react-native';
 import { useRouter } from '../../routing';
 import { Item } from '../components/Item';
 import { useAppModel } from '../../global';
@@ -14,6 +14,7 @@ import { useSafeAreaInsets } from 'react-native-safe-area-context';
 import { opusStart } from '../../../modules/audio';
 import { storage } from '../../storage';
 import { alert } from '../helpers/alert';
+import { cleanAndReload } from '../../modules/reload/cleanAndReload';
 
 export const SettingsScreen = React.memo(() => {
     const safeArea = useSafeAreaInsets();
@@ -37,21 +38,31 @@ export const SettingsScreen = React.memo(() => {
 
         // Confirm
         let res = await alert('Are you sure?', 'This action will delete your account and all associated data.', [{ text: 'Delete', style: 'destructive' }, { text: 'Cancel', style: 'cancel' }]);
-        if (res !== 1) {
+        if (res !== 0) {
             return;
         }
 
         // Delete
-        await appModel.client.profileDelete();
+        await appModel.client.accountDelete();
 
         // Reset app
-        storage.clearAll();
-        await Update.reloadAsync();
+        await cleanAndReload();
+    };
+    const logoutAction = async () => {
+
+        // Confirm
+        let res = await alert('Are you sure?', 'You will need to login again to get an access to your memories.', [{ text: 'Logout', style: 'destructive' }, { text: 'Cancel', style: 'cancel' }]);
+        if (res !== 0) {
+            return;
+        }
+
+        // Reset app
+        await cleanAndReload();
     };
 
     const quote = React.useMemo(() => randomQuote(), []);
     return (
-        <View style={{ flexGrow: 1, paddingBottom: 64 + safeArea.bottom }}>
+        <ScrollView contentContainerStyle={{ flexGrow: 1, paddingBottom: 64 + safeArea.bottom }} alwaysBounceVertical={false}>
             <Item title="Device" />
             {wearable.pairing === 'loading' && (
                 <View style={{ alignItems: 'flex-start', paddingHorizontal: 16, flexDirection: 'column' }}>
@@ -133,10 +144,13 @@ export const SettingsScreen = React.memo(() => {
                 </>
             )}
             <View style={{ height: 16 }} />
-            <Item title="Delete Account" />
+            <Item title="Account" />
             <View style={{ alignItems: 'flex-start', paddingHorizontal: 16, flexDirection: 'column' }}>
-                <Text style={{ fontSize: 18, color: Theme.text, marginBottom: 8, opacity: 0.8 }}>Delete your account and all associated data.</Text>
-                <RoundButton title={'Delete Account'} size='small' action={deleteAction} />
+                <Text style={{ fontSize: 18, color: Theme.text, marginBottom: 8, opacity: 0.8 }}>Managing your account and associated data.</Text>
+                <View style={{ gap: 16 }}>
+                    <RoundButton title={'Logout Account'} size='small' action={logoutAction} />
+                    <RoundButton title={'Delete Account'} size='small' action={deleteAction} />
+                </View>
             </View>
 
             <View style={{ flexGrow: 1 }} />
@@ -145,6 +159,6 @@ export const SettingsScreen = React.memo(() => {
                     {Platform.OS === 'web' ? 'Web Client' : `${Application.applicationName} v${Application.nativeApplicationVersion} (${Application.nativeBuildVersion})`}
                 </Text>
             </Pressable>
-        </View>
+        </ScrollView>
     );
 });

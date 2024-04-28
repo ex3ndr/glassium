@@ -60,7 +60,14 @@ export const PreUsernameScreen = React.memo(() => {
                         <Text style={{ fontSize: 36, alignSelf: 'center', marginBottom: 8 }}>Pick a username</Text>
                         <Text style={{ fontSize: 22, alignSelf: 'center', lineHeight: 30 }}>How your friends should find you?</Text>
                         <Shaker ref={usernameRef}>
-                            <SInput placeholder='Username' style={{ marginTop: 24 }} value={username} onValueChange={setUsername} />
+                            <SInput
+                                placeholder='Username'
+                                style={{ marginTop: 24 }}
+                                value={username}
+                                keyboardType="ascii-capable"
+                                autoCapitalize="none"
+                                onValueChange={setUsername}
+                            />
                         </Shaker>
                     </View>
                     <SButton title='Continue' style={{ alignSelf: 'stretch', marginTop: 48, paddingBottom: 16 }} onPress={doRequest} loading={requesting} />

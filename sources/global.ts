@@ -4,6 +4,8 @@ import { storage } from './storage';
 import { SuperClient } from './modules/api/client';
 import * as Notifications from 'expo-notifications';
 import { AppModel } from './modules/state/AppModel';
+import { cleanAndReload } from './modules/reload/cleanAndReload';
+import { backoff } from './utils/time';
 
 const ONBOARDING_VERSION = 1; // Increment this to reset onboarding
 
@@ -120,6 +122,14 @@ export function isSkipNotifications() {
 // Implementation
 //
 
+async function checkIfTokenValid(client: SuperClient) {
+    let status = await client.tokenAndAccountStatus();
+    console.warn(status);
+    if (!await client.tokenAndAccountStatus()) {
+        await cleanAndReload(); // Never resolves
+    }
+}
+
 async function refreshOnboarding(client: SuperClient): Promise<OnboardingState | null> {
 
     // Load server state
@@ -224,12 +234,19 @@ export function useNewGlobalController(): [GlobalState, GlobalStateController] {
                 setState(currentState);
             },
             refresh: async () => {
+
                 if (currentState.kind === 'empty') { // Why?
                     return;
                 }
+                const client = currentState.client;
+                const onboardingState = await backoff(async () => {
 
-                // Fetch onboarding state
-                const onboardingState = await refreshOnboarding(currentState.client);
+                    // Check if token is valid
+                    await checkIfTokenValid(client);
+
+                    // Fetch onboarding state
+                    return await refreshOnboarding(client);
+                });
 
                 // Requirements satisfied
                 if (!onboardingState) {
@@ -238,7 +255,7 @@ export function useNewGlobalController(): [GlobalState, GlobalStateController] {
                         kind: 'ready',
                         token: currentState.token,
                         client: currentState.client,
-                        appModel: new AppModel(currentState.client)
+                        appModel: new AppModel(client)
                     };
                     setState(currentState);
                     return;

@@ -132,5 +132,8 @@ export const Schema = {
     listMemories: z.object({
         ok: z.boolean(),
         memories: z.array(memory)
+    }),
+    accountStatus: z.object({
+        ok: z.boolean()
     })
 };

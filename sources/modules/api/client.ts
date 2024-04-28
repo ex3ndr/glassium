@@ -13,11 +13,9 @@ export class SuperClient {
         this.token = token;
     }
 
-    fetchPreState() {
-        return backoff(async () => {
-            let res = await this.client.get('/pre/state');
-            return Schema.preState.parse(res.data);
-        })
+    async fetchPreState() {
+        let res = await this.client.get('/pre/state');
+        return Schema.preState.parse(res.data);
     }
 
     preUsername(username: string) {
@@ -129,10 +127,15 @@ export class SuperClient {
     }
 
     //
-    // Profile
+    // Secure
     //
 
-    async profileDelete() {
+    async accountDelete() {
         await this.client.post('/secure/delete', {});
+    }
+
+    async tokenAndAccountStatus() {
+        let res = await this.client.post('/secure/status', {});
+        return Schema.accountStatus.parse(res.data).ok;
     }
 }

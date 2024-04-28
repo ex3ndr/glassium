@@ -1,20 +1,21 @@
 import { AsyncLock } from "teslabot";
-import { connectToDevice, manager, startBluetooth } from "./protocol/bt";
 import { Jotai } from "../state/_types";
 import { atom, useAtomValue } from "jotai";
 import { storage } from "../../storage";
-import { ProtocolDefinition, resolveProtocol, supportedDeviceNames } from "./protocol/protocol";
+import { ProtocolDefinition, resolveProtocol } from "./protocol/protocol";
 import { DeviceModel } from "./DeviceModel";
 import { DeviceProfile, loadDeviceProfile, profileCodec } from "./protocol/profile";
 import { log } from "../../utils/logs";
 import { Platform } from "react-native";
 import { AudioCodec, createCodec, createSkipCodec } from "../media/audioCodec";
+import { BluetoothModel } from "./bluetooth/bt";
 
 export class WearableModule {
     private static lock = new AsyncLock(); // Use static lock to prevent multiple BT operations
     readonly jotai: Jotai;
     readonly pairingStatus = atom<'loading' | 'need-pairing' | 'ready' | 'denied' | 'unavailable'>('loading');
     readonly discoveryStatus = atom<{ devices: { name: string, id: string }[] } | null>(null);
+    readonly bluetooth = new BluetoothModel();
     onStreamingStart?: (sr: 8000 | 16000) => void;
     onStreamingStop?: () => void;
     onStreamingFrame?: (data: Int16Array) => void;
@@ -46,23 +47,27 @@ export class WearableModule {
 
     constructor(jotai: Jotai) {
         this.jotai = jotai;
-        let profile = storage.getString('wearable-device');
-        if (profile && Platform.OS !== 'web') {
-            let js;
-            try {
-                js = JSON.parse(profile);
-            } catch (e) {
-                return;
-            }
-            let parsed = profileCodec.safeParse(js);
-            if (parsed.success) {
-                this.#profile = parsed.data;
-                this.#device = new DeviceModel(parsed.data.id, jotai);
-                this.#device.onStreamingStart = this.#onStreamingStart;
-                this.#device.onStreamingStop = this.#onStreamingStop;
-                this.#device.onStreamingFrame = this.#onStreamingFrame;
-                this.#device.onStreamingMute = this.#onStreamingMute;
-                this.#device.init();
+
+        // Auto-load if persistent
+        if (this.bluetooth.isPersistent) {
+            let profile = storage.getString('wearable-device');
+            if (profile && Platform.OS !== 'web') {
+                let js;
+                try {
+                    js = JSON.parse(profile);
+                } catch (e) {
+                    return;
+                }
+                let parsed = profileCodec.safeParse(js);
+                if (parsed.success) {
+                    this.#profile = parsed.data;
+                    this.#device = new DeviceModel(parsed.data.id, jotai, this.bluetooth);
+                    this.#device.onStreamingStart = this.#onStreamingStart;
+                    this.#device.onStreamingStop = this.#onStreamingStop;
+                    this.#device.onStreamingFrame = this.#onStreamingFrame;
+                    this.#device.onStreamingMute = this.#onStreamingMute;
+                    this.#device.init();
+                }
             }
         }
     }
@@ -79,7 +84,7 @@ export class WearableModule {
         WearableModule.lock.inLock(async () => {
 
             // Starting bluetooth
-            let result = await startBluetooth();
+            let result = await this.bluetooth.start();
             if (result === 'denied') {
                 this.jotai.set(this.pairingStatus, 'denied');
                 return;
@@ -112,25 +117,17 @@ export class WearableModule {
         if (!this.jotai.get(this.discoveryStatus)) {
             this.jotai.set(this.discoveryStatus, { devices: [] });
         }
-        manager().startDeviceScan(null, null, (error, device) => {
-            if (device && device.name && supportedDeviceNames(device.name)) {
-                let devices = this.jotai.get(this.discoveryStatus)!.devices;
-                if (devices.find((v) => v.id === device.id)) {
-                    return;
-                }
-                devices = [{ name: device.name, id: device.id }, ...devices];
-                this.jotai.set(this.discoveryStatus, { devices });
-            }
-            if (error) {
-                console.error(error);
-            }
+        this.bluetooth.startScan((device) => {
+            let devices = this.jotai.get(this.discoveryStatus)!.devices;
+            devices = [{ name: device.name, id: device.id }, ...devices];
+            this.jotai.set(this.discoveryStatus, { devices });
         });
 
         // Stop scan
         this.#discoveryCancel = () => {
             if (this.#discoveryCancel != null) {
                 this.#discoveryCancel = null;
-                manager().stopDeviceScan();
+                this.bluetooth.stopScan();
             }
         }
     }
@@ -156,7 +153,7 @@ export class WearableModule {
             }
 
             // Connecting to device
-            let connected = await connectToDevice(id);
+            let connected = await this.bluetooth.connect(id);
             if (!connected) {
                 return 'connection-error' as const;
             }
@@ -177,7 +174,7 @@ export class WearableModule {
 
             // Save device
             this.#profile = profile;
-            this.#device = new DeviceModel(connected, this.jotai, this.#needStreaming);
+            this.#device = new DeviceModel(connected, this.jotai, this.bluetooth, this.#needStreaming);
             this.#device.onStreamingStart = this.#onStreamingStart;
             this.#device.onStreamingStop = this.#onStreamingStop;
             this.#device.onStreamingFrame = this.#onStreamingFrame;

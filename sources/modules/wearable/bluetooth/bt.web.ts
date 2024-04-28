@@ -28,16 +28,22 @@ export class BluetoothModel implements BluetoothModelInterface {
         throw new Error('Not supported');
     }
 
-    async pick(): Promise<BTDiscoveredDevice | null> {
-        let device = await navigator.bluetooth.requestDevice({
-            acceptAllDevices: true
-        });
+    async pick(services: string[]): Promise<BTDiscoveredDevice | null> {
+        let device: BluetoothDevice;
+        try {
+            device = await navigator.bluetooth.requestDevice({
+                optionalServices: services,
+                acceptAllDevices: true
+            });
+        } catch (e) {
+            return null;
+        }
         if (!device.name) {
             return null;
         }
         if (device) {
             this.#pickedDevices.set(device.id, device);
-            return { id: device.id, name: device.name };
+            return { id: device.id, name: device.name, services: [] };
         } else {
             return null;
         }

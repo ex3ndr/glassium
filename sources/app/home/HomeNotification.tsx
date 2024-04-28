@@ -1,6 +1,6 @@
 import * as React from 'react';
 import { useAppModel } from '../../global';
-import { Text, View } from 'react-native';
+import { Platform, Text, View } from 'react-native';
 import { Theme } from '../../theme';
 import { RoundButton } from '../components/RoundButton';
 import { openSystemSettings } from '../../utils/openSystemSettings';
@@ -24,6 +24,16 @@ export const HomeNotification = React.memo(() => {
     const app = useAppModel();
     const wearable = app.wearable.use();
     const router = useRouter();
+    const doPair = async () => {
+        if (app.wearable.bluetooth.supportsScan) {
+            router.navigate('manage-device')
+        } else if (app.wearable.bluetooth.supportsPick) {
+            let picked = await app.wearable.bluetooth.pick();
+            if (picked) {
+                await app.wearable.tryPairDevice(picked.id);
+            }
+        }
+    };
 
     if (wearable.pairing === 'denied') {
         return <NotifcationComponent title="Bluetooth needed" text='Bubble needs a bluetooth permission to connect to your device. Please, open settings and allow bluetooth for this app.' actionTitle='Open Settings' action={openSystemSettings} />;
@@ -32,7 +42,7 @@ export const HomeNotification = React.memo(() => {
         return <NotifcationComponent title="Bluetooth needed" text="Unfortunatelly this device doesn't have a bluetooth and Bubble can't connect to any device." />;
     }
     if (wearable.pairing === 'need-pairing') {
-        return <NotifcationComponent title="Pairing needed" text="Please, pair a new device to continue collection information about you." actionTitle='Pair New Device' action={async () => router.navigate('manage-device')} />;
+        return <NotifcationComponent title="Pairing needed" text="Please, pair a new device to continue collection information about you." actionTitle='Pair New Device' action={doPair} />;
     }
     return null;
 });

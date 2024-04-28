@@ -42,7 +42,7 @@ export interface BluetoothModelInterface {
     // Device scan and picking
     startScan(handler: (device: BTDiscoveredDevice) => void): void;
     stopScan(): void;
-    pick(): Promise<BTDiscoveredDevice | null>;
+    pick(services: string[]): Promise<BTDiscoveredDevice | null>;
 
     // Device connection
     connect(id: string): Promise<BTDevice | null>;

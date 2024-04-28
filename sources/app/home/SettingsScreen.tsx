@@ -59,6 +59,16 @@ export const SettingsScreen = React.memo(() => {
         // Reset app
         await cleanAndReload();
     };
+    const doPair = async () => {
+        if (appModel.wearable.bluetooth.supportsScan) {
+            router.navigate('manage-device')
+        } else if (appModel.wearable.bluetooth.supportsPick) {
+            let picked = await appModel.wearable.bluetooth.pick();
+            if (picked) {
+                await appModel.wearable.tryPairDevice(picked.id);
+            }
+        }
+    };
 
     const quote = React.useMemo(() => randomQuote(), []);
     return (
@@ -83,7 +93,7 @@ export const SettingsScreen = React.memo(() => {
             {wearable.pairing === 'need-pairing' && (
                 <View style={{ alignItems: 'flex-start', paddingHorizontal: 16, flexDirection: 'column' }}>
                     <Text style={{ fontSize: 18, color: Theme.text, marginBottom: 8, opacity: 0.8 }}>No device paired, please add your device to the app.</Text>
-                    <RoundButton title={'Pair new device'} size='small' onPress={() => { router.navigate('manage-device') }} />
+                    <RoundButton title={'Pair new device'} size='small' action={doPair} />
                 </View>
             )}
             {wearable.pairing === 'ready' && (

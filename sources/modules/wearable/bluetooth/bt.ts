@@ -74,12 +74,16 @@ export class BluetoothModel implements BluetoothModelInterface {
         this.#manager.startDeviceScan(null, null, (error, device) => {
             if (device && device.name && !reported.has(device.id)) {
                 reported.add(device.id);
-                handler({ id: device.id, name: device.name });
+                handler({ id: device.id, name: device.name, services: device.serviceUUIDs ? device.serviceUUIDs : [] });
             }
         });
     }
 
     stopScan(): void {
+        if (!this.#scanning) {
+            throw new Error('Not scanning');
+        }
+        this.#scanning = false;
         this.#manager.stopDeviceScan();
     }
 

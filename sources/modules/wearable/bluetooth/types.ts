@@ -11,7 +11,8 @@ export type BTDevice = {
 
 export type BTDiscoveredDevice = {
     id: string,
-    name: string
+    name: string,
+    services: string[]
 }
 
 export type BTService = {

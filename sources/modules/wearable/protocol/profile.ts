@@ -1,6 +1,6 @@
 import * as z from 'zod'
-import { BTDevice } from "./bt_common"
 import { ProtocolDefinition } from "./protocol"
+import { BTDevice } from '../bluetooth/types'
 
 export type DeviceProfile = {
     id: string,

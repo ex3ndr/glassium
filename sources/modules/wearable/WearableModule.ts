@@ -9,6 +9,7 @@ import { log } from "../../utils/logs";
 import { Platform } from "react-native";
 import { AudioCodec, createCodec, createSkipCodec } from "../media/audioCodec";
 import { BluetoothModel } from "./bluetooth/bt";
+import { isDiscoveredDeviceSupported } from "./protocol/scan";
 
 export class WearableModule {
     private static lock = new AsyncLock(); // Use static lock to prevent multiple BT operations
@@ -118,9 +119,11 @@ export class WearableModule {
             this.jotai.set(this.discoveryStatus, { devices: [] });
         }
         this.bluetooth.startScan((device) => {
-            let devices = this.jotai.get(this.discoveryStatus)!.devices;
-            devices = [{ name: device.name, id: device.id }, ...devices];
-            this.jotai.set(this.discoveryStatus, { devices });
+            if (isDiscoveredDeviceSupported(device)) {
+                let devices = this.jotai.get(this.discoveryStatus)!.devices;
+                devices = [{ name: device.name, id: device.id }, ...devices];
+                this.jotai.set(this.discoveryStatus, { devices });
+            }
         });
 
         // Stop scan

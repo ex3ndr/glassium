@@ -133,6 +133,6 @@ export class SuperClient {
     //
 
     async profileDelete() {
-        await this.client.post('/app/profile/delete', {});
+        await this.client.post('/secure/delete', {});
     }
 }

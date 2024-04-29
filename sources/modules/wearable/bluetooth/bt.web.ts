@@ -81,12 +81,13 @@ export class BluetoothModel implements BluetoothModelInterface {
                         await c.writeValue(data);
                     },
                     subscribe: (callback: (data: Uint8Array) => void) => {
-                        c.addEventListener('characteristicvaluechanged', (e) => {
+                        const handler = (e: any) => {
                             let value = (e.target as BluetoothRemoteGATTCharacteristic).value!;
                             callback(new Uint8Array(value.buffer));
-                        });
+                        };
+                        c.addEventListener('characteristicvaluechanged', handler);
                         if (subsciptionsCount === 0) {
-                            c.startNotifications();
+                            c.startNotifications().then((v) => console.warn('Notifications started', v)).catch((e) => console.error('Error starting notifications', e));
                         }
                         subsciptionsCount++;
                         let exited = false;
@@ -95,10 +96,10 @@ export class BluetoothModel implements BluetoothModelInterface {
                                 return;
                             }
                             exited = true;
-                            c.removeEventListener('characteristicvaluechanged', () => { });
+                            c.removeEventListener('characteristicvaluechanged', handler);
                             subsciptionsCount--;
                             if (subsciptionsCount === 0) {
-                                c.stopNotifications();
+                                c.stopNotifications().then((v) => console.warn('Notifications started', v)).catch((e) => console.error('Error starting notifications', e));;
                             }
                         };
                     }

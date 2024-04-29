@@ -10,6 +10,11 @@
     "splash": {
       "backgroundColor": "#000"
     },
+    "androidStatusBar": {
+      "barStyle": "light-content",
+      "backgroundColor": "@android:color/transparent",
+      "translucent": false
+    },
     "assetBundlePatterns": [
       "**/*"
     ],
@@ -34,7 +39,7 @@
       "backgroundColor": "#000",
       "adaptiveIcon": {
         "foregroundImage": "./assets/adaptive-icon.png",
-        "backgroundColor": "#ffffff"
+        "backgroundColor": "#000"
       },
       "package": "com.bubbleapp.android",
       "permissions": [

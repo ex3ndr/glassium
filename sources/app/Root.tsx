@@ -17,6 +17,7 @@ export const RootScreen = React.memo(() => {
         storage.set('app-tab', page);
         setTab(page);
     };
+    console.warn(safeArea.top);
 
     return (
         <View style={[styles.container, { paddingTop: safeArea.top }]}>

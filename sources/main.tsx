@@ -7,6 +7,12 @@ import { GlobalStateContext, GlobalStateControllerContext, useNewGlobalControlle
 import { App, Auth, Modals, Pre, Stack } from './app/routing';
 import { Provider } from 'jotai';
 
+let startMetrics = initialWindowMetrics;
+if (Platform.OS === 'android') {
+    startMetrics!.insets.top = 0;
+    startMetrics!.insets.bottom = 0;
+}
+
 export function Boot() {
     const [state, controller] = useNewGlobalController();
 
@@ -47,7 +53,7 @@ export function Boot() {
 
     return (
         <View style={{ flexGrow: 1, flexBasis: 0, alignSelf: 'stretch' }}>
-            <SafeAreaProvider initialMetrics={initialWindowMetrics}>
+            <SafeAreaProvider initialMetrics={startMetrics}>
                 <GlobalStateContext.Provider value={state}>
                     <GlobalStateControllerContext.Provider value={controller}>
                         {state.kind === 'ready' && (

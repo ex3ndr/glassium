@@ -49,6 +49,7 @@ export const HomeScreen = React.memo(() => {
         <View style={{ flexGrow: 1 }}>
             <ScrollView style={{}} contentContainerStyle={{ paddingBottom: 64 + safeArea.bottom, flexGrow: 1 }} alwaysBounceVertical={false} scrollIndicatorInsets={{ top: 0, bottom: 64 }}>
                 <HomeNotification />
+
                 {/* {captureState.streaming && (
                     <>
                         <View style={{ marginHorizontal: 16, paddingHorizontal: 16, backgroundColor: '#445ef1', borderRadius: 32, paddingVertical: 16, marginVertical: 16, height: 128 }}>

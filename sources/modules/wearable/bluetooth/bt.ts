@@ -1,6 +1,7 @@
 import * as b64 from 'react-native-quick-base64';
 import { BleManager, BleRestoredState, Device, State, Subscription } from "react-native-ble-plx";
 import { BTDevice, BTDiscoveredDevice, BTService, BluetoothModelInterface, BluetoothStartResult } from "./types";
+import { PermissionsAndroid, Platform } from 'react-native';
 
 export class BluetoothModel implements BluetoothModelInterface {
     readonly isPersistent: boolean = true;
@@ -18,7 +19,7 @@ export class BluetoothModel implements BluetoothModelInterface {
     }
 
     async start(): Promise<BluetoothStartResult> {
-        return new Promise<BluetoothStartResult>((resolve) => {
+        let res = await new Promise<BluetoothStartResult>((resolve) => {
 
             // Helpers
             let subscription: Subscription | null = null;
@@ -63,6 +64,22 @@ export class BluetoothModel implements BluetoothModelInterface {
                 }
             })()
         });
+
+        // Handle android permissions
+        if (Platform.OS === 'android' && res === 'started') {
+            const result = await PermissionsAndroid.requestMultiple([
+                PermissionsAndroid.PERMISSIONS.BLUETOOTH_SCAN,
+                PermissionsAndroid.PERMISSIONS.BLUETOOTH_CONNECT
+            ])
+
+            let allowed = result['android.permission.BLUETOOTH_CONNECT'] === PermissionsAndroid.RESULTS.GRANTED && result['android.permission.BLUETOOTH_SCAN'] === PermissionsAndroid.RESULTS.GRANTED;
+
+            if (!allowed) {
+                return 'denied';
+            }
+        }
+
+        return res;
     }
 
     startScan(handler: (device: BTDiscoveredDevice) => void) {

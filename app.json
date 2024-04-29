@@ -47,7 +47,13 @@
       "favicon": "./assets/favicon.png"
     },
     "plugins": [
-      "react-native-ble-plx",
+      [
+        "react-native-ble-plx",
+        {
+          "neverForLocation": true,
+          "isBackgroundEnabled": true
+        }
+      ],
       "expo-localization",
       "onnxruntime-react-native",
       "react-native-vision-camera"

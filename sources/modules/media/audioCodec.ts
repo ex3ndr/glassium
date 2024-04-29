@@ -20,7 +20,7 @@ export function createCodec(type: 'pcm' | 'mulaw' | 'opus'): AudioCodec {
         },
         decode: (src: Uint8Array): Int16Array => {
             if (type === 'pcm') {
-                return new Int16Array(src.buffer);
+                return new Int16Array(src.buffer, src.byteOffset, src.byteLength / 2);
             } else if (type === 'mulaw') {
                 let res = new Int16Array(src.length);
                 for (let i = 0; i < src.length; i++) {

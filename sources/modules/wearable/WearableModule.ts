@@ -345,7 +345,7 @@ export class WearableModule {
             // Source
             if (this.#protocol.kind === 'super') {
                 // Cut the first 3 bytes
-                data = data.subarray(3);
+                data = data.slice(3); // Slice array breaks some optimizations
             }
 
             // Convert to samples

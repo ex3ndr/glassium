@@ -12,7 +12,7 @@ export class VADModel {
                 // Resolve local path
                 log('VAD', 'Loading VAD model');
                 let loaded = (await Asset.loadAsync(require('./model.onnx')))[0];
-                
+
                 // Create inference session
                 session = await createSession(loaded.uri);
             } catch (e) {
@@ -25,7 +25,7 @@ export class VADModel {
                 // Resolve local path
                 log('VAD', 'Loading VAD model');
                 let loaded = (await Asset.loadAsync(require('./model.onnx')))[0];
-                let path = loaded.localUri!.replace('%20', ' ').replace('file://', ''); // Hack to fix path
+                let path = Platform.OS === 'ios' ? loaded.localUri!.replace('%20', ' ').replace('file://', '') : loaded.localUri!; // Hack to fix path
 
                 // Create inference session
                 session = await createSession(path);

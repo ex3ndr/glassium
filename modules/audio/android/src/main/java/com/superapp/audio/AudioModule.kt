@@ -8,14 +8,27 @@ import android.media.MediaFormat
 import android.media.MediaMuxer
 import expo.modules.kotlin.modules.Module
 import expo.modules.kotlin.modules.ModuleDefinition
-import java.io.ByteArrayOutputStream
 import java.io.File
 
 class AudioModule : Module() {
+
+    val opus = OpusVedro()
+
     override fun definition() = ModuleDefinition {
         Name("Audio")
         AsyncFunction("convert") { value: ByteArray ->
             return@AsyncFunction compressAudioToAAC(value, appContext.cacheDirectory)
+        }
+        Function("opusStart") {
+            opus.decoderInit(16000, 1)
+        }
+        Function("opusDecode") { value: ByteArray ->
+            val output = ByteArray(5760)
+            val res = opus.decode(value, output)
+            output.copyOfRange(0, res * 2)
+        }
+        Function("opusStop") {
+            opus.decoderRelease()
         }
     }
 }

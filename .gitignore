@@ -39,3 +39,7 @@ yarn-error.*
 /3rdparty/opus/opus.xcframework
 modules/audio/android/build
 modules/hardware/android/build
+3rdparty/opus/libs
+3rdparty/opus/obj
+modules/audio/android/.cxx
+.vscode

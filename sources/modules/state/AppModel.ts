@@ -10,6 +10,7 @@ import { SyncModel } from "../capture/SyncModel";
 import { RealtimeModel } from "./RealtimeModel";
 import { EndpointingModule } from "../capture/EndpointingModule";
 import { TokenExpireService } from "./TokenExpireService";
+import { BackgroundService } from "./BackgroundService";
 
 export class AppModel {
     readonly client: SuperClient;
@@ -22,6 +23,7 @@ export class AppModel {
     readonly realtime: RealtimeModel;
     readonly endpointing: EndpointingModule;
     readonly tokenExpire: TokenExpireService;
+    readonly background: BackgroundService;
 
     constructor(client: SuperClient) {
         this.client = client;
@@ -34,10 +36,16 @@ export class AppModel {
         this.capture = new CaptureModule(this.jotai, this.wearable, this.endpointing);
         this.updates = new UpdatesModel(client);
         this.tokenExpire = new TokenExpireService(client);
+        this.background = new BackgroundService();
         this.updates.onUpdates = this.#handleUpdate;
         this.wearable.onStreamingStart = this.capture.onCaptureStart;
         this.wearable.onStreamingStop = this.capture.onCaptureStop;
         this.wearable.onStreamingFrame = this.capture.onCaptureFrame;
+        this.wearable.onDevicePaired = this.background.start;
+        this.wearable.onDeviceUnpaired = this.background.stop;
+        if (this.wearable.device) {
+            this.background.start();
+        }
 
         // Start
         this.updates.start();

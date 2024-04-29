@@ -3,7 +3,7 @@ import { SafeAreaProvider, initialWindowMetrics } from 'react-native-safe-area-c
 import { NavigationContainer } from '@react-navigation/native';
 import { Platform, View } from 'react-native';
 import { Theme } from './theme';
-import { GlobalStateContext, GlobalStateControllerContext, useNewGlobalController } from './global';
+import { GlobalStateContext, GlobalStateControllerContext, getAppModel, useNewGlobalController } from './global';
 import { App, Auth, Modals, Pre, Stack } from './app/routing';
 import { Provider } from 'jotai';
 
@@ -57,7 +57,7 @@ export function Boot() {
                 <GlobalStateContext.Provider value={state}>
                     <GlobalStateControllerContext.Provider value={controller}>
                         {state.kind === 'ready' && (
-                            <Provider store={state.appModel.jotai}>
+                            <Provider store={getAppModel().jotai}>
                                 {content}
                             </Provider>
                         )}

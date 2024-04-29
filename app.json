@@ -61,7 +61,15 @@
       ],
       "expo-localization",
       "onnxruntime-react-native",
-      "react-native-vision-camera"
+      "react-native-vision-camera",
+      [
+        "expo-build-properties",
+        {
+          "android": {
+            "minSdkVersion": 31
+          }
+        }
+      ]
     ],
     "extra": {
       "eas": {

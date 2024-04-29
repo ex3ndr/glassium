@@ -1,18 +1,24 @@
 package com.superapp.audio
 
+import android.content.ComponentName
+import android.content.Intent
 import android.media.MediaCodec
 import android.media.MediaCodecInfo
 import android.media.MediaDataSource
 import android.media.MediaExtractor
 import android.media.MediaFormat
 import android.media.MediaMuxer
+import android.provider.SyncStateContract.Constants
+import expo.modules.core.interfaces.Arguments
 import expo.modules.kotlin.modules.Module
 import expo.modules.kotlin.modules.ModuleDefinition
 import java.io.File
 
+
 class AudioModule : Module() {
 
     val opus = OpusVedro()
+    var lastIntent: Intent? = null
 
     override fun definition() = ModuleDefinition {
         Name("Audio")
@@ -29,6 +35,28 @@ class AudioModule : Module() {
         }
         Function("opusStop") {
             opus.decoderRelease()
+        }
+        Function("foregroundStart") { options: AudioForegroundServiceOptions ->
+            val intent = Intent(appContext.reactContext, AudioForegroundService::class.java)
+            intent.putExtra("headlessTaskName", options.headlessTaskName)
+            intent.putExtra("notificationTitle", options.notificationTitle)
+            intent.putExtra("notificationDesc", options.notificationDesc)
+            intent.putExtra("notificationColor", options.notificationColor)
+            val notificationIconInt: Int = appContext.reactContext!!.resources.getIdentifier(options.notificationIconName, options.notificationIconType, appContext.reactContext!!.packageName)
+            intent.putExtra("notificationIconInt", notificationIconInt)
+            intent.putExtra("notificationProgress", options.notificationProgress)
+            intent.putExtra("notificationMaxProgress", options.notificationMaxProgress)
+            intent.putExtra("notificationIndeterminate", options.notificationIndeterminate)
+            intent.putExtra("linkingURI", options.linkingURI)
+            intent.putExtra("notificationId", 1)
+            lastIntent = intent
+            appContext.reactContext!!.startForegroundService(intent)
+        }
+        Function("foregroundStop") {
+            if (lastIntent != null) {
+                appContext.reactContext!!.stopService(lastIntent)
+                lastIntent = null
+            }
         }
     }
 }

@@ -18,6 +18,8 @@ export class WearableModule {
     readonly pairingStatus = atom<'loading' | 'need-pairing' | 'ready' | 'denied' | 'unavailable'>('loading');
     readonly discoveryStatus = atom<{ devices: { name: string, id: string }[] } | null>(null);
     readonly bluetooth = new BluetoothModel();
+    onDevicePaired?: () => void;
+    onDeviceUnpaired?: () => void;
     onStreamingStart?: (sr: 8000 | 16000) => void;
     onStreamingStop?: () => void;
     onStreamingFrame?: (data: Int16Array) => void;
@@ -196,6 +198,11 @@ export class WearableModule {
             storage.set('wearable-device', JSON.stringify(profile));
             this.jotai.set(this.pairingStatus, 'ready');
 
+            // Notify
+            if (this.onDevicePaired) {
+                this.onDevicePaired();
+            }
+
             return 'ok' as const;
         });
     }
@@ -215,6 +222,11 @@ export class WearableModule {
             // Update state
             storage.delete('wearable-device');
             this.jotai.set(this.pairingStatus, 'need-pairing');
+
+            // Notify
+            if (this.onDeviceUnpaired) {
+                this.onDeviceUnpaired();
+            }
 
             return 'ok' as const;
         });

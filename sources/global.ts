@@ -35,9 +35,10 @@ export type GlobalState = {
 } | {
     kind: 'ready',
     token: string,
-    client: SuperClient,
-    appModel: AppModel
+    client: SuperClient
 };
+
+let globalAppModel: AppModel | null = null;
 
 export const GlobalStateContext = React.createContext<GlobalState>({ kind: 'empty' });
 
@@ -58,8 +59,42 @@ export function useAppModel() {
     if (state.kind !== 'ready') {
         throw new Error('GlobalState is not ready');
     }
-    return state.appModel;
+    return globalAppModel!!;
 };
+
+export function hasAppModel() {
+    return !!globalAppModel;
+}
+
+export function getAppModel() {
+    if (!globalAppModel) {
+        throw new Error('GlobalState is not ready');
+    }
+    return globalAppModel;
+}
+
+export function loadAppModelIfNeeded() {
+    if (globalAppModel) {
+        return;
+    }
+
+    let token = getToken();
+    if (!token) {
+        return;
+    }
+    if (!isOnboardingCompleted()) {
+        return;
+    }
+
+    // Create client
+    let client = new SuperClient(axios.create({
+        baseURL: 'https://mobile-api.getbubble.org',
+        headers: {
+            Authorization: `Bearer ${token}`,
+        },
+    }), token);
+    globalAppModel = new AppModel(client);
+}
 
 //
 // Controller
@@ -161,6 +196,15 @@ export function useNewGlobalController(): [GlobalState, GlobalStateController] {
     // Global state handler
     const [state, setState] = React.useState<GlobalState>(() => {
 
+        // Check if already created
+        if (globalAppModel) {
+            return {
+                kind: 'ready',
+                token: globalAppModel.client.token,
+                client: globalAppModel.client
+            };
+        }
+
         // Check if we have a token
         let token = getToken();
         if (!token) {
@@ -177,11 +221,11 @@ export function useNewGlobalController(): [GlobalState, GlobalStateController] {
 
         // If onboarding is completed - we are ready
         if (isOnboardingCompleted()) {
+            globalAppModel = new AppModel(client);
             return {
                 kind: 'ready',
                 token: token,
-                client,
-                appModel: new AppModel(client)
+                client
             };
         }
 
@@ -251,11 +295,11 @@ export function useNewGlobalController(): [GlobalState, GlobalStateController] {
                 // Requirements satisfied
                 if (!onboardingState) {
                     onboardingMarkCompleted();
+                    globalAppModel = new AppModel(client);
                     currentState = {
                         kind: 'ready',
                         token: currentState.token,
                         client: currentState.client,
-                        appModel: new AppModel(client)
                     };
                     setState(currentState);
                     return;

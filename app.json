@@ -14,6 +14,7 @@
       "**/*"
     ],
     "ios": {
+      "backgroundColor": "#000",
       "supportsTablet": false,
       "bundleIdentifier": "com.bubbleapp.ios",
       "infoPlist": {
@@ -30,6 +31,7 @@
       }
     },
     "android": {
+      "backgroundColor": "#000",
       "adaptiveIcon": {
         "foregroundImage": "./assets/adaptive-icon.png",
         "backgroundColor": "#ffffff"

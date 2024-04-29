@@ -37,3 +37,5 @@ yarn-error.*
 /android
 /3rdparty/opus/opus-1.5.2
 /3rdparty/opus/opus.xcframework
+modules/audio/android/build
+modules/hardware/android/build

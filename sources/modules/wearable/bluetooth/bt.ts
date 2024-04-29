@@ -109,7 +109,10 @@ export class BluetoothModel implements BluetoothModelInterface {
         // Connect to the device
         let btDevice: Device;
         try {
-            btDevice = await this.#manager.connectToDevice(id, { requestMTU: 250, timeout: 5000 });
+            btDevice = await this.#manager.connectToDevice(id, {
+                requestMTU: 250, 
+                // timeout: 5000 // NOTE: There is a bug in the library that causes this to drop connections on Android
+            });
         } catch (error) {
             console.error(error);
             return null;

@@ -130,14 +130,18 @@ export class DeviceModel {
                 if (batteryService) {
                     let batteryChar = batteryService.characteristics.find((v) => v.id === '00002a19-0000-1000-8000-00805f9b34fb' && v.canRead && v.canNotify);
                     if (batteryChar) {
-                        let percent = (await batteryChar.read())[0];
-                        log('BT', 'Battery:' + percent);
-                        this.#deviceBattery = percent;
+
+                        // Subscribe
                         this.#deviceBatterySubscription = batteryChar.subscribe(async (data) => {
                             log('BT', 'Battery:' + data[0]);
                             this.#deviceBattery = data[0];
                             this.#flushUI();
                         });
+
+                        // Read initial value
+                        let percent = (await batteryChar.read())[0];
+                        this.#deviceBattery = percent;
+                        log('BT', 'Battery:' + percent);
                     }
                 }
             }
@@ -148,9 +152,8 @@ export class DeviceModel {
                 if (muteService) {
                     let muteChar = muteService.characteristics.find((v) => v.id === '19b10003-e8f2-537e-4f6c-d104768a1214' && v.canRead && v.canNotify);
                     if (muteChar) {
-                        let muted = (await muteChar.read())[0] === 0;
-                        log('BT', 'Muted:' + muted);
-                        this.#deviceMuted = muted;
+
+                        // Subscribe
                         this.#deviceMutedSubscription = muteChar.subscribe(async (data) => {
                             log('BT', 'Muted:' + (data[0] === 0));
                             this.#deviceMuted = data[0] === 0;
@@ -159,6 +162,11 @@ export class DeviceModel {
                                 this.onStreamingMute(data[0] === 0);
                             }
                         });
+
+                        // Read initial value
+                        let muted = (await muteChar.read())[0] === 0;
+                        this.#deviceMuted = muted;
+                        log('BT', 'Muted:' + muted);
                     }
                 }
             }

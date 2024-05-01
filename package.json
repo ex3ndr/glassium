@@ -10,7 +10,7 @@
     "prebuild": "expo prebuild",
     "build-web": "expo export -p web",
     "ota": "eas update --branch next",
-    "submit:next": "eas build --profile next --no-wait --non-interactive --auto-submit",
+    "submit:next": "eas build --platform ios --profile next --no-wait --non-interactive --auto-submit",
     "submit:release": "eas build --profile production --no-wait --non-interactive --auto-submit",
     "postinstall": "patch-package"
   },

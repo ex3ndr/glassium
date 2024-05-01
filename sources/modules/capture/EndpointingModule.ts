@@ -46,6 +46,7 @@ export class EndpointingModule {
         log('END', 'Endpointing session start @' + sr);
         this.#state = { buffer: new Int16Array(0), sr, start: Math.floor(Date.now() / 1000), processed: 0, vad: null };
         await this.#vadStart(sr);
+        log('END', 'Endpointing session started');
     }
 
     onDeviceFrame = async (frames: Int16Array) => {
@@ -78,6 +79,7 @@ export class EndpointingModule {
 
         // Reset
         this.#state = null;
+        log('END', 'Endpointing session stopped');
     }
 
     //

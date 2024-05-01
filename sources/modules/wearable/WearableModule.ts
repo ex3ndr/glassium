@@ -278,6 +278,8 @@ export class WearableModule {
     #streamTimeoutBump = () => {
         this.#streamTimeoutCancel();
         this.#protocolTimeout = setTimeout(() => {
+            log('BT', 'Streaming timeout');
+            this.#protocolTimeout = null;
             if (this.#protocolStarted) {
                 this.#protocolStarted = false;
                 if (this.onStreamingStop) {
@@ -327,6 +329,7 @@ export class WearableModule {
             this.#streamTimeoutCancel();
             if (this.#protocolStarted) {
                 this.#protocolStarted = false;
+                log('BT', 'Streaming stopped on mute');
                 if (this.onStreamingStop) {
                     this.onStreamingStop();
                 }
@@ -369,6 +372,7 @@ export class WearableModule {
     }
 
     #onStreamingStop = () => {
+        log('BT', 'Streaming stopped');
 
         // Reset state
         let wasStarted = this.#protocolStarted;

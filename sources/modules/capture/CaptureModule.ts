@@ -90,6 +90,7 @@ export class CaptureModule {
     }
 
     onCaptureStop = () => {
+        log('CPT', 'onCaptureStop');
         this.asyncLock.inLock(async () => {
             if (!this.muted) {
                 await this.endpointing.onDeviceStreamStop();

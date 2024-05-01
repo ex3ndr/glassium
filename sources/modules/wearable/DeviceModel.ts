@@ -72,6 +72,7 @@ export class DeviceModel {
         this.#device = null;
         this.#deviceBattery = null;
         this.#deviceMuted = null;
+        this.#deviceReady = false;
 
         // Cleanup subscriptions
         if (this.#deviceStreaming) {
@@ -124,8 +125,7 @@ export class DeviceModel {
             }
 
             // Handling battery state
-            let batteryLoaded = !!this.#deviceBatterySubscription;
-            if (!batteryLoaded) {
+            if (!this.#deviceReady && !this.#deviceBatterySubscription) {
                 let batteryService = this.#device.services.find((v) => v.id === bluetoothServices.battery);
                 if (batteryService) {
                     let batteryChar = batteryService.characteristics.find((v) => v.id === '00002a19-0000-1000-8000-00805f9b34fb' && v.canRead && v.canNotify);
@@ -138,17 +138,12 @@ export class DeviceModel {
                             this.#deviceBattery = data[0];
                             this.#flushUI();
                         });
-                    } else {
-                        batteryLoaded = true;
                     }
-                } else {
-                    batteryLoaded = true;
                 }
             }
 
             // Handling mute state
-            let mutedLoaded = this.#deviceMutedSubscription !== null;
-            if (!mutedLoaded) {
+            if (!this.#deviceReady && !this.#deviceMutedSubscription) {
                 let muteService = this.#device.services.find((v) => v.id === bluetoothServices.super);
                 if (muteService) {
                     let muteChar = muteService.characteristics.find((v) => v.id === '19b10003-e8f2-537e-4f6c-d104768a1214' && v.canRead && v.canNotify);
@@ -164,16 +159,12 @@ export class DeviceModel {
                                 this.onStreamingMute(data[0] === 0);
                             }
                         });
-                    } else {
-                        mutedLoaded = true;
                     }
-                } else {
-                    mutedLoaded = true;
                 }
             }
 
             // Flush UI if we became ready
-            if (!this.#deviceReady && batteryLoaded && mutedLoaded) {
+            if (!this.#deviceReady) {
                 this.#deviceReady = true;
                 this.#flushUI();
             }
@@ -190,7 +181,12 @@ export class DeviceModel {
                 }
 
                 // Subscribe
+                let started = false;
                 let sub = protocol.source.subscribe((data) => {
+                    if (!started) {
+                        started = true;
+                        log('BT', 'Streaming started');
+                    }
                     if (this.onStreamingFrame && !this.#needStop) {
                         this.onStreamingFrame(data);
                     }
@@ -204,6 +200,8 @@ export class DeviceModel {
 
                 // Update state
                 this.#flushUI();
+
+                log('BT', 'Need streaming: subscribed');
             }
 
             // Handle streaming stop
@@ -236,7 +234,7 @@ export class DeviceModel {
     stop = () => {
 
         // Update state
-        if (!this.#needStop) {
+        if (this.#needStop) {
             return;
         }
         this.#needStop = true;

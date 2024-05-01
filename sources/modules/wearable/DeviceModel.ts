@@ -132,16 +132,20 @@ export class DeviceModel {
                     if (batteryChar) {
 
                         // Subscribe
+                        let received = false;
                         this.#deviceBatterySubscription = batteryChar.subscribe(async (data) => {
                             log('BT', 'Battery:' + data[0]);
                             this.#deviceBattery = data[0];
+                            received = true;
                             this.#flushUI();
                         });
 
                         // Read initial value
                         let percent = (await batteryChar.read())[0];
-                        this.#deviceBattery = percent;
-                        log('BT', 'Battery:' + percent);
+                        if (!received) {
+                            this.#deviceBattery = percent;
+                            log('BT', 'Battery:' + percent);
+                        }
                     }
                 }
             }
@@ -154,9 +158,11 @@ export class DeviceModel {
                     if (muteChar) {
 
                         // Subscribe
+                        let received = false;
                         this.#deviceMutedSubscription = muteChar.subscribe(async (data) => {
                             log('BT', 'Muted:' + (data[0] === 0));
                             this.#deviceMuted = data[0] === 0;
+                            received = true;
                             this.#flushUI();
                             if (this.#deviceStreaming && this.onStreamingMute && !this.#needStop) {
                                 this.onStreamingMute(data[0] === 0);
@@ -165,8 +171,10 @@ export class DeviceModel {
 
                         // Read initial value
                         let muted = (await muteChar.read())[0] === 0;
-                        this.#deviceMuted = muted;
-                        log('BT', 'Muted:' + muted);
+                        if (!received) {
+                            this.#deviceMuted = muted;
+                            log('BT', 'Muted:' + muted);
+                        }
                     }
                 }
             }

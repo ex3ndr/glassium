@@ -22,6 +22,7 @@ export const SettingsScreen = React.memo(() => {
     const wearable = appModel.wearable.use();
     const router = useRouter();
     const updates = Update.useUpdates();
+    const profile = appModel.profile.use();
     const restartApp = async () => {
         await Update.reloadAsync();
     };
@@ -70,6 +71,18 @@ export const SettingsScreen = React.memo(() => {
     const quote = React.useMemo(() => randomQuote(), []);
     return (
         <ScrollView contentContainerStyle={{ flexGrow: 1, paddingBottom: 64 + safeArea.bottom }} alwaysBounceVertical={false}>
+            <Item title="Profile" />
+            {!profile && (
+                <View style={{ alignItems: 'flex-start', paddingHorizontal: 16, flexDirection: 'column' }}>
+                    <ActivityIndicator />
+                </View>
+            )}
+            {!!profile && (
+                <View style={{ alignItems: 'flex-start', paddingHorizontal: 16, flexDirection: 'column' }}>
+                    <Text style={{ fontSize: 18, color: Theme.text, marginBottom: 8, opacity: 0.8 }}>@{profile.username} <Text style={{ opacity: 0.4 }}>{profile.firstName} {profile.lastName}</Text></Text>
+                    <Text style={{ fontSize: 18, color: Theme.text, marginBottom: 8, opacity: 0.8 }}>{profile.phone}</Text>
+                </View>
+            )}
             <Item title="Device" />
             {wearable.pairing === 'loading' && (
                 <View style={{ alignItems: 'flex-start', paddingHorizontal: 16, flexDirection: 'column' }}>

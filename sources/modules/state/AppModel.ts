@@ -1,5 +1,5 @@
 import { createStore } from "jotai";
-import { SuperClient } from "../api/client";
+import { BubbleClient } from "../api/client";
 import { SessionsModel } from "./SessionsModel";
 import { WearableModule } from "../wearable/WearableModule";
 import { Jotai } from "./_types";
@@ -12,10 +12,11 @@ import { EndpointingModule } from "../capture/EndpointingModule";
 import { TokenExpireService } from "./TokenExpireService";
 import { BackgroundService } from "./BackgroundService";
 import PostHog from "posthog-react-native";
-import { getPostHog } from "../../global";
+import { getPostHog } from "../track/track";
+import { ProfileService } from "./ProfileService";
 
 export class AppModel {
-    readonly client: SuperClient;
+    readonly client: BubbleClient;
     readonly jotai: Jotai;
     readonly posthog: PostHog;
     readonly sessions: SessionsModel;
@@ -27,8 +28,9 @@ export class AppModel {
     readonly endpointing: EndpointingModule;
     readonly tokenExpire: TokenExpireService;
     readonly background: BackgroundService;
+    readonly profile: ProfileService;
 
-    constructor(client: SuperClient) {
+    constructor(client: BubbleClient) {
         this.client = client;
         this.posthog = getPostHog();
         this.jotai = createStore();
@@ -41,6 +43,7 @@ export class AppModel {
         this.updates = new UpdatesModel(client);
         this.tokenExpire = new TokenExpireService(client);
         this.background = new BackgroundService();
+        this.profile = new ProfileService(client, this.jotai);
         this.updates.onUpdates = this.#handleUpdate;
         this.wearable.onStreamingStart = this.capture.onCaptureStart;
         this.wearable.onStreamingStop = this.capture.onCaptureStop;
@@ -66,7 +69,7 @@ export class AppModel {
     }
 
     #handleUpdate = async (update: Update) => {
-        console.warn(update);
+        // console.warn(update);
         if (update.type === 'session-created') {
             this.sessions.apply({ id: update.id, index: update.index, state: 'starting', audio: null });
         } else if (update.type === 'session-updated') {

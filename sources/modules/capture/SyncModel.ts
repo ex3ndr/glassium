@@ -1,18 +1,18 @@
 import { InvalidateSync } from "teslabot";
 import { storage } from "../../storage";
-import { SuperClient } from "../api/client";
+import { BubbleClient } from "../api/client";
 import { backoff } from "../../utils/time";
 import { fromByteArray } from 'react-native-quick-base64';
 import { log } from "../../utils/logs";
 
 export class SyncModel {
-    readonly client: SuperClient;
+    readonly client: BubbleClient;
     private localEnded = new Set<string>();
     private localSessions = new Map<string, string | null>();
     private pendingFrames = new Map<string, { index: number, format: string, data: Uint8Array }[]>();
     private readonly sync: InvalidateSync;
 
-    constructor(client: SuperClient) {
+    constructor(client: BubbleClient) {
         this.client = client;
         let stored = storage.getString('sync-sessions');
         if (stored) {

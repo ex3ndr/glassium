@@ -1,6 +1,6 @@
 import * as React from 'react';
 import { PrimitiveAtom, atom, useAtomValue } from 'jotai';
-import { SuperClient } from "../api/client";
+import { BubbleClient } from "../api/client";
 import { storage } from '../../storage';
 import { AsyncLock, InvalidateSync } from 'teslabot';
 import { Jotai } from './_types';
@@ -27,7 +27,7 @@ export type ViewSessionFull = {
 };
 
 export class SessionsModel {
-    readonly client: SuperClient;
+    readonly client: BubbleClient;
     readonly sessions = atom<ViewSession[] | null>(null);
     readonly jotai: Jotai;
     #fullSessions = new Map<string, PrimitiveAtom<ViewSessionFull | null>>();
@@ -35,7 +35,7 @@ export class SessionsModel {
     #sessions: ViewSession[] | null = null;
     #refresh: InvalidateSync
 
-    constructor(client: SuperClient, jotai: Jotai) {
+    constructor(client: BubbleClient, jotai: Jotai) {
         this.client = client;
         this.jotai = jotai;
 

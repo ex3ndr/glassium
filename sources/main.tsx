@@ -3,10 +3,11 @@ import { SafeAreaProvider, initialWindowMetrics } from 'react-native-safe-area-c
 import { NavigationContainer } from '@react-navigation/native';
 import { Platform, View } from 'react-native';
 import { Theme } from './theme';
-import { GlobalStateContext, GlobalStateControllerContext, getAppModel, getPostHog, useNewGlobalController } from './global';
+import { GlobalStateContext, GlobalStateControllerContext, getAppModel, useNewGlobalController } from './global';
 import { App, Auth, Modals, Pre, Stack } from './app/routing';
 import { Provider } from 'jotai';
 import { PostHogProvider } from 'posthog-react-native';
+import { getPostHog } from './modules/track/track';
 
 let startMetrics = initialWindowMetrics;
 if (Platform.OS === 'android') {
@@ -19,24 +20,26 @@ export function Boot() {
 
     let content = (
         <NavigationContainer>
-            <Stack.Navigator
-                screenOptions={{
-                    headerShadowVisible: false,
-                    headerBackTitle: 'Back',
-                    headerTintColor: Theme.accent,
-                    headerStyle: {
-                        backgroundColor: Theme.background,
-                    },
-                    title: ''
-                }}
-            >
-                {state.kind === 'empty' && Auth}
-                {state.kind === 'onboarding' && Pre(state.state)}
-                {state.kind === 'ready' && App}
-                <Stack.Group screenOptions={{ presentation: 'modal' }}>
-                    {Modals}
-                </Stack.Group>
-            </Stack.Navigator>
+            <PostHogProvider client={getPostHog()}>
+                <Stack.Navigator
+                    screenOptions={{
+                        headerShadowVisible: false,
+                        headerBackTitle: 'Back',
+                        headerTintColor: Theme.accent,
+                        headerStyle: {
+                            backgroundColor: Theme.background,
+                        },
+                        title: ''
+                    }}
+                >
+                    {state.kind === 'empty' && Auth}
+                    {state.kind === 'onboarding' && Pre(state.state)}
+                    {state.kind === 'ready' && App}
+                    <Stack.Group screenOptions={{ presentation: 'modal' }}>
+                        {Modals}
+                    </Stack.Group>
+                </Stack.Navigator>
+            </PostHogProvider>
         </NavigationContainer>
     );
 
@@ -53,23 +56,21 @@ export function Boot() {
     }
 
     return (
-        <PostHogProvider client={getPostHog()}>
-            <View style={{ flexGrow: 1, flexBasis: 0, alignSelf: 'stretch' }}>
-                <SafeAreaProvider initialMetrics={startMetrics}>
-                    <GlobalStateContext.Provider value={state}>
-                        <GlobalStateControllerContext.Provider value={controller}>
-                            {state.kind === 'ready' && (
-                                <Provider store={getAppModel().jotai}>
-                                    {content}
-                                </Provider>
-                            )}
-                            {state.kind !== 'ready' && (
-                                content
-                            )}
-                        </GlobalStateControllerContext.Provider>
-                    </GlobalStateContext.Provider>
-                </SafeAreaProvider>
-            </View>
-        </PostHogProvider>
+        <View style={{ flexGrow: 1, flexBasis: 0, alignSelf: 'stretch' }}>
+            <SafeAreaProvider initialMetrics={startMetrics}>
+                <GlobalStateContext.Provider value={state}>
+                    <GlobalStateControllerContext.Provider value={controller}>
+                        {state.kind === 'ready' && (
+                            <Provider store={getAppModel().jotai}>
+                                {content}
+                            </Provider>
+                        )}
+                        {state.kind !== 'ready' && (
+                            content
+                        )}
+                    </GlobalStateControllerContext.Provider>
+                </GlobalStateContext.Provider>
+            </SafeAreaProvider>
+        </View>
     );
 }

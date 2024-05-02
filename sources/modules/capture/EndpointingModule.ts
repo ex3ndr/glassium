@@ -6,6 +6,8 @@ import { compress } from "../../../modules/audio";
 import { randomKey } from "../crypto/randomKey";
 import { atom, useAtomValue } from "jotai";
 import { Jotai } from "../state/_types";
+import { track } from "../track/track";
+import { uptime } from "../../utils/uptime";
 
 export class EndpointingModule {
 
@@ -24,6 +26,7 @@ export class EndpointingModule {
     readonly jotai: Jotai;
     readonly state = atom<'idle' | 'voice'>('idle');
 
+    #lastTime: number = uptime();
     #model: VADModel | null = null;
     #state: {
         buffer: Int16Array,
@@ -43,6 +46,9 @@ export class EndpointingModule {
     }
 
     onDeviceStreamStart = async (sr: 8000 | 16000) => {
+        track('endpointing_stream_start', { after: uptime() - this.#lastTime });
+        this.#lastTime = uptime();
+
         log('END', 'Endpointing session start @' + sr);
         this.#state = { buffer: new Int16Array(0), sr, start: Math.floor(Date.now() / 1000), processed: 0, vad: null };
         await this.#vadStart(sr);
@@ -66,6 +72,9 @@ export class EndpointingModule {
     }
 
     onDeviceStreamStop = async () => {
+        track('endpointing_stream_stop', { duration: uptime() - this.#lastTime });
+        this.#lastTime = uptime();
+
         log('END', 'Endpointing session stop');
         if (!this.#state) {
             throw new Error('No state'); // Should not happen
@@ -208,6 +217,9 @@ export class EndpointingModule {
 
         // Compress
         let compressed = await compress(output);
+
+        // Track compression ratio
+        track('endpointing_compression', { ratio: compressed.data.length / output.length, before: output.length, after: compressed.data.length });
 
         // Report session
         let sessionId = randomKey();

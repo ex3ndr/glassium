@@ -135,5 +135,15 @@ export const Schema = {
     }),
     accountStatus: z.object({
         ok: z.boolean()
+    }),
+    me: z.object({
+        ok: z.literal(true),
+        profile: z.object({
+            id: z.string(),
+            firstName: z.string(),
+            lastName: z.string().nullable(),
+            username: z.string(),
+            phone: z.string().nullable(),
+        })
     })
 };

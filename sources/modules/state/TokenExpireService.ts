@@ -1,14 +1,14 @@
 import { InvalidateSync } from "teslabot";
-import { SuperClient } from "../api/client";
+import { BubbleClient } from "../api/client";
 import { cleanAndReload } from "../reload/cleanAndReload";
 import { AppState } from "react-native";
 import { log } from "../../utils/logs";
 
 export class TokenExpireService {
-    readonly client: SuperClient;
+    readonly client: BubbleClient;
     #sync: InvalidateSync;
 
-    constructor(client: SuperClient) {
+    constructor(client: BubbleClient) {
         this.client = client;
         this.#sync = new InvalidateSync(async () => {
             if (!await this.client.tokenAndAccountStatus()) {

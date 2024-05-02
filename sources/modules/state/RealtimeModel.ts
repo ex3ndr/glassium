@@ -2,14 +2,14 @@ import { InvalidateSync } from "teslabot";
 import { Jotai } from "./_types";
 import { AppState } from "react-native";
 import { createClient, LiveClient, LiveTranscriptionEvents } from '@deepgram/sdk';
-import { SuperClient } from "../api/client";
+import { BubbleClient } from "../api/client";
 import { log } from "../../utils/logs";
 import { backoff } from "../../utils/time";
 import { atom, useAtomValue } from "jotai";
 
 export class RealtimeModel {
     readonly jotai: Jotai;
-    readonly client: SuperClient;
+    readonly client: BubbleClient;
     readonly #sync: InvalidateSync;
     readonly state = atom('');
     #buffer: { data: Uint8Array, format: 'mulaw-8' | 'mulaw-16' } | null = null;
@@ -18,7 +18,7 @@ export class RealtimeModel {
     #transcripts: { speaker: number, transcript: string }[] = [];
     #pendingTranscript: { speaker: number, transcript: string }[] = [];
 
-    constructor(client: SuperClient, jotai: Jotai) {
+    constructor(client: BubbleClient, jotai: Jotai) {
         this.jotai = jotai;
         this.client = client;
         this.#sync = new InvalidateSync(this.#doSync, { backoff });

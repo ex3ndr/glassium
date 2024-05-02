@@ -1,19 +1,19 @@
 import { AsyncLock, InvalidateSync } from "teslabot";
-import { SuperClient } from "../api/client";
+import { BubbleClient } from "../api/client";
 import { backoff } from "../../utils/time";
 import { Update, Updates } from "../api/schema";
 import { storage } from "../../storage";
 import { log } from "../../utils/logs";
 
 export class UpdatesModel {
-    readonly client: SuperClient;
+    readonly client: BubbleClient;
     #seq: number | null = null;
     #sync: InvalidateSync;
     #lock = new AsyncLock();
     #queue = new Array<{ seq: number, update: Update | null }>();
     onUpdates?: (updates: Update) => Promise<void>;
 
-    constructor(client: SuperClient) {
+    constructor(client: BubbleClient) {
         this.client = client;
         let s = storage.getNumber('updates-seq');
         if (s !== undefined) {

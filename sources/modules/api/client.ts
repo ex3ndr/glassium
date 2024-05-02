@@ -3,7 +3,7 @@ import { backoff } from "../../utils/time";
 import { Schema, Update, Updates, sseUpdate } from "./schema";
 import { sse } from "./sse";
 
-export class SuperClient {
+export class BubbleClient {
 
     readonly client: Axios
     readonly token: string;
@@ -137,5 +137,14 @@ export class SuperClient {
     async tokenAndAccountStatus() {
         let res = await this.client.post('/secure/status', {});
         return Schema.accountStatus.parse(res.data).ok;
+    }
+
+    //
+    // Profile
+    //
+
+    async me() {
+        let res = await this.client.post('/app/me', {});
+        return Schema.me.parse(res.data).profile;
     }
 }

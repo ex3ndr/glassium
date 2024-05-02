@@ -1,12 +1,11 @@
 import * as React from 'react';
 import axios from 'axios';
 import { storage } from './storage';
-import { SuperClient } from './modules/api/client';
+import { BubbleClient } from './modules/api/client';
 import * as Notifications from 'expo-notifications';
 import { AppModel } from './modules/state/AppModel';
 import { cleanAndReload } from './modules/reload/cleanAndReload';
 import { backoff } from './utils/time';
-import PostHog from 'posthog-react-native';
 
 const ONBOARDING_VERSION = 1; // Increment this to reset onboarding
 
@@ -32,11 +31,11 @@ export type GlobalState = {
     kind: 'onboarding',
     state: OnboardingState,
     token: string,
-    client: SuperClient
+    client: BubbleClient
 } | {
     kind: 'ready',
     token: string,
-    client: SuperClient
+    client: BubbleClient
 };
 
 let globalAppModel: AppModel | null = null;
@@ -88,23 +87,13 @@ export function loadAppModelIfNeeded() {
     }
 
     // Create client
-    let client = new SuperClient(axios.create({
+    let client = new BubbleClient(axios.create({
         baseURL: `https://${process.env.EXPO_PUBLIC_SERVER}`,
         headers: {
             Authorization: `Bearer ${token}`,
         },
     }), token);
     globalAppModel = new AppModel(client);
-}
-
-//
-// PostHog
-//
-
-const posthog = new PostHog(process.env.EXPO_PUBLIC_POSTHOG_TOKEN!, { disabled: __DEV__, host: process.env.EXPO_PUBLIC_POSTHOG_HOST });
-
-export function getPostHog() {
-    return posthog;
 }
 
 //
@@ -168,15 +157,15 @@ export function isSkipNotifications() {
 // Implementation
 //
 
-async function checkIfTokenValid(client: SuperClient) {
+async function checkIfTokenValid(client: BubbleClient) {
     let status = await client.tokenAndAccountStatus();
-    console.warn(status);
+    // console.warn(status);
     if (!await client.tokenAndAccountStatus()) {
         await cleanAndReload(); // Never resolves
     }
 }
 
-async function refreshOnboarding(client: SuperClient): Promise<OnboardingState | null> {
+async function refreshOnboarding(client: BubbleClient): Promise<OnboardingState | null> {
 
     // Load server state
     let serverState = await client.fetchPreState();
@@ -223,7 +212,7 @@ export function useNewGlobalController(): [GlobalState, GlobalStateController] {
         }
 
         // Create client with tokenq
-        let client = new SuperClient(axios.create({
+        let client = new BubbleClient(axios.create({
             baseURL: `https://${process.env.EXPO_PUBLIC_SERVER}`,
             headers: {
                 Authorization: `Bearer ${token}`,
@@ -260,7 +249,7 @@ export function useNewGlobalController(): [GlobalState, GlobalStateController] {
                 resetOnboardingState();
 
                 // Create client
-                let client = new SuperClient(axios.create({
+                let client = new BubbleClient(axios.create({
                     baseURL: `https://${process.env.EXPO_PUBLIC_SERVER}`,
                     headers: {
                         Authorization: `Bearer ${token}`,

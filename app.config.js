@@ -1,11 +1,20 @@
+//
+// Parameters
+//
+
 const IS_NEXT = process.env.APP_ENV !== 'production';
+const RUNTIME_VERSION = "9";
+
+//
+// Config
+//
 
 export default {
   "expo": {
     "name": "Bubble",
     "slug": "bubble",
     "version": "1.0.1",
-    "runtimeVersion": "8",
+    "runtimeVersion": RUNTIME_VERSION,
     "orientation": "portrait",
     "icon": IS_NEXT ? './assets/icon_next.png' : "./assets/icon.png",
     "userInterfaceStyle": "dark",
@@ -76,6 +85,9 @@ export default {
     "extra": {
       "eas": {
         "projectId": "37bd4d62-0528-40ac-9dfb-4a9b2d172597"
+      },
+      "bugsnag": {
+        "apiKey": "d6752ef54836994437180027a581b761"
       }
     },
     "owner": "bulkacorp",

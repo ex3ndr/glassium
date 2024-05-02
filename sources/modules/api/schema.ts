@@ -4,6 +4,11 @@ const memoryContent = z.object({
     title: z.string(),
     summary: z.string(),
     image: z.string().nullable(),
+    imageMetadata: z.object({
+        thumbhash: z.string(),
+        width: z.number(),
+        height: z.number()
+    }).nullable().optional()
 });
 export type MemoryContent = z.infer<typeof memoryContent>;
 

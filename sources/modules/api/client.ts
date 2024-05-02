@@ -93,7 +93,7 @@ export class SuperClient {
     }
 
     updates(handler: (seq: number, update: Update | null) => void) {
-        return sse('https://mobile-api.getbubble.org/app/updates', this.token, (update) => {
+        return sse(`https://${process.env.EXPO_PUBLIC_SERVER}/app/updates`, this.token, (update) => {
             let parsed = sseUpdate.safeParse(JSON.parse(update));
             if (!parsed.success) {
                 return;

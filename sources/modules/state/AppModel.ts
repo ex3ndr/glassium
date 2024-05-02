@@ -11,10 +11,13 @@ import { RealtimeModel } from "./RealtimeModel";
 import { EndpointingModule } from "../capture/EndpointingModule";
 import { TokenExpireService } from "./TokenExpireService";
 import { BackgroundService } from "./BackgroundService";
+import PostHog from "posthog-react-native";
+import { getPostHog } from "../../global";
 
 export class AppModel {
     readonly client: SuperClient;
     readonly jotai: Jotai;
+    readonly posthog: PostHog;
     readonly sessions: SessionsModel;
     readonly wearable: WearableModule;
     readonly updates: UpdatesModel;
@@ -27,6 +30,7 @@ export class AppModel {
 
     constructor(client: SuperClient) {
         this.client = client;
+        this.posthog = getPostHog();
         this.jotai = createStore();
         this.sessions = new SessionsModel(client, this.jotai);
         this.wearable = new WearableModule(this.jotai);

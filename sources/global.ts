@@ -6,6 +6,7 @@ import * as Notifications from 'expo-notifications';
 import { AppModel } from './modules/state/AppModel';
 import { cleanAndReload } from './modules/reload/cleanAndReload';
 import { backoff } from './utils/time';
+import PostHog from 'posthog-react-native';
 
 const ONBOARDING_VERSION = 1; // Increment this to reset onboarding
 
@@ -88,12 +89,22 @@ export function loadAppModelIfNeeded() {
 
     // Create client
     let client = new SuperClient(axios.create({
-        baseURL: 'https://mobile-api.getbubble.org',
+        baseURL: `https://${process.env.EXPO_PUBLIC_SERVER}`,
         headers: {
             Authorization: `Bearer ${token}`,
         },
     }), token);
     globalAppModel = new AppModel(client);
+}
+
+//
+// PostHog
+//
+
+const posthog = new PostHog(process.env.EXPO_PUBLIC_POSTHOG_TOKEN!, { disabled: __DEV__, host: process.env.EXPO_PUBLIC_POSTHOG_HOST });
+
+export function getPostHog() {
+    return posthog;
 }
 
 //
@@ -213,7 +224,7 @@ export function useNewGlobalController(): [GlobalState, GlobalStateController] {
 
         // Create client with tokenq
         let client = new SuperClient(axios.create({
-            baseURL: 'https://mobile-api.getbubble.org',
+            baseURL: `https://${process.env.EXPO_PUBLIC_SERVER}`,
             headers: {
                 Authorization: `Bearer ${token}`,
             },
@@ -250,7 +261,7 @@ export function useNewGlobalController(): [GlobalState, GlobalStateController] {
 
                 // Create client
                 let client = new SuperClient(axios.create({
-                    baseURL: 'https://mobile-api.getbubble.org',
+                    baseURL: `https://${process.env.EXPO_PUBLIC_SERVER}`,
                     headers: {
                         Authorization: `Bearer ${token}`,
                     },

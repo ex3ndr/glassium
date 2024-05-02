@@ -5,7 +5,7 @@ export default {
     "name": "Bubble",
     "slug": "bubble",
     "version": "1.0.1",
-    "runtimeVersion": "7",
+    "runtimeVersion": "8",
     "orientation": "portrait",
     "icon": IS_NEXT ? './assets/icon_next.png' : "./assets/icon.png",
     "userInterfaceStyle": "dark",

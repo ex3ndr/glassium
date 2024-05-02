@@ -1,11 +1,13 @@
-{
+const IS_NEXT = process.env.APP_ENV !== 'production';
+
+export default {
   "expo": {
     "name": "Bubble",
     "slug": "bubble",
     "version": "1.0.1",
     "runtimeVersion": "7",
     "orientation": "portrait",
-    "icon": "./assets/icon.png",
+    "icon": IS_NEXT ? './assets/icon_next.png' : "./assets/icon.png",
     "userInterfaceStyle": "dark",
     "splash": {
       "backgroundColor": "#000"

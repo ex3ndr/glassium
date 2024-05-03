@@ -25,6 +25,7 @@ export class WearableModule {
     onStreamingStart?: (sr: 8000 | 16000) => void;
     onStreamingStop?: () => void;
     onStreamingFrame?: (data: Int16Array) => void;
+    #lastDropNotification = uptime();
     #startAt = uptime();
     #device: DeviceModel | null = null;
     #profile: DeviceProfile | null = null;
@@ -352,6 +353,10 @@ export class WearableModule {
 
     #onStreamingFrame = (data: Uint8Array) => {
         if (!this.#protocol || this.#protocolMuted) {
+            if (this.#lastDropNotification + 1000 < uptime()) {
+                log('BT', 'Streaming frame dropped, because: ' + (!this.#protocol ? 'no protocol' : 'muted'));
+                this.#lastDropNotification = uptime();
+            }
             return;
         }
 

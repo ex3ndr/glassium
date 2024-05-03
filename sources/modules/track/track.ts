@@ -1,7 +1,8 @@
 import PostHog from "posthog-react-native";
 import { PostHogCaptureOptions } from "posthog-react-native/lib/posthog-core/src";
+import { POSTHOG_SERVER, POSTHOG_TOKEN } from "../../config";
 
-const posthog = new PostHog(process.env.EXPO_PUBLIC_POSTHOG_TOKEN!, { disabled: __DEV__, host: process.env.EXPO_PUBLIC_POSTHOG_HOST });
+const posthog = new PostHog(POSTHOG_TOKEN!, { host: POSTHOG_SERVER });
 
 export function track(event: string, properties?: { [key: string]: any; }, options?: PostHogCaptureOptions) {
     getPostHog().capture(event, properties, options);

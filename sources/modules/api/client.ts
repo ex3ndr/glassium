@@ -2,6 +2,7 @@ import { Axios } from "axios";
 import { backoff } from "../../utils/time";
 import { Schema, Update, Updates, sseUpdate } from "./schema";
 import { sse } from "./sse";
+import { SERVER_ENDPOINT } from "../../config";
 
 export class BubbleClient {
 
@@ -93,7 +94,7 @@ export class BubbleClient {
     }
 
     updates(handler: (seq: number, update: Update | null) => void) {
-        return sse(`https://${process.env.EXPO_PUBLIC_SERVER}/app/updates`, this.token, (update) => {
+        return sse(`https://${SERVER_ENDPOINT}/app/updates`, this.token, (update) => {
             let parsed = sseUpdate.safeParse(JSON.parse(update));
             if (!parsed.success) {
                 return;

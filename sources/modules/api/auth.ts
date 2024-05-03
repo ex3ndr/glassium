@@ -1,6 +1,7 @@
 import axios from 'axios';
 import * as z from 'zod';
 import { HappyError } from '../errors/HappyError';
+import { SERVER_ENDPOINT } from '../../config';
 
 export async function requestPhoneAuth(phone: string, key: string) {
     let schema = z.union([z.object({
@@ -9,7 +10,7 @@ export async function requestPhoneAuth(phone: string, key: string) {
         ok: z.literal(false),
         error: z.union([z.literal('too_many_attempts'), z.literal('invalid_number')])
     })]);
-    let res = await axios.post(`https://${process.env.EXPO_PUBLIC_SERVER}/auth/start`, { phone, key });
+    let res = await axios.post(`https://${SERVER_ENDPOINT}/auth/start`, { phone, key });
     let body = schema.safeParse(res.data);
     if (!body.success) {
         throw new Error('Invalid response');
@@ -33,7 +34,7 @@ export async function requestPhoneAuthVerify(phone: string, key: string, code: s
         ok: z.literal(false),
         error: z.union([z.literal('invalid_number'), z.literal('invalid_code'), z.literal('expired_code')])
     })]);
-    let res = await axios.post(`https://${process.env.EXPO_PUBLIC_SERVER}/auth/verify`, { phone, key, code });
+    let res = await axios.post(`https://${SERVER_ENDPOINT}/auth/verify`, { phone, key, code });
     let body = schema.safeParse(res.data);
     if (!body.success) {
         throw new Error('Invalid response');

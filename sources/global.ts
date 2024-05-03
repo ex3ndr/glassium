@@ -6,6 +6,7 @@ import * as Notifications from 'expo-notifications';
 import { AppModel } from './modules/state/AppModel';
 import { cleanAndReload } from './modules/reload/cleanAndReload';
 import { backoff } from './utils/time';
+import { SERVER_ENDPOINT } from './config';
 
 const ONBOARDING_VERSION = 1; // Increment this to reset onboarding
 
@@ -88,7 +89,7 @@ export function loadAppModelIfNeeded() {
 
     // Create client
     let client = new BubbleClient(axios.create({
-        baseURL: `https://${process.env.EXPO_PUBLIC_SERVER}`,
+        baseURL: `https://${SERVER_ENDPOINT}`,
         headers: {
             Authorization: `Bearer ${token}`,
         },
@@ -213,7 +214,7 @@ export function useNewGlobalController(): [GlobalState, GlobalStateController] {
 
         // Create client with tokenq
         let client = new BubbleClient(axios.create({
-            baseURL: `https://${process.env.EXPO_PUBLIC_SERVER}`,
+            baseURL: `https://${SERVER_ENDPOINT}`,
             headers: {
                 Authorization: `Bearer ${token}`,
             },
@@ -250,7 +251,7 @@ export function useNewGlobalController(): [GlobalState, GlobalStateController] {
 
                 // Create client
                 let client = new BubbleClient(axios.create({
-                    baseURL: `https://${process.env.EXPO_PUBLIC_SERVER}`,
+                    baseURL: `https://${SERVER_ENDPOINT}`,
                     headers: {
                         Authorization: `Bearer ${token}`,
                     },

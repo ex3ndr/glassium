@@ -9,6 +9,8 @@ export type ViewSession = {
     id: string,
     index: number,
     state: 'starting' | 'processing' | 'finished' | 'canceled' | 'in-progress',
+    created: number,
+    classification: string | null,
     audio: {
         duration: number,
         size: number
@@ -19,10 +21,12 @@ export type ViewSessionFull = {
     id: string,
     index: number,
     state: 'starting' | 'processing' | 'finished' | 'canceled' | 'in-progress',
+    created: number,
     audio: {
         duration: number,
         size: number
     } | null,
+    classification: string | null,
     text: string | null
 };
 
@@ -40,7 +44,7 @@ export class SessionsModel {
         this.jotai = jotai;
 
         // Load initial
-        let ex = storage.getString('sessions');
+        let ex = storage.getString('sessions-3');
         if (ex) {
             this.#sessions = JSON.parse(ex);
             this.jotai.set(this.sessions, this.#filter(this.#sessions!));
@@ -49,7 +53,7 @@ export class SessionsModel {
         // Refresh
         this.#refresh = new InvalidateSync(async () => {
             let loaded = await this.client.listSessions();
-            this.#applySessions(loaded.sessions.map((v) => ({ id: v.id, index: v.index, state: v.state, audio: v.audio })));
+            this.#applySessions(loaded.sessions.map((v) => ({ id: v.id, index: v.index, state: v.state, audio: v.audio, created: v.created, classification: v.classification })));
         });
     }
 
@@ -132,7 +136,9 @@ export class SessionsModel {
                     index: res.session.index,
                     state: res.session.state,
                     audio: res.session.audio,
-                    text: res.session.text
+                    text: res.session.text,
+                    created: res.session.created,
+                    classification: res.session.classification
                 });
             });
         }, []);

@@ -23,6 +23,7 @@ export const SessionScreen = React.memo(() => {
         <ScrollView style={{ backgroundColor: Theme.background }} contentContainerStyle={{ paddingBottom: safeArea.bottom }}>
             <Item title={'Session #' + (session.index + 1)} />
             <Text style={{ color: Theme.text, paddingHorizontal: 16 }}>Status: {session.state}</Text>
+            {session.classification ? <Text style={{ color: Theme.text, paddingHorizontal: 16 }}>Classification: {session.classification}</Text> : null}
             {session.audio ? <Text style={{ color: Theme.text, paddingHorizontal: 16 }}>Duration: {humanizeDuration(session.audio.duration, { units: ["h", "m", "s"] })}</Text> : null}
             {session.text && (
                 <>

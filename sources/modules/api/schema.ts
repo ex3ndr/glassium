@@ -25,6 +25,11 @@ const udpateSessionCreated = z.object({
     index: z.number(),
     created: z.number()
 });
+const udpateSessionClassified = z.object({
+    type: z.literal('session-classified'),
+    id: z.string(),
+    class: z.string()
+});
 const updateSessionUpdated = z.object({
     type: z.literal('session-updated'),
     id: z.string(),
@@ -55,14 +60,15 @@ const updateMemoryUpdated = z.object({
     index: z.number(),
     memory: memoryContent
 });
-export const Updates = z.union([udpateSessionCreated, updateSessionUpdated, updateSessionAudio, updateSessionTranscription, updateMemoryCreated, updateMemoryUpdated]);
+export const Updates = z.union([udpateSessionCreated, updateSessionUpdated, updateSessionAudio, updateSessionTranscription, updateMemoryCreated, updateMemoryUpdated, udpateSessionClassified]);
 export type UpdateSessionCreated = z.infer<typeof udpateSessionCreated>;
 export type UpdateSessionUpdated = z.infer<typeof updateSessionUpdated>;
 export type UpdateSessionAudio = z.infer<typeof updateSessionAudio>;
 export type UpdateSessionTranscription = z.infer<typeof updateSessionTranscription>;
+export type UpdateSessionClassified = z.infer<typeof udpateSessionClassified>;
 export type UpdateMemoryCreated = z.infer<typeof updateMemoryCreated>;
 export type UpdateMemoryUpdated = z.infer<typeof updateMemoryUpdated>;
-export type Update = UpdateSessionCreated | UpdateSessionUpdated | UpdateSessionAudio | UpdateSessionTranscription | UpdateMemoryCreated | UpdateMemoryUpdated;
+export type Update = UpdateSessionCreated | UpdateSessionUpdated | UpdateSessionAudio | UpdateSessionTranscription | UpdateMemoryCreated | UpdateMemoryUpdated | UpdateSessionClassified;
 
 const session = z.object({
     id: z.string(),
@@ -72,6 +78,7 @@ const session = z.object({
         duration: z.number(),
         size: z.number(),
     }).nullable(),
+    classification: z.string().nullable(),
     state: z.union([z.literal('starting'), z.literal('in-progress'), z.literal('processing'), z.literal('finished'), z.literal('canceled')])
 });
 export type Session = z.infer<typeof session>;

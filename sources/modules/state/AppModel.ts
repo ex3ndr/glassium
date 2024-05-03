@@ -71,13 +71,15 @@ export class AppModel {
     #handleUpdate = async (update: Update) => {
         // console.warn(update);
         if (update.type === 'session-created') {
-            this.sessions.apply({ id: update.id, index: update.index, state: 'starting', audio: null });
+            this.sessions.apply({ id: update.id, index: update.index, state: 'starting', audio: null, classification: null, created: update.created });
         } else if (update.type === 'session-updated') {
             this.sessions.applyPartial({ id: update.id, state: update.state });
         } else if (update.type === 'session-audio-updated') {
             this.sessions.applyPartial({ id: update.id, audio: update.audio });
         } else if (update.type === 'session-transcribed') {
             this.sessions.applyPartialFull({ id: update.id, text: update.transcription });
+        } else if (update.type === 'session-classified') {
+            this.sessions.applyPartial({ id: update.id, classification: update.class });
         }
     }
 }

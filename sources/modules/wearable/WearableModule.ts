@@ -11,6 +11,8 @@ import { AudioCodec, createCodec, createSkipCodec } from "../media/audioCodec";
 import { BluetoothModel } from "./bluetooth/bt";
 import { isDiscoveredDeviceSupported } from "./protocol/scan";
 import { bluetoothServices } from "./protocol/services";
+import { track } from "../track/track";
+import { uptime } from "../../utils/uptime";
 
 export class WearableModule {
     private static lock = new AsyncLock(); // Use static lock to prevent multiple BT operations
@@ -23,6 +25,7 @@ export class WearableModule {
     onStreamingStart?: (sr: 8000 | 16000) => void;
     onStreamingStop?: () => void;
     onStreamingFrame?: (data: Int16Array) => void;
+    #startAt = uptime();
     #device: DeviceModel | null = null;
     #profile: DeviceProfile | null = null;
     #protocol: ProtocolDefinition | null = null;
@@ -91,9 +94,11 @@ export class WearableModule {
             let result = await this.bluetooth.start();
             if (result === 'denied') {
                 this.jotai.set(this.pairingStatus, 'denied');
+                track('wearable_bluetooth_denied');
                 return;
             } else if (result === 'failure') {
                 this.jotai.set(this.pairingStatus, 'unavailable');
+                track('wearable_bluetooth_unavailable');
                 return;
             }
 
@@ -197,6 +202,7 @@ export class WearableModule {
             // Update state
             storage.set('wearable-device', JSON.stringify(profile));
             this.jotai.set(this.pairingStatus, 'ready');
+            track('wearable_device_added');
 
             // Notify
             if (this.onDevicePaired) {
@@ -222,6 +228,7 @@ export class WearableModule {
             // Update state
             storage.delete('wearable-device');
             this.jotai.set(this.pairingStatus, 'need-pairing');
+            track('wearable_device_removed');
 
             // Notify
             if (this.onDeviceUnpaired) {
@@ -242,6 +249,7 @@ export class WearableModule {
         }
         this.#needStreaming = true;
         log('BT', 'Need streaming = true');
+        track('wearable_local_mute', { mute: false });
 
         // Update device
         return WearableModule.lock.inLock(async () => {
@@ -258,6 +266,7 @@ export class WearableModule {
         }
         this.#needStreaming = false;
         log('BT', 'Need streaming = false');
+        track('wearable_local_mute', { mute: true });
 
         // Update device
         return WearableModule.lock.inLock(async () => {
@@ -279,6 +288,7 @@ export class WearableModule {
         this.#streamTimeoutCancel();
         this.#protocolTimeout = setTimeout(() => {
             log('BT', 'Streaming timeout');
+            track('wearable_streaming_timeout');
             this.#protocolTimeout = null;
             if (this.#protocolStarted) {
                 this.#protocolStarted = false;
@@ -290,6 +300,8 @@ export class WearableModule {
     }
 
     #onStreamingStart = (protocol: ProtocolDefinition, mute: boolean) => {
+        track('wearable_streaming_start', { device_kind: protocol.kind, codec: protocol.codec, mute: false });
+        this.#startAt = uptime();
         this.#protocolMuted = mute;
         this.#protocol = protocol;
         let codec: AudioCodec;
@@ -314,6 +326,7 @@ export class WearableModule {
             return;
         }
         this.#protocolMuted = mute;
+        track('wearable_streaming_mute', { mute });
 
         // Update codec
         if (this.#protocolCodec) {
@@ -373,6 +386,7 @@ export class WearableModule {
 
     #onStreamingStop = () => {
         log('BT', 'Streaming stopped');
+        track('wearable_streaming_stop', { duration: uptime() - this.#startAt });
 
         // Reset state
         let wasStarted = this.#protocolStarted;

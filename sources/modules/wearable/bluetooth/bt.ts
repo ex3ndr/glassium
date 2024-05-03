@@ -2,6 +2,9 @@ import * as b64 from 'react-native-quick-base64';
 import { BleManager, BleRestoredState, Device, State, Subscription } from "react-native-ble-plx";
 import { BTDevice, BTDiscoveredDevice, BTService, BluetoothModelInterface, BluetoothStartResult } from "./types";
 import { PermissionsAndroid, Platform } from 'react-native';
+import { log } from '../../../utils/logs';
+import { uptime } from '../../../utils/uptime';
+import { track } from '../../track/track';
 
 export class BluetoothModel implements BluetoothModelInterface {
     readonly isPersistent: boolean = true;
@@ -108,20 +111,31 @@ export class BluetoothModel implements BluetoothModelInterface {
 
         // Connect to the device
         let btDevice: Device;
+        let start = uptime();
+        log('Bluetooth', 'Connecting to device:' + id)
         try {
             btDevice = await this.#manager.connectToDevice(id, {
-                requestMTU: 250, 
+                requestMTU: 250,
                 // timeout: 5000 // NOTE: There is a bug in the library that causes this to drop connections on Android
             });
         } catch (error) {
-            console.error(error);
+            // console.error(error);
             return null;
         }
-        let name = btDevice.name || 'Unknown';
-        let services: BTService[] = [];
+        let elapsed = uptime() - start;
+        track('ble_connected', { elapsed });
+        log('BT', 'Device connected in ' + elapsed + 'ms');
 
         // Collect all services and characteristics
+        start = uptime();
         await this.#manager.discoverAllServicesAndCharacteristicsForDevice(btDevice.id);
+        elapsed = uptime() - start;
+        track('ble_services_loaded', { elapsed });
+        log('BT', 'Services loaded in ' + elapsed + 'ms');
+
+        // Paramters
+        let name = btDevice.name || 'Unknown';
+        let services: BTService[] = [];
 
         // Populate services
         for (let s of await btDevice.services()) {
@@ -144,7 +158,7 @@ export class BluetoothModel implements BluetoothModelInterface {
                     subscribe: (callback: (data: Uint8Array) => void) => {
                         let subs = c.monitor((error, value) => {
                             if (error) {
-                                console.error(error);
+                                // console.error(error);
                             } else {
                                 callback(b64.toByteArray(value!.value!));
                             }
@@ -196,7 +210,9 @@ export class BluetoothModel implements BluetoothModelInterface {
                 };
             },
             async disconnect() {
-                await btDevice.cancelConnection();
+                if (connected) {
+                    await btDevice.cancelConnection();
+                }
             }
         };
     }

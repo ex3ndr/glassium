@@ -7,6 +7,8 @@ import { backoff } from "../../utils/time";
 import { BTDevice } from "./bluetooth/types";
 import { BluetoothModel } from "./bluetooth/bt";
 import { bluetoothServices } from "./protocol/services";
+import { uptime } from "../../utils/uptime";
+import { track } from "../track/track";
 
 export class DeviceModel {
     static #lock = new AsyncLock(); // Use static lock to prevent multiple BT operations
@@ -65,10 +67,10 @@ export class DeviceModel {
         }
     }
 
-    #cleanupDevice = () => {
+    #cleanupDevice = async () => {
 
         // Device is disconnected
-        this.#device?.disconnect();
+        await this.#device?.disconnect();
         this.#device = null;
         this.#deviceBattery = null;
         this.#deviceMuted = null;
@@ -100,7 +102,7 @@ export class DeviceModel {
             if (this.#device && (!this.#device.connected || this.#needStop)) {
 
                 // Remove all subscriptions
-                this.#cleanupDevice();
+                await this.#cleanupDevice();
 
                 // Update UI
                 this.#flushUI();
@@ -120,7 +122,6 @@ export class DeviceModel {
                 }
                 this.#device = dev;
                 dev.onDisconnected(() => { log('BT', 'Device disconnected notification'); this.#sync.invalidate(); });
-                log('BT', 'Device connected');
                 // this.#flushUI(); NOTE: We are not flushing on disconnect and wait for the auxlulary services to load
             }
 
@@ -190,11 +191,15 @@ export class DeviceModel {
                 log('BT', 'Need streaming: subscribing');
 
                 // Resolve protocol
+                let start = uptime();
                 const protocol = await resolveProtocol(this.#device);
                 if (!protocol) {
                     log('BT', 'Protocol not found');
                     throw new Error('Protocol not found'); // Should not happen
                 }
+                let elapsed = uptime() - start;
+                log('BT', 'Protocol resolved in ' + elapsed + 'ms');
+                track('device_connected', { elapsed });
 
                 // Subscribe
                 let started = false;

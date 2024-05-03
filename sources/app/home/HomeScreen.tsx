@@ -46,7 +46,8 @@ const MemoryComponent = React.memo((props: { memory: Memory }) => {
     if (props.memory.image && props.memory.imageMetadata) {
         image = (
             <Image
-                source={{ uri: props.memory.image, thumbhash: props.memory.imageMetadata.thumbhash }}
+                source={{ uri: props.memory.image }}
+                placeholder={{ thumbhash: props.memory.imageMetadata.thumbhash }}
                 style={{ width: 'auto', height: 'auto', aspectRatio: props.memory.imageMetadata.width / props.memory.imageMetadata.height, borderTopLeftRadius: 16, borderTopRightRadius: 16 }}
 
             />
@@ -56,9 +57,9 @@ const MemoryComponent = React.memo((props: { memory: Memory }) => {
     }
 
     return (
-        <Pressable key={props.memory.id} style={{ marginHorizontal: 16, marginVertical: 16, borderRadius: 16, borderWidth: 0.5, borderColor: '#272727', flexDirection: 'column', backgroundColor: 'white' }} onPress={() => router.navigate('memory', { data: props.memory })}>
+        <Pressable key={props.memory.id} style={{ marginHorizontal: 16, marginVertical: 16, borderRadius: 16, borderWidth: 0.5, borderColor: '#272727', flexDirection: 'column' }} onPress={() => router.navigate('memory', { data: props.memory })}>
             {image}
-            <View style={{ flexDirection: 'column', flexGrow: 1, flexBasis: 0, marginTop: 8, marginHorizontal: 8, marginBottom: 16 }}>
+            <View style={{ flexDirection: 'column', flexGrow: 1, flexBasis: 0, paddingTop: 8, paddingHorizontal: 8, paddingBottom: 16, backgroundColor: 'white', borderBottomLeftRadius: 16, borderBottomRightRadius: 16 }}>
                 <Text style={{ fontSize: 16, color: Theme.textInverted }} numberOfLines={3}>{props.memory.title}</Text>
                 <Text style={{ fontSize: 14, opacity: 0.6, color: Theme.textInverted }} numberOfLines={2}>{props.memory.summary.replaceAll('\n', ' ')}</Text>
             </View>

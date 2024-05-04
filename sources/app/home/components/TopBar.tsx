@@ -4,12 +4,14 @@ import { Ionicons } from '@expo/vector-icons';
 import { Theme } from '../../../theme';
 import { useAppModel } from '../../../global';
 import { BatteryComponent } from './BatteryComponent';
+import { useAtomValue } from 'jotai';
 
 export const TopBar = React.memo(() => {
     const appModel = useAppModel();
     const capture = appModel.capture.use();
     const wearable = appModel.useWearable();
     const endpointing = appModel.endpointing.use();
+    const debug = useAtomValue(appModel.debug.enabled);
 
     // Resolve title and subtitle
     let title = 'Bubble';
@@ -17,6 +19,9 @@ export const TopBar = React.memo(() => {
     let subtitleStyle: 'secondary' | 'warning' | 'active' = 'secondary';
     let battery: number | null = null;
     let enableMuteButton = false;
+    if (debug) {
+        title = 'Bubble (Debug)';
+    }
 
     if (wearable.pairing === 'denied') {
         subtitle = 'pairing denied';

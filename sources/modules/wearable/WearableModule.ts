@@ -13,9 +13,11 @@ import { bluetoothServices } from "./protocol/services";
 import { track } from "../track/track";
 import { uptime } from "../../utils/uptime";
 import { AsyncLock } from "../../utils/lock";
+import { DebugService } from "../state/DebugService";
 
 export class WearableModule {
     private static lock = new AsyncLock(); // Use static lock to prevent multiple BT operations
+    readonly debug: DebugService;
     readonly jotai: Jotai;
     readonly pairingStatus = atom<'loading' | 'need-pairing' | 'ready' | 'denied' | 'unavailable'>('loading');
     readonly discoveryStatus = atom<{ devices: { name: string, id: string }[] } | null>(null);
@@ -53,8 +55,9 @@ export class WearableModule {
     });
     #discoveryCancel: (() => void) | null = null;
 
-    constructor(jotai: Jotai) {
+    constructor(jotai: Jotai, debug: DebugService) {
         this.jotai = jotai;
+        this.debug = debug;
 
         // Auto-load if persistent
         if (this.bluetooth.isPersistent) {
@@ -210,6 +213,9 @@ export class WearableModule {
                 this.onDevicePaired();
             }
 
+            // Debug
+            this.debug.onDeviceConnected(protocol);
+
             return 'ok' as const;
         });
     }
@@ -235,6 +241,9 @@ export class WearableModule {
             if (this.onDeviceUnpaired) {
                 this.onDeviceUnpaired();
             }
+
+            // Debug
+            this.debug.onDeviceDisconnected();
 
             return 'ok' as const;
         });
@@ -293,9 +302,7 @@ export class WearableModule {
             this.#protocolTimeout = null;
             if (this.#protocolStarted) {
                 this.#protocolStarted = false;
-                if (this.onStreamingStop) {
-                    this.onStreamingStop();
-                }
+                this.#notifyStreamingStop();
             }
         }, 5000);
     }
@@ -305,6 +312,8 @@ export class WearableModule {
         this.#startAt = uptime();
         this.#protocolMuted = mute;
         this.#protocol = protocol;
+
+        // Resolve codec
         let codec: AudioCodec;
         if (protocol.codec === 'pcm-16' || protocol.codec === 'pcm-8') {
             codec = createCodec('pcm');
@@ -344,9 +353,7 @@ export class WearableModule {
             if (this.#protocolStarted) {
                 this.#protocolStarted = false;
                 log('BT', 'Streaming stopped on mute');
-                if (this.onStreamingStop) {
-                    this.onStreamingStop();
-                }
+                this.#notifyStreamingStop();
             }
         }
     }
@@ -363,30 +370,26 @@ export class WearableModule {
         // If not started, start
         if (!this.#protocolStarted) {
             this.#protocolStarted = true;
-            if (this.onStreamingStart) {
-                let sr = (this.#protocol.codec === 'mulaw-8' || this.#protocol.codec === 'pcm-8') ? 8000 as const : 16000 as const;
-                this.onStreamingStart(sr);
-            }
+            this.#notifyStreamingStart(this.#protocol.samplingRate);
         }
 
         // Update last frame time
         this.#streamTimeoutBump();
 
         // Callback
-        if (this.onStreamingFrame) {
+        // if (this.onStreamingFrame) {
 
-            // Source
-            if (this.#protocol.kind === 'super') {
-                // Cut the first 3 bytes
-                data = data.slice(3); // Slice array breaks some optimizations
-            }
-
-            // Convert to samples
-            let samples = this.#protocolCodec!.decode(data);
-
-            // Callback
-            this.onStreamingFrame(samples);
+        // Source
+        if (this.#protocol.kind === 'super') {
+            // Cut the first 3 bytes
+            data = data.slice(3); // Slice array breaks some optimizations
         }
+
+        // Convert to samples
+        let samples = this.#protocolCodec!.decode(data);
+
+        // Notify
+        this.#notifyStreamingFrame(samples);
     }
 
     #onStreamingStop = () => {
@@ -406,7 +409,44 @@ export class WearableModule {
         }
 
         // Callback
-        if (this.onStreamingStop && wasStarted) {
+        if (wasStarted) {
+            this.#notifyStreamingStop();
+        }
+    }
+
+    //
+    // Notifications
+    //
+
+    #notifyStreamingStart = (sr: 8000 | 16000) => {
+
+        // Debug
+        this.debug.onCaptureStart(sr);
+
+        // Callback
+        if (this.onStreamingStart) {
+            this.onStreamingStart(sr);
+        }
+    }
+
+    #notifyStreamingFrame = (data: Int16Array) => {
+        
+        // Debug
+        this.debug.onCaptureFrame(data);
+
+        // Callback
+        if (this.onStreamingFrame) {
+            this.onStreamingFrame(data);
+        }
+    }
+
+    #notifyStreamingStop = () => {
+
+        // Debug
+        this.debug.onCaptureStop();
+
+        // Callback
+        if (this.onStreamingStop) {
             this.onStreamingStop();
         }
     }

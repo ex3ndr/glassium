@@ -3,11 +3,15 @@ import { isDevMode } from "../devmode";
 
 let logs: string[] = [];
 let subscriptions: ((logs: string[]) => void)[] = [];
+let handler: (line: string) => void = () => { };
 
 export function log(tag: string, src: string) {
+    // Print in debug
     if (__DEV__) {
         console.log('[' + tag + ']: ' + src);
     }
+
+    // Store in logs if enabled
     if (isDevMode()) {
         logs.push('[' + tag + ']: ' + src);
         if (logs.length > 1000) {
@@ -15,6 +19,13 @@ export function log(tag: string, src: string) {
         }
         subscriptions.forEach(s => s(logs));
     }
+
+    // Store in handler
+    handler('[' + tag + ']: ' + src);
+}
+
+export function setLogHandler(h: (line: string) => void) {
+    handler = h;
 }
 
 export function useLogs() {

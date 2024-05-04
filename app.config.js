@@ -3,7 +3,7 @@
 //
 
 const IS_NEXT = process.env.APP_ENV !== 'production';
-const RUNTIME_VERSION = "9";
+const RUNTIME_VERSION = "10";
 
 //
 // Config

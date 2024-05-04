@@ -11,8 +11,6 @@ import { randomQuote } from '../../modules/fun/randomQuote';
 import * as Application from 'expo-application';
 import * as Update from 'expo-updates';
 import { useSafeAreaInsets } from 'react-native-safe-area-context';
-import { opusStart } from '../../../modules/audio';
-import { storage } from '../../storage';
 import { alert } from '../helpers/alert';
 import { cleanAndReload } from '../../modules/reload/cleanAndReload';
 
@@ -154,12 +152,8 @@ export const SettingsScreen = React.memo(() => {
                     <View style={{ height: 16 }} />
                     <Item title="Developer Mode" />
                     <View style={{ alignItems: 'flex-start', paddingHorizontal: 16, flexDirection: 'column' }}>
-                        {/* <Text style={{ fontSize: 18, color: Theme.text, marginBottom: 16, opacity: 0.8 }}>{quote.text}{'\n\n'}<Text style={{ fontStyle: 'italic' }}>{quote.from}</Text></Text> */}
-                        <RoundButton title={'Restart app'} size='small' action={restartApp} />
-                        <View style={{ height: 16 }} />
-                        <RoundButton title={'View logs'} size='small' onPress={() => router.navigate('logs')} />
-                        <View style={{ height: 16 }} />
-                        <RoundButton title={'Test Opus'} size='small' onPress={() => opusStart()} />
+                        <Text style={{ fontSize: 18, color: Theme.text, marginBottom: 16, opacity: 0.8 }}>{quote.text}{'\n\n'}<Text style={{ fontStyle: 'italic' }}>{quote.from}</Text></Text>
+                        <RoundButton title={'Open developer tools'} size='small' onPress={() => router.navigate('dev')} />
                     </View>
                 </>
             )}

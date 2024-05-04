@@ -6,6 +6,7 @@ export type CodecType = 'pcm-16' | 'pcm-8' | 'mulaw-16' | 'mulaw-8' | 'opus-16';
 export type ProtocolDefinition = {
     kind: 'super' | 'compass',
     codec: CodecType,
+    samplingRate: 8000 | 16000,
     source: BTCharacteristic
 }
 
@@ -44,17 +45,23 @@ async function resolveSuperProtocol(device: BTDevice): Promise<ProtocolDefinitio
         return null;
     }
     let codec: CodecType;
+    let samplingRate: 8000 | 16000;
     let codecId = value[0];
     if (codecId === 0) {
         codec = 'pcm-16';
+        samplingRate = 16000;
     } else if (codecId === 1) {
         codec = 'pcm-8';
+        samplingRate = 8000;
     } else if (codecId === 10) {
         codec = 'mulaw-16'
+        samplingRate = 16000;
     } else if (codecId === 11) {
         codec = 'mulaw-8'
+        samplingRate = 8000;
     } else if (codecId === 20) {
         codec = 'opus-16'
+        samplingRate = 16000;
     } else {
         console.warn('Unknown codec: ' + codecId);
         return null;
@@ -64,6 +71,7 @@ async function resolveSuperProtocol(device: BTDevice): Promise<ProtocolDefinitio
     return {
         kind: 'super',
         codec,
+        samplingRate,
         source: audioCharacteristic
     };
 }
@@ -93,6 +101,7 @@ async function resolveCompasProtocol(device: BTDevice): Promise<ProtocolDefiniti
     return {
         kind: 'compass',
         codec: 'pcm-8' as const,
+        samplingRate: 8000,
         source: audioCharacteristic
     };
 }

@@ -14,6 +14,7 @@ import { BackgroundService } from "./BackgroundService";
 import PostHog from "posthog-react-native";
 import { getPostHog } from "../track/track";
 import { ProfileService } from "./ProfileService";
+import { DebugService } from "./DebugService";
 
 export class AppModel {
     readonly client: BubbleClient;
@@ -29,13 +30,15 @@ export class AppModel {
     readonly tokenExpire: TokenExpireService;
     readonly background: BackgroundService;
     readonly profile: ProfileService;
+    readonly debug: DebugService;
 
     constructor(client: BubbleClient) {
         this.client = client;
         this.posthog = getPostHog();
         this.jotai = createStore();
+        this.debug = new DebugService(this.jotai);
         this.sessions = new SessionsModel(client, this.jotai);
-        this.wearable = new WearableModule(this.jotai);
+        this.wearable = new WearableModule(this.jotai, this.debug);
         this.sync = new SyncModel(client);
         this.realtime = new RealtimeModel(client, this.jotai);
         this.endpointing = new EndpointingModule(this.sync, this.jotai);

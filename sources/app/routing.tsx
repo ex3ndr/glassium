@@ -15,8 +15,9 @@ import { SessionScreen } from './home/settings/Session';
 import { SettingsManageDevice } from './home/settings/SettingsManageDevice';
 import { SessionsScreens } from './home/SessionsScreen';
 import { MemoryScreen } from './memories/MemoryScreen';
-import { LogsScreen } from './home/settings/Logs';
+import { LogsScreen } from './dev/LogsScreen';
 import { Platform } from 'react-native';
+import { DevScreen } from './dev/DevScreen';
 
 export const Stack = createNativeStackNavigator();
 
@@ -51,6 +52,11 @@ export const App = (
             name='logs'
             component={LogsScreen}
             options={{ title: 'Logs' }}
+        />
+        <Stack.Screen
+            name='dev'
+            component={DevScreen}
+            options={{ title: 'Developer' }}
         />
     </>
 );

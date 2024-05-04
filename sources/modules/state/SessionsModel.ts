@@ -2,8 +2,9 @@ import * as React from 'react';
 import { PrimitiveAtom, atom, useAtomValue } from 'jotai';
 import { BubbleClient } from "../api/client";
 import { storage } from '../../storage';
-import { AsyncLock, InvalidateSync } from 'teslabot';
 import { Jotai } from './_types';
+import { InvalidateSync } from '../../utils/sync';
+import { AsyncLock } from '../../utils/lock';
 
 export type ViewSession = {
     id: string,

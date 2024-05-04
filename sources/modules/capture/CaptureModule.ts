@@ -1,10 +1,10 @@
 import { atom, useAtomValue } from "jotai";
 import { Jotai } from "../state/_types";
 import { WearableModule } from "../wearable/WearableModule";
-import { AsyncLock } from "teslabot";
 import { EndpointingModule } from "./EndpointingModule";
 import { storage } from "../../storage";
 import { log } from "../../utils/logs";
+import { AsyncLock } from "../../utils/lock";
 
 export class CaptureModule {
 

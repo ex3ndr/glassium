@@ -1,4 +1,4 @@
-import { AsyncLock } from 'teslabot';
+import { AsyncLock } from '../../sources/utils/lock';
 import AudioModule from './src/AudioModule';
 import { Platform } from 'react-native';
 

@@ -1,4 +1,3 @@
-import { AsyncLock } from "teslabot";
 import { Jotai } from "../state/_types";
 import { atom, useAtomValue } from "jotai";
 import { storage } from "../../storage";
@@ -13,6 +12,7 @@ import { isDiscoveredDeviceSupported } from "./protocol/scan";
 import { bluetoothServices } from "./protocol/services";
 import { track } from "../track/track";
 import { uptime } from "../../utils/uptime";
+import { AsyncLock } from "../../utils/lock";
 
 export class WearableModule {
     private static lock = new AsyncLock(); // Use static lock to prevent multiple BT operations

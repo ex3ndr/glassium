@@ -80,7 +80,6 @@
     "react-native-web": "~0.19.6",
     "react-native-webview": "13.6.4",
     "react-native-worklets-core": "^0.4.0",
-    "teslabot": "^1.5.0",
     "ts-jest": "^29.1.2",
     "wavefile": "^11.0.0",
     "zod": "^3.22.4"

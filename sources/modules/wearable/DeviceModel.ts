@@ -1,14 +1,14 @@
-import { AsyncLock, InvalidateSync } from "teslabot";
 import { log } from "../../utils/logs";
 import { Jotai } from "../state/_types";
 import { atom } from "jotai";
 import { ProtocolDefinition, resolveProtocol } from "./protocol/protocol";
-import { backoff } from "../../utils/time";
 import { BTDevice } from "./bluetooth/types";
 import { BluetoothModel } from "./bluetooth/bt";
 import { bluetoothServices } from "./protocol/services";
 import { uptime } from "../../utils/uptime";
 import { track } from "../track/track";
+import { InvalidateSync } from "../../utils/sync";
+import { AsyncLock } from "../../utils/lock";
 
 export class DeviceModel {
     static #lock = new AsyncLock(); // Use static lock to prevent multiple BT operations
@@ -42,7 +42,7 @@ export class DeviceModel {
             this.id = id;
         }
         this.jotai = jotai;
-        this.#sync = new InvalidateSync(this.#update, { backoff });
+        this.#sync = new InvalidateSync(this.#update);
     }
 
     init = () => {

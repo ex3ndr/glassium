@@ -3,10 +3,10 @@ import { BubbleClient } from "../api/client";
 import { Jotai } from "./_types";
 import { storageGetTyped, storageSetTyped } from '../../storage';
 import { atom, useAtomValue } from 'jotai';
-import { InvalidateSync } from 'teslabot';
 import { AppState } from 'react-native';
 import { posthogIdentity } from '../track/track';
 import { backoff } from '../../utils/time';
+import { InvalidateSync } from '../../utils/sync';
 
 const ProfileSchema = z.object({
     version: z.literal(1),
@@ -50,7 +50,7 @@ export class ProfileService {
             this.jotai.set(this.profile, loaded);
             posthogIdentity(loaded.id)
             storageSetTyped('user-profile', ProfileSchema, { version: 1, body: loaded } satisfies ProfileStorage);
-        }, { backoff });
+        });
         this.#sync.invalidate();
 
         // Refresh on app visible

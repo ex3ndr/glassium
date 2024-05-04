@@ -1,9 +1,9 @@
-import { AsyncLock, InvalidateSync } from "teslabot";
 import { BubbleClient } from "../api/client";
-import { backoff } from "../../utils/time";
 import { Update, Updates } from "../api/schema";
 import { storage } from "../../storage";
 import { log } from "../../utils/logs";
+import { InvalidateSync } from "../../utils/sync";
+import { AsyncLock } from "../../utils/lock";
 
 export class UpdatesModel {
     readonly client: BubbleClient;
@@ -19,7 +19,7 @@ export class UpdatesModel {
         if (s !== undefined) {
             this.#seq = s;
         }
-        this.#sync = new InvalidateSync(this.#doSync, { backoff });
+        this.#sync = new InvalidateSync(this.#doSync);
     }
 
     start() {

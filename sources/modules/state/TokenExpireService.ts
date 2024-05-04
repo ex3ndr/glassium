@@ -1,8 +1,8 @@
-import { InvalidateSync } from "teslabot";
 import { BubbleClient } from "../api/client";
 import { cleanAndReload } from "../reload/cleanAndReload";
 import { AppState } from "react-native";
 import { log } from "../../utils/logs";
+import { InvalidateSync } from "../../utils/sync";
 
 export class TokenExpireService {
     readonly client: BubbleClient;

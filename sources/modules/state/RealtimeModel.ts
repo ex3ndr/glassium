@@ -1,11 +1,10 @@
-import { InvalidateSync } from "teslabot";
 import { Jotai } from "./_types";
 import { AppState } from "react-native";
 import { createClient, LiveClient, LiveTranscriptionEvents } from '@deepgram/sdk';
 import { BubbleClient } from "../api/client";
 import { log } from "../../utils/logs";
-import { backoff } from "../../utils/time";
 import { atom, useAtomValue } from "jotai";
+import { InvalidateSync } from "../../utils/sync";
 
 export class RealtimeModel {
     readonly jotai: Jotai;
@@ -21,7 +20,7 @@ export class RealtimeModel {
     constructor(client: BubbleClient, jotai: Jotai) {
         this.jotai = jotai;
         this.client = client;
-        this.#sync = new InvalidateSync(this.#doSync, { backoff });
+        this.#sync = new InvalidateSync(this.#doSync);
         this.#sync.invalidate();
         AppState.addEventListener('change', () => this.#sync.invalidate());
     }

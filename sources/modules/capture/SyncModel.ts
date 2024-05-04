@@ -1,9 +1,8 @@
-import { InvalidateSync } from "teslabot";
 import { storage } from "../../storage";
 import { BubbleClient } from "../api/client";
-import { backoff } from "../../utils/time";
 import { fromByteArray } from 'react-native-quick-base64';
 import { log } from "../../utils/logs";
+import { InvalidateSync } from "../../utils/sync";
 
 export class SyncModel {
     readonly client: BubbleClient;
@@ -22,7 +21,7 @@ export class SyncModel {
                 this.localEnded.add(keys[i]);
             }
         }
-        this.sync = new InvalidateSync(this.#doSync, { backoff });
+        this.sync = new InvalidateSync(this.#doSync);
         this.sync.invalidate();
     }
 

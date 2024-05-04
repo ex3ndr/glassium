@@ -3,14 +3,13 @@ import { ActivityIndicator, Pressable, ScrollView, Text, View } from 'react-nati
 import { Image } from 'expo-image';
 import { useAppModel } from '../../global';
 import { Theme } from '../../theme';
-import { useAtomValue } from 'jotai';
 import { Memory } from '../../modules/api/schema';
-import { InvalidateSync } from 'teslabot';
 import { backoff } from '../../utils/time';
 import { useSafeAreaInsets } from 'react-native-safe-area-context';
 import { useRouter } from '../../routing';
 import { HomeNotification } from './HomeNotification';
 import { FlashList } from '@shopify/flash-list';
+import { InvalidateSync } from '../../utils/sync';
 
 function useMemories() {
     const app = useAppModel();
@@ -26,7 +25,7 @@ function useMemories() {
                 return;
             }
             setList(memories);
-        }, { backoff });
+        });
         sync.invalidate();
         let inteval = setInterval(() => {
             sync.invalidate();

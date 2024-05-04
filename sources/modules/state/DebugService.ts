@@ -105,7 +105,7 @@ export class DebugService {
             await this.#flush();
 
             // Stop session
-            await this.#stopSession();
+            await this.#resetSession();
         });
         this.jotai.set(this.enabled, false);
     }
@@ -197,11 +197,7 @@ export class DebugService {
     #startSession = async () => {
 
         // Reset session metadata
-        this.#startedAtUptime = uptime();
-        this.#startedAt = Date.now();
-        this.#sessionId = timeBasedId();
-        this.#logs = '';
-        this.#frames = [];
+        await this.#resetSession();
 
         // Append session start log
         this.#log(`Session started at ${this.#startedAt}, uptime: ${this.#startedAtUptime}`);
@@ -214,7 +210,7 @@ export class DebugService {
         }
     }
 
-    #stopSession = async () => {
+    #resetSession = async () => {
 
         // Reset session metadata
         this.#startedAtUptime = uptime();
@@ -222,6 +218,7 @@ export class DebugService {
         this.#sessionId = timeBasedId();
         this.#logs = '';
         this.#frames = [];
+        this.#captured = [];
     }
 
     #flushCapture = async () => {

@@ -13,7 +13,7 @@ import { framesToWav } from '../media/framesToWav';
 import { randomId } from '../crypto/randomId';
 
 function timeBasedId() {
-    return format(new Date().getTime(), 'yyyyMMddHHmm') + randomId(8);
+    return format(new Date().getTime(), 'yyyyMMddHHmm') + '_' + randomId(4);
 }
 
 export class DebugService {

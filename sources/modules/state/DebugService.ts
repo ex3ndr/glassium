@@ -42,6 +42,7 @@ export class DebugService {
 
     // Audio
     #frames: Int16Array[] = [];
+    #framesCount = 0;
 
     constructor(jotai: Jotai) {
         this.jotai = jotai;
@@ -151,7 +152,14 @@ export class DebugService {
                 return;
             }
 
+            // Append frame
             this.#frames.push(frames);
+            this.#framesCount += frames.length;
+
+            // Auto-flush after 5 minutes
+            if (this.#framesCount > 5 * 60 * this.#lastSR!) {
+                await this.#flushCapture();
+            }
         });
     }
 
@@ -218,6 +226,7 @@ export class DebugService {
         this.#sessionId = timeBasedId();
         this.#logs = '';
         this.#frames = [];
+        this.#framesCount = 0;
         this.#captured = [];
     }
 
@@ -228,7 +237,7 @@ export class DebugService {
             let start = uptime();
 
             // Persist audio
-            let wav = framesToWav(this.#lastSR!, this.#frames);
+            let wav = await framesToWav(this.#lastSR!, this.#frames);
 
             // Persist
             let path = `${this.#sessionId}/${this.#deviceCaptureId}.wav`;
@@ -246,6 +255,7 @@ export class DebugService {
         // Reset capture state
         this.#deviceCaptureId = timeBasedId();
         this.#frames = [];
+        this.#framesCount = 0;
     }
 
     #flush = async () => {

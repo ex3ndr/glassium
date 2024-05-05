@@ -1,6 +1,7 @@
 import { WaveFile } from "wavefile";
+import { delay } from "../../utils/time";
 
-export function framesToWav(sr: number, frames: Int16Array[]) {
+export async function framesToWav(sr: number, frames: Int16Array[]) {
 
     // Case for 1 frame
     if (frames.length === 1) {
@@ -16,9 +17,14 @@ export function framesToWav(sr: number, frames: Int16Array[]) {
     }
     let buffer = new Int16Array(total);
     let offset = 0;
+    let count = 0;
     for (let f of frames) {
         buffer.set(f, offset);
         offset += f.length;
+        count++;
+        if (count % 1000 === 0) {
+            await delay(1); // Don't block the main thread
+        }
     }
 
     // Create wav

@@ -170,6 +170,7 @@ export class DebugService {
             }
 
             this.#log(`Capture stopped`);
+            await this.#flushCapture();
         });
     }
 

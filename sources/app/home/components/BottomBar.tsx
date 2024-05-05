@@ -28,13 +28,13 @@ const ActionBarItem = React.memo((props: { icon: string, kind: 'normal' | 'warni
 });
 
 export const BottomBar = React.memo((props: {
-    onPress: (page: 'home' | 'search' | 'sessions' | 'settings') => void,
-    active: 'home' | 'search' | 'sessions' | 'settings'
+    onPress: (page: 'memories' | 'magic' | 'settings') => void,
+    active: 'memories' | 'magic' | 'settings'
 }) => {
     return (
         <View style={{ height: 64, flexDirection: 'row', alignItems: 'stretch', alignSelf: 'stretch', backgroundColor: Theme.background }}>
-            {/* <TabBarItem icon={require('../../assets/toolbox_3d.png')} active={props.active === 'search'} title="Devices" onPress={() => props.onPress('search')} /> */}
-            <TabBarItem icon={require('../../assets/scroll_3d.png')} active={props.active === 'home'} title="Memories" onPress={() => props.onPress('home')} />
+            <TabBarItem icon={require('../../assets/scroll_3d.png')} active={props.active === 'memories'} title="Memories" onPress={() => props.onPress('memories')} />
+            <TabBarItem icon={require('../../assets/sparkles_3d.png')} active={props.active === 'magic'} title="Magic" onPress={() => props.onPress('magic')} />
             {/* <TabBarItem icon={require('../../assets/magnifying_glass_tilted_left_3d.png')} active={props.active === 'search'} title="Search" onPress={() => props.onPress('search')} /> */}
             {/* <TabBarItem icon="search" active={props.active === 'search'} onPress={() => props.onPress('search')} /> */}
             {/* <ActionBarItem icon={props.actionIcon} kind={props.actionStyle} onPress={props.onActionPress} /> */}

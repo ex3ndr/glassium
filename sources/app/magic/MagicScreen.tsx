@@ -29,12 +29,12 @@ export const MagicScreen = React.memo(() => {
             )}
             {feed && feed.items.length === 0 && (
                 <View style={{ flex: 1, justifyContent: 'center', alignItems: 'center' }}>
-                    <ActivityIndicator size="large" color={Theme.text} />
+                    <Text style={{ color: Theme.text, fontSize: 24, opacity: 0.7 }}>Soon.</Text>
                 </View>
             )}
             {!feed && (
                 <View style={{ flex: 1, justifyContent: 'center', alignItems: 'center' }}>
-                    <Text style={{ color: Theme.text, fontSize: 24, opacity: 0.7 }}>Soon.</Text>
+                    <ActivityIndicator size="large" color={Theme.text} />
                 </View>
             )}
             <View style={{ position: 'absolute', bottom: safeArea.bottom + 64, left: 0, right: 0 }}>

@@ -4,20 +4,13 @@ import { useSafeAreaInsets } from 'react-native-safe-area-context';
 import { Theme } from '../../theme';
 import { useRouter } from '../../routing';
 import { useAppModel } from '../../global';
-import { FlashList } from '@shopify/flash-list';
-import { FeedViewItem } from '../../modules/state/FeedService';
-import { FeedItemComponent } from './feed/FeedItem';
 import { Feed } from './feed/Feed';
-
 
 export const MagicScreen = React.memo(() => {
     const safeArea = useSafeAreaInsets();
     const router = useRouter();
     const app = useAppModel();
     const feed = app.feed.use();
-    const itemRender = React.useCallback((args: { item: FeedViewItem }) => {
-        return <FeedItemComponent item={args.item} app={app} />
-    }, [app]);
 
     return (
         <View style={{ flexGrow: 1, paddingBottom: safeArea.bottom + 64 }}>

@@ -7,14 +7,23 @@ import * as z from 'zod';
 export type Content = {
     kind: 'unknown'
 } | {
+    kind: 'transcription',
+    transcription: { sender: string, text: string }[] | string
+} | {
     kind: 'text',
     text: string;
 }
 
-export const contentCodec = z.object({
+export const contentCodec = z.union([z.object({
     kind: z.literal('text'),
     text: z.string()
-});
+}), z.object({
+    kind: z.literal('transcription'),
+    transcription: z.union([z.string(), z.array(z.object({
+        sender: z.string(),
+        text: z.string()
+    }))])
+})]);
 
 //
 // Memory

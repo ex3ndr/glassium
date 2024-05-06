@@ -9,7 +9,7 @@ import { HomeScreen } from './home/HomeScreen';
 import { SearchScreen } from './home/SearchScreen';
 import { SettingsScreen } from './home/SettingsScreen';
 import { storage } from '../storage';
-import { MagicScreen } from './home/MagicScreen';
+import { MagicScreen } from './magic/MagicScreen';
 
 export const RootScreen = React.memo(() => {
     const safeArea = useSafeAreaInsets();

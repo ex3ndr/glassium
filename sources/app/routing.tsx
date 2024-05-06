@@ -18,6 +18,7 @@ import { MemoryScreen } from './memories/MemoryScreen';
 import { LogsScreen } from './dev/LogsScreen';
 import { Platform } from 'react-native';
 import { DevScreen } from './dev/DevScreen';
+import { NewThreadScreen } from './magic/NewThreadScreen';
 
 export const Stack = createNativeStackNavigator();
 
@@ -57,6 +58,11 @@ export const App = (
             name='dev'
             component={DevScreen}
             options={{ title: 'Developer' }}
+        />
+        <Stack.Screen
+            name='new-thread'
+            component={NewThreadScreen}
+            options={{ title: 'Thread', presentation: Platform.OS === 'ios' ? 'formSheet' : 'card' }}
         />
     </>
 );

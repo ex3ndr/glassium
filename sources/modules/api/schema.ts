@@ -1,5 +1,25 @@
 import * as z from 'zod';
 
+//
+// Content
+//
+
+export type Content = {
+    kind: 'unknown'
+} | {
+    kind: 'text',
+    text: string;
+}
+
+export const contentCodec = z.object({
+    kind: z.literal('text'),
+    text: z.string()
+});
+
+//
+// Memory
+//
+
 const memoryContent = z.object({
     title: z.string(),
     summary: z.string(),
@@ -157,5 +177,30 @@ export const Schema = {
             username: z.string(),
             phone: z.string().nullable(),
         })
+    }),
+    users: z.object({
+        ok: z.literal(true),
+        users: z.array(z.object({
+            id: z.string(),
+            firstName: z.string(),
+            lastName: z.string().nullable(),
+            username: z.string(),
+            bot: z.boolean(),
+            system: z.boolean(),
+        }))
+    }),
+    feedState: z.object({
+        ok: z.literal(true),
+        seqno: z.number(),
+    }),
+    feedList: z.object({
+        ok: z.literal(true),
+        items: z.array(z.object({
+            seq: z.number(),
+            content: z.any(),
+            date: z.number(),
+            by: z.string(),
+        })),
+        next: z.number().nullable()
     })
 };

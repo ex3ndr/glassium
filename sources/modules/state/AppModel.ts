@@ -15,6 +15,8 @@ import PostHog from "posthog-react-native";
 import { getPostHog } from "../track/track";
 import { ProfileService } from "./ProfileService";
 import { DebugService } from "./DebugService";
+import { FeedService } from "./FeedService";
+import { UserService } from "./UserService";
 
 export class AppModel {
     readonly client: BubbleClient;
@@ -31,6 +33,8 @@ export class AppModel {
     readonly background: BackgroundService;
     readonly profile: ProfileService;
     readonly debug: DebugService;
+    readonly users: UserService;
+    readonly feed: FeedService;
 
     constructor(client: BubbleClient) {
         this.client = client;
@@ -47,6 +51,8 @@ export class AppModel {
         this.tokenExpire = new TokenExpireService(client);
         this.background = new BackgroundService();
         this.profile = new ProfileService(client, this.jotai);
+        this.users = new UserService(client);
+        this.feed = new FeedService(client, this.jotai, this.users);
         this.updates.onUpdates = this.#handleUpdate;
         this.wearable.onStreamingStart = this.capture.onCaptureStart;
         this.wearable.onStreamingStop = this.capture.onCaptureStop;

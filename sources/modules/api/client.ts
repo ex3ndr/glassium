@@ -1,6 +1,6 @@
 import { Axios } from "axios";
 import { backoff } from "../../utils/time";
-import { Schema, Update, Updates, sseUpdate } from "./schema";
+import { Content, Schema, Update, Updates, contentCodec, sseUpdate } from "./schema";
 import { sse } from "./sse";
 import { SERVER_ENDPOINT } from "../../config";
 
@@ -147,5 +147,37 @@ export class BubbleClient {
     async me() {
         let res = await this.client.post('/app/me', {});
         return Schema.me.parse(res.data).profile;
+    }
+
+    async users(ids: string[]) {
+        let res = await this.client.post('/app/users', { ids });
+        return Schema.users.parse(res.data).users;
+    }
+
+    //
+    // Feed
+    //
+
+    async getFeedSeq() {
+        let res = await this.client.post('/app/feed/state', {});
+        return Schema.feedState.parse(res.data).seqno;
+    }
+
+    async getFeedList(after: number | null) {
+        let res = await this.client.post('/app/feed/list', { after });
+        let parsed = Schema.feedList.parse(res.data);
+        let items: { seq: number, date: number, by: string, content: Content }[] = [];
+        for (let i of parsed.items) {
+            let content: Content = { kind: 'unknown' };
+            let parsedContent = contentCodec.safeParse(i.content);
+            if (parsedContent.success) {
+                content = parsedContent.data;
+            }
+            items.push({ seq: i.seq, date: i.date, by: i.by, content });
+        }
+        return {
+            items,
+            next: parsed.next
+        }
     }
 }

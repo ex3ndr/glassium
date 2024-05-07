@@ -1,14 +1,16 @@
 import * as React from 'react';
-import { ActivityIndicator, Text, View } from 'react-native';
+import { ActivityIndicator, Pressable, Text, View } from 'react-native';
 import { useSafeAreaInsets } from 'react-native-safe-area-context';
 import { Theme } from '../../theme';
 import { useAppModel } from '../../global';
 import { Feed } from './feed/Feed';
+import { useRouter } from '../../routing';
 
 export const MagicScreen = React.memo(() => {
     const safeArea = useSafeAreaInsets();
     const app = useAppModel();
     const feed = app.feed.use();
+    const router = useRouter();
 
     // // Resolve LED stripe text
     // let ledStripeText = '...';
@@ -54,11 +56,11 @@ export const MagicScreen = React.memo(() => {
                     <ActivityIndicator size="large" color={Theme.text} />
                 </View>
             )}
-            {/* <View style={{ position: 'absolute', bottom: safeArea.bottom + 64, left: 0, right: 0, alignItems: 'stretch' }}>
+            <View style={{ position: 'absolute', bottom: safeArea.bottom + 64, left: 0, right: 0, alignItems: 'stretch' }}>
                 <Pressable style={{ height: 48, borderRadius: 32, backgroundColor: '#222222', justifyContent: 'center', alignItems: 'center', marginHorizontal: 16, marginVertical: 16 }} onPress={() => router.navigate('new-thread')}>
-                    <Text style={{ color: Theme.text, fontSize: 16 }}>What do you want to know?</Text>
+                    <Text style={{ color: Theme.text, fontSize: 16 }}>Talk to AI</Text>
                 </Pressable>
-            </View> */}
+            </View>
         </View>
     );
 });

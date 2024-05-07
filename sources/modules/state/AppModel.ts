@@ -46,7 +46,7 @@ export class AppModel {
         this.sync = new SyncModel(client);
         this.realtime = new RealtimeModel(client, this.jotai);
         this.endpointing = new EndpointingModule(this.sync, this.jotai);
-        this.capture = new CaptureModule(this.jotai, this.wearable, this.endpointing);
+        this.capture = new CaptureModule(this.jotai, this.wearable, this.endpointing, this.realtime);
         this.updates = new UpdatesModel(client);
         this.tokenExpire = new TokenExpireService(client);
         this.background = new BackgroundService();

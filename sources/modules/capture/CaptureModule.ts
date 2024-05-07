@@ -5,6 +5,7 @@ import { EndpointingModule } from "./EndpointingModule";
 import { storage } from "../../storage";
 import { log } from "../../utils/logs";
 import { AsyncLock } from "../../utils/lock";
+import { RealtimeModel } from "../state/RealtimeModel";
 
 export class CaptureModule {
 
@@ -12,6 +13,7 @@ export class CaptureModule {
     readonly jotai: Jotai;
     readonly wearables: WearableModule;
     readonly endpointing: EndpointingModule;
+    // readonly realtime: RealtimeModel;
     readonly captureState;
 
     // State
@@ -19,10 +21,11 @@ export class CaptureModule {
     private lastSR: 8000 | 16000 | null = null;
     private asyncLock = new AsyncLock();
 
-    constructor(jotai: Jotai, wearables: WearableModule, endpointing: EndpointingModule) {
+    constructor(jotai: Jotai, wearables: WearableModule, endpointing: EndpointingModule, realtime: RealtimeModel) {
         this.jotai = jotai;
         this.wearables = wearables;
         this.endpointing = endpointing;
+        // this.realtime = realtime;
         this.muted = storage.getBoolean('settings-local-mute') || false;
         if (!this.muted) {
             this.wearables.startStreaming();
@@ -41,10 +44,12 @@ export class CaptureModule {
                 }
                 if (mute) {
                     if (this.lastSR !== null) {
+                        // this.realtime.onCaptureStop();
                         await this.endpointing.onDeviceStreamStop();
                     }
                 } else {
                     if (this.lastSR !== null) {
+                        // this.realtime.onCaptureStart();
                         await this.endpointing.onDeviceStreamStart(this.lastSR);
                     }
                 }
@@ -75,6 +80,7 @@ export class CaptureModule {
         this.asyncLock.inLock(async () => {
             this.lastSR = sr;
             if (!this.muted) {
+                // this.realtime.onCaptureStart();
                 await this.endpointing.onDeviceStreamStart(sr);
                 this.jotai.set(this.captureState, { localMute: this.muted, streaming: true });
             }
@@ -84,6 +90,7 @@ export class CaptureModule {
     onCaptureFrame = (frames: Int16Array) => {
         this.asyncLock.inLock(async () => {
             if (!this.muted) {
+                // this.realtime.onCaptureFrame(frames, this.lastSR!);
                 await this.endpointing.onDeviceFrame(frames);
             }
         });
@@ -93,6 +100,7 @@ export class CaptureModule {
         log('CPT', 'onCaptureStop');
         this.asyncLock.inLock(async () => {
             if (!this.muted) {
+                // this.realtime.onCaptureStop();
                 await this.endpointing.onDeviceStreamStop();
                 this.jotai.set(this.captureState, { localMute: this.muted, streaming: false });
             }

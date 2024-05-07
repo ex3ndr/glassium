@@ -28,6 +28,7 @@
     "add": "^2.0.6",
     "axios": "^1.6.8",
     "culori": "^4.0.1",
+    "date-fns": "^2.29.1",
     "expo": "~50.0.17",
     "expo-application": "~5.8.4",
     "expo-asset": "~9.0.2",
@@ -83,8 +84,7 @@
     "react-native-zip-archive": "^6.1.0",
     "ts-jest": "^29.1.2",
     "wavefile": "^11.0.0",
-    "zod": "^3.22.4",
-    "date-fns": "^2.29.1"
+    "zod": "^3.22.4"
   },
   "devDependencies": {
     "@babel/core": "^7.20.0",

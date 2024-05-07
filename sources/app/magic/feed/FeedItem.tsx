@@ -28,7 +28,7 @@ export const FeedItemComponent = React.memo((props: { item: FeedViewItem, app: A
                 <View style={{ flexDirection: 'row' }}>
                     <Text style={{ color: Theme.text }}>{by.firstName} <Text style={{ opacity: 0.7 }}>@{by.username}</Text></Text>
                     <View style={{ flex: 1 }} />
-                    <Text style={{ color: Theme.text }}><TimeView time={props.item.date} /></Text>
+                    <Text style={{ color: Theme.text, opacity: 0.4 }}><TimeView time={props.item.date} /></Text>
                 </View>
                 {props.item.content.kind === 'text' && (
                     <ContentText text={props.item.content.text} />

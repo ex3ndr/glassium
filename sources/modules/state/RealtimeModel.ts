@@ -11,7 +11,7 @@ export class RealtimeModel {
     readonly client: BubbleClient;
     readonly #sync: InvalidateSync;
     readonly state = atom('');
-    #buffer: { data: Uint8Array, format: 'mulaw-8' | 'mulaw-16' } | null = null;
+    #buffer: { data: Int16Array, sr: number } | null = null;
     #client: LiveClient | null = null;
     #capturing = false;
     #transcripts: { speaker: number, transcript: string }[] = [];
@@ -35,7 +35,7 @@ export class RealtimeModel {
         this.#sync.invalidate();
     }
 
-    onCaptureFrame = (frame: Uint8Array, format: 'mulaw-8' | 'mulaw-16') => {
+    onCaptureFrame = (frame: Int16Array, sr: number) => {
 
         // Ignore if not active
         if (AppState.currentState !== 'active' || !this.#capturing) {
@@ -43,39 +43,39 @@ export class RealtimeModel {
         }
 
         // Discard if format changed
-        if (this.#buffer && this.#buffer.format !== format) {
+        if (this.#buffer && this.#buffer.sr !== sr) {
             this.#buffer = null;
         }
 
         // Append to buffer
         if (!this.#buffer) {
-            this.#buffer = { data: frame, format };
+            this.#buffer = { data: frame, sr };
         } else {
-            let merged = new Uint8Array(this.#buffer.data.length + frame.length);
+            let merged = new Int16Array(this.#buffer.data.length + frame.length);
             merged.set(this.#buffer.data, 0);
             merged.set(frame, this.#buffer.data.length);
-            this.#buffer = { data: merged, format };
+            this.#buffer = { data: merged, sr };
         }
         this.#sync.invalidate();
     }
 
-    #flushUI = () => {
-        let data = [...this.#transcripts];
-        if (this.#transcripts.length > 0 && this.#pendingTranscript.length > 0) {
-            if (this.#transcripts[data.length - 1].speaker === this.#pendingTranscript[0].speaker) {
-                data[data.length - 1].transcript += ' ' + this.#pendingTranscript[0].transcript;
-                data = [...data, ...this.#pendingTranscript.slice(1)];
-            } else {
-                data = [...data, ...this.#pendingTranscript];
-            }
-        } else {
-            data = [...data, ...this.#pendingTranscript];
-        }
-        if (data.length > 3) { // Keep last 3
-            data = data.slice(data.length - 3);
-        }
-        this.jotai.set(this.state, data.map((v) => 'Speaker ' + (v.speaker + 1) + ': ' + v.transcript).join("\n"));
-    }
+    // #flushUI = () => {
+    //     let data = [...this.#transcripts];
+    //     if (this.#transcripts.length > 0 && this.#pendingTranscript.length > 0) {
+    //         if (this.#transcripts[data.length - 1].speaker === this.#pendingTranscript[0].speaker) {
+    //             data[data.length - 1].transcript += ' ' + this.#pendingTranscript[0].transcript;
+    //             data = [...data, ...this.#pendingTranscript.slice(1)];
+    //         } else {
+    //             data = [...data, ...this.#pendingTranscript];
+    //         }
+    //     } else {
+    //         data = [...data, ...this.#pendingTranscript];
+    //     }
+    //     if (data.length > 3) { // Keep last 3
+    //         data = data.slice(data.length - 3);
+    //     }
+    //     this.jotai.set(this.state, data.map((v) => 'Speaker ' + (v.speaker + 1) + ': ' + v.transcript).join("\n"));
+    // }
 
     #doSync = async () => {
 
@@ -88,7 +88,7 @@ export class RealtimeModel {
                 this.#client = null;
                 this.#transcripts = [];
                 this.#pendingTranscript = [];
-                this.#flushUI();
+                this.jotai.set(this.state, '');
             }
             return;
         }
@@ -97,7 +97,7 @@ export class RealtimeModel {
         if (!this.#buffer) {
             return;
         }
-        const format = this.#buffer.format
+        const sr = this.#buffer.sr
         const buffer = this.#buffer.data.slice();
         this.#buffer = null;
 
@@ -114,12 +114,9 @@ export class RealtimeModel {
 
             // Create live client
             this.#client = client.listen.live({
-                model: "nova",
-                interim_results: true,
-                smart_format: true,
-                diarize: true,
-                encoding: 'mulaw',
-                sample_rate: format === 'mulaw-8' ? 8000 : 16000,
+                model: "nova-2",
+                encoding: 'linear16',
+                sample_rate: sr,
                 channels: 1,
             });
 
@@ -127,36 +124,13 @@ export class RealtimeModel {
                 log('DG', "connection established");
             });
 
-            this.#client.on(LiveTranscriptionEvents.Close, () => {
+            this.#client.on(LiveTranscriptionEvents.Close, (e) => {
+                console.warn(e);
                 log('DG', "connection closed");
             });
 
             this.#client.on(LiveTranscriptionEvents.Transcript, (data) => {
-                const isFinal = data.is_final as boolean;
-                const words = data.channel.alternatives[0].words as { word: string, speaker: number }[];
-                if (words.length === 0) {
-                    this.#pendingTranscript = [];
-                } else {
-                    function appendWord(to: { transcript: string, speaker: number }[], word: string, speaker: number) {
-                        if (to.length === 0) {
-                            to.push({ transcript: word, speaker });
-                        } else {
-                            if (to[to.length - 1].speaker === speaker) {
-                                to[to.length - 1].transcript += ' ' + word;
-                            } else {
-                                to.push({ transcript: word, speaker });
-                            }
-                        }
-                    }
-                    for (let w of words) {
-                        if (isFinal) {
-                            appendWord(this.#transcripts, w.word, w.speaker);
-                        } else {
-                            appendWord(this.#pendingTranscript, w.word, w.speaker);
-                        }
-                    }
-                }
-                this.#flushUI();
+                this.jotai.set(this.state, data.channel.alternatives[0].transcript);
             });
 
             log('DG', "Connection created");

@@ -89,6 +89,8 @@ export class AppModel {
             this.sessions.applyPartialFull({ id: update.id, text: update.transcription });
         } else if (update.type === 'session-classified') {
             this.sessions.applyPartial({ id: update.id, classification: update.class });
+        } else if (update.type === 'feed-posted') {
+            this.feed.onUpdate(update);
         }
     }
 }

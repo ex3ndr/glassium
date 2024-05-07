@@ -1,19 +1,20 @@
 import * as React from 'react';
-import { AppModel } from "../../../modules/state/AppModel";
-import { FeedViewItem } from "../../../modules/state/FeedService";
 import { Text, View } from 'react-native';
-import { Theme } from '../../../theme';
 import { Image } from 'expo-image';
-import { TimeView } from '../../components/TimeView';
+import { Theme } from '../../theme';
+import { TimeView } from '../components/TimeView';
+import { Content } from '../../modules/api/content';
+import { FeedViewItem } from '../../modules/state/FeedService';
+import { AppModel } from '../../modules/state/AppModel';
 
 export const FeedItemComponent = React.memo((props: { item: FeedViewItem, app: AppModel }) => {
     let app = props.app;
     let by = app.users.use(props.item.by);
     let image: any = null;
     if (by.username === 'transcribe') {
-        image = require('../../assets/avatar_transcribe.png')
+        image = require('../assets/avatar_transcribe.png')
     } else if (by.username === 'overlord') {
-        image = require('../../assets/avatar_overlord.png')
+        image = require('../assets/avatar_overlord.png')
     }
     return (
         <View style={{ marginHorizontal: 8, flexDirection: 'row', marginVertical: 4 }}>
@@ -30,17 +31,34 @@ export const FeedItemComponent = React.memo((props: { item: FeedViewItem, app: A
                     <View style={{ flex: 1 }} />
                     <Text style={{ color: Theme.text, opacity: 0.4 }}><TimeView time={props.item.date} /></Text>
                 </View>
-                {props.item.content.kind === 'text' && (
-                    <ContentText text={props.item.content.text} />
-                )}
-                {props.item.content.kind === 'transcription' && (
-                    <ContentTranscription transcription={props.item.content.transcription} />
-                )}
-                {props.item.content.kind === 'unknown' && (
-                    <ContentText text={'Unknown content'} />
-                )}
+                <ContentView content={props.item.content} />
             </View>
         </View>
+    );
+});
+
+const ContentView = React.memo((props: { content: Content }) => {
+    if (Array.isArray(props.content)) {
+        return (
+            <View style={{ flexDirection: 'column' }}>
+                {props.content.map((item, index) => (
+                    <ContentView key={index} content={item} />
+                ))}
+            </View>
+        )
+    }
+    if (props.content.kind === 'text') {
+        return (
+            <ContentText text={props.content.text} />
+        )
+    }
+    if (props.content.kind === 'transcription') {
+        return (
+            <ContentTranscription transcription={props.content.transcription} />
+        );
+    }
+    return (
+        <ContentText text={'Unknown content'} />
     );
 });
 

@@ -1,8 +1,9 @@
 import { Axios } from "axios";
 import { backoff } from "../../utils/time";
-import { Content, Schema, Update, Updates, contentCodec, sseUpdate } from "./schema";
+import { Schema, Update, Updates, sseUpdate } from "./schema";
 import { sse } from "./sse";
 import { SERVER_ENDPOINT } from "../../config";
+import { Content, contentCodec } from "./content";
 
 export class BubbleClient {
 
@@ -168,11 +169,7 @@ export class BubbleClient {
         let parsed = Schema.feedList.parse(res.data);
         let items: { seq: number, date: number, by: string, content: Content }[] = [];
         for (let i of parsed.items) {
-            let content: Content = { kind: 'unknown' };
-            let parsedContent = contentCodec.safeParse(i.content);
-            if (parsedContent.success) {
-                content = parsedContent.data;
-            }
+            let content = contentCodec.parse(i.content);
             items.push({ seq: i.seq, date: i.date, by: i.by, content });
         }
         return {

@@ -5,7 +5,6 @@ import { storageGetTyped, storageSetTyped } from '../../storage';
 import { atom, useAtomValue } from 'jotai';
 import { AppState } from 'react-native';
 import { posthogIdentity } from '../track/track';
-import { backoff } from '../../utils/time';
 import { InvalidateSync } from '../../utils/sync';
 
 const ProfileSchema = z.object({

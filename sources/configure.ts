@@ -1,5 +1,7 @@
 import Bugsnag from '@bugsnag/expo';
-Bugsnag.start({ releaseStage: __DEV__ ? 'dev' : 'production' });
+if (!__DEV__) {
+    Bugsnag.start();
+}
 
 import { LogBox } from "react-native";
 LogBox.ignoreAllLogs();

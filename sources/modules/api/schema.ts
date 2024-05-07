@@ -1,29 +1,19 @@
 import * as z from 'zod';
+import { contentCodec } from './content';
 
 //
-// Content
+// Feed
 //
 
-export type Content = {
-    kind: 'unknown'
-} | {
-    kind: 'transcription',
-    transcription: { sender: string, text: string }[] | string
-} | {
-    kind: 'text',
-    text: string;
-}
-
-export const contentCodec = z.union([z.object({
-    kind: z.literal('text'),
-    text: z.string()
-}), z.object({
-    kind: z.literal('transcription'),
-    transcription: z.union([z.string(), z.array(z.object({
-        sender: z.string(),
-        text: z.string()
-    }))])
-})]);
+const updateFeedPost = z.object({
+    type: z.literal('feed-posted'),
+    source: z.string(),
+    by: z.string(),
+    date: z.number(),
+    repeatKey: z.string().nullable(),
+    seq: z.number(),
+    content: contentCodec
+})
 
 //
 // Memory
@@ -89,7 +79,7 @@ const updateMemoryUpdated = z.object({
     index: z.number(),
     memory: memoryContent
 });
-export const Updates = z.union([udpateSessionCreated, updateSessionUpdated, updateSessionAudio, updateSessionTranscription, updateMemoryCreated, updateMemoryUpdated, udpateSessionClassified]);
+export const Updates = z.union([udpateSessionCreated, updateSessionUpdated, updateSessionAudio, updateSessionTranscription, updateMemoryCreated, updateMemoryUpdated, udpateSessionClassified, updateFeedPost]);
 export type UpdateSessionCreated = z.infer<typeof udpateSessionCreated>;
 export type UpdateSessionUpdated = z.infer<typeof updateSessionUpdated>;
 export type UpdateSessionAudio = z.infer<typeof updateSessionAudio>;
@@ -97,7 +87,8 @@ export type UpdateSessionTranscription = z.infer<typeof updateSessionTranscripti
 export type UpdateSessionClassified = z.infer<typeof udpateSessionClassified>;
 export type UpdateMemoryCreated = z.infer<typeof updateMemoryCreated>;
 export type UpdateMemoryUpdated = z.infer<typeof updateMemoryUpdated>;
-export type Update = UpdateSessionCreated | UpdateSessionUpdated | UpdateSessionAudio | UpdateSessionTranscription | UpdateMemoryCreated | UpdateMemoryUpdated | UpdateSessionClassified;
+export type UpdateFeedPosted = z.infer<typeof updateFeedPost>;
+export type Update = UpdateSessionCreated | UpdateSessionUpdated | UpdateSessionAudio | UpdateSessionTranscription | UpdateMemoryCreated | UpdateMemoryUpdated | UpdateSessionClassified | UpdateFeedPosted;
 
 const session = z.object({
     id: z.string(),

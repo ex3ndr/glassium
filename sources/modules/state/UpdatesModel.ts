@@ -34,6 +34,7 @@ export class UpdatesModel {
         if (!this.#seq) { // Not ready
             return;
         }
+        log('UPD', 'Received update:' + seq);
         if (seq > this.#seq) {
             this.#queue.push({ seq, update: update });
             this.#sync.invalidate();

@@ -18,7 +18,7 @@ import { MemoryScreen } from './memories/MemoryScreen';
 import { LogsScreen } from './dev/LogsScreen';
 import { Platform } from 'react-native';
 import { DevScreen } from './dev/DevScreen';
-import { NewThreadScreen } from './magic/NewThreadScreen';
+import { DiscussScreen } from './discuss/DiscussScreen';
 
 export const Stack = createNativeStackNavigator();
 
@@ -60,9 +60,9 @@ export const App = (
             options={{ title: 'Developer' }}
         />
         <Stack.Screen
-            name='new-thread'
-            component={NewThreadScreen}
-            options={{ title: 'Thread', presentation: Platform.OS === 'ios' ? 'formSheet' : 'card' }}
+            name='discussion'
+            component={DiscussScreen}
+            options={{ title: 'Discussion', presentation: Platform.OS === 'ios' ? 'formSheet' : 'card' }}
         />
     </>
 );

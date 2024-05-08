@@ -7,18 +7,19 @@ import { CodeScreen } from './auth/CodeScreen';
 import { OnboardingState } from '../global';
 import { PreUsernameScreen } from './pre/PreUsername';
 import { PrePreparingScreen } from './pre/PrePreparing';
-import { RootScreen } from './Root';
+import { HomeScreen } from './screens/HomeScreen';
 import { PreNameScreen } from './pre/PreName';
 import { PreNotificationsScreen } from './pre/PreNotifications';
 import { PreActivationScreen } from './pre/PreActivation';
-import { SessionScreen } from './home/settings/Session';
-import { SettingsManageDevice } from './home/settings/SettingsManageDevice';
-import { SessionsScreens } from './home/SessionsScreen';
-import { MemoryScreen } from './memories/MemoryScreen';
+import { SessionScreen } from './screens/SessionScreen';
+import { SettingsManageDevice } from './screens/settings/SettingsManageDevice';
+import { SessionsScreens } from './screens/SessionsScreen';
+import { MemoryScreen } from './screens/MemoryScreen';
 import { LogsScreen } from './dev/LogsScreen';
 import { Platform } from 'react-native';
 import { DevScreen } from './dev/DevScreen';
 import { DiscussScreen } from './discuss/DiscussScreen';
+import { SettingsScreen } from './screens/settings/SettingsScreen';
 
 export const Stack = createNativeStackNavigator();
 
@@ -26,7 +27,7 @@ export const App = (
     <>
         <Stack.Screen
             name='root'
-            component={RootScreen}
+            component={HomeScreen}
             options={{ headerShown: false }}
         />
         <Stack.Screen
@@ -37,7 +38,7 @@ export const App = (
         <Stack.Screen
             name='sessions'
             component={SessionsScreens}
-            options={{ title: 'Sessions' }}
+            options={{ title: 'Sessions', presentation: Platform.OS === 'ios' ? 'formSheet' : 'card' }}
         />
         <Stack.Screen
             name='manage-device'
@@ -52,17 +53,22 @@ export const App = (
         <Stack.Screen
             name='logs'
             component={LogsScreen}
-            options={{ title: 'Logs' }}
+            options={{ title: 'Logs', presentation: Platform.OS === 'ios' ? 'formSheet' : 'card' }}
         />
         <Stack.Screen
             name='dev'
             component={DevScreen}
-            options={{ title: 'Developer' }}
+            options={{ title: 'Developer', presentation: Platform.OS === 'ios' ? 'formSheet' : 'card' }}
         />
         <Stack.Screen
             name='discussion'
             component={DiscussScreen}
             options={{ title: 'Discussion', presentation: Platform.OS === 'ios' ? 'formSheet' : 'card' }}
+        />
+        <Stack.Screen
+            name="settings"
+            component={SettingsScreen}
+            options={{ title: 'Settings', presentation: Platform.OS === 'ios' ? 'formSheet' : 'card' }}
         />
     </>
 );

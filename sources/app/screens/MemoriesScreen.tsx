@@ -7,7 +7,7 @@ import { Memory } from '../../modules/api/schema';
 import { backoff } from '../../utils/time';
 import { useSafeAreaInsets } from 'react-native-safe-area-context';
 import { useRouter } from '../../routing';
-import { HomeNotification } from './HomeNotification';
+import { HomeNotification } from './components/HomeNotification';
 import { FlashList } from '@shopify/flash-list';
 import { InvalidateSync } from '../../utils/sync';
 
@@ -66,7 +66,7 @@ const MemoryComponent = React.memo((props: { memory: Memory }) => {
     );
 });
 
-export const HomeScreen = React.memo(() => {
+export const MemoriesScreen = React.memo(() => {
     const router = useRouter();
     const safeArea = useSafeAreaInsets();
     const memories = useMemories();
@@ -89,7 +89,7 @@ export const HomeScreen = React.memo(() => {
     }
 
     return (
-        <View style={{ flexGrow: 1 }}>
+        <View style={{ flex: 1 }}>
             <ScrollView style={{}} contentContainerStyle={{ paddingBottom: 64 + safeArea.bottom, flexGrow: 1 }} alwaysBounceVertical={false} scrollIndicatorInsets={{ top: 0, bottom: 64 }}>
                 <HomeNotification />
                 {/* {captureState.streaming && (

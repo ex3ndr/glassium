@@ -1,10 +1,10 @@
 import * as React from 'react';
 import { ActivityIndicator, ScrollView, Text, View } from 'react-native';
-import { Theme } from '../../../theme';
+import { Theme } from '../../theme';
 import { useRoute } from '@react-navigation/native';
-import { useAppModel } from '../../../global';
+import { useAppModel } from '../../global';
 import humanizeDuration from 'humanize-duration';
-import { Item } from '../../components/Item';
+import { Item } from '../components/Item';
 import { useSafeAreaInsets } from 'react-native-safe-area-context';
 
 export const SessionScreen = React.memo(() => {

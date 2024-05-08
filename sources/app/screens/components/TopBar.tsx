@@ -5,6 +5,8 @@ import { Theme } from '../../../theme';
 import { useAppModel } from '../../../global';
 import { BatteryComponent } from './BatteryComponent';
 import { useAtomValue } from 'jotai';
+import { useRouter } from '../../../routing';
+import { Image } from 'expo-image';
 
 export const TopBar = React.memo(() => {
     const appModel = useAppModel();
@@ -12,6 +14,7 @@ export const TopBar = React.memo(() => {
     const wearable = appModel.useWearable();
     const endpointing = appModel.endpointing.use();
     const debug = useAtomValue(appModel.debug.enabled);
+    const router = useRouter();
 
     // Resolve title and subtitle
     let title = 'Bubble';
@@ -71,8 +74,9 @@ export const TopBar = React.memo(() => {
 
     return (
         <View style={{ height: 48, alignItems: 'center', justifyContent: 'center', flexDirection: 'row', alignSelf: 'stretch' }}>
-            <View style={{ flexGrow: 1, flexBasis: 0, flexDirection: 'row', justifyContent: 'flex-start', paddingHorizontal: 32 }}>
+            <View style={{ flexGrow: 1, flexBasis: 0, flexDirection: 'row', justifyContent: 'flex-start', paddingHorizontal: 16, gap: 8 }}>
                 {battery !== null && (<BatteryComponent level={battery} />)}
+                {enableMuteButton && <Pressable onPress={() => appModel.capture.setLocalMute(!capture.localMute)}><Ionicons name={capture.localMute ? 'mic-off' : 'mic'} size={24} color={Theme.accent} /></Pressable>}
             </View>
             <View style={{ flexDirection: 'column', justifyContent: 'center', alignItems: 'center' }}>
                 <Text style={{ color: Theme.text, fontSize: 20, fontWeight: '600' }}>{title}</Text>
@@ -83,8 +87,11 @@ export const TopBar = React.memo(() => {
                     </Text>
                 </View>
             </View>
-            <View style={{ flexGrow: 1, flexBasis: 0, flexDirection: 'row', justifyContent: 'flex-end', paddingHorizontal: 32 }}>
-                {enableMuteButton && <Pressable onPress={() => appModel.capture.setLocalMute(!capture.localMute)}><Ionicons name={capture.localMute ? 'mic-off' : 'mic'} size={24} color={Theme.accent} /></Pressable>}
+            <View style={{ flexGrow: 1, flexBasis: 0, flexDirection: 'row', justifyContent: 'flex-end', paddingHorizontal: 16 }}>
+                <Pressable onPress={() => router.navigate('settings')} hitSlop={16}>
+                    {/* <Ionicons name="settings" size={24} color={Theme.accent} /> */}
+                    <Image source={require('../../assets/gear_3d.png')} style={{ width: 24, height: 24 }} />
+                </Pressable>
                 {/* {wearable.device !== 'connecting' ? <Ionicons name="bluetooth-sharp" size={24} color="#16ea79" /> : <Ionicons name="bluetooth-sharp" size={24} color="red" />} */}
             </View>
         </View>

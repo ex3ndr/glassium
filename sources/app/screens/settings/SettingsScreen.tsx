@@ -1,18 +1,18 @@
 import * as React from 'react';
 import { ActivityIndicator, Platform, Pressable, ScrollView, Text, View } from 'react-native';
-import { useRouter } from '../../routing';
-import { Item } from '../components/Item';
-import { useAppModel } from '../../global';
-import { RoundButton } from '../components/RoundButton';
-import { Theme } from '../../theme';
-import { DeviceComponent } from '../components/DeviceComponent';
-import { isDevMode, setDevMode } from '../../devmode';
-import { randomQuote } from '../../modules/fun/randomQuote';
+import { useRouter } from '../../../routing';
+import { Item } from '../../components/Item';
+import { useAppModel } from '../../../global';
+import { RoundButton } from '../../components/RoundButton';
+import { Theme } from '../../../theme';
+import { DeviceComponent } from '../../components/DeviceComponent';
+import { isDevMode, setDevMode } from '../../../devmode';
+import { randomQuote } from '../../../modules/fun/randomQuote';
 import * as Application from 'expo-application';
 import * as Update from 'expo-updates';
 import { useSafeAreaInsets } from 'react-native-safe-area-context';
-import { alert } from '../helpers/alert';
-import { cleanAndReload } from '../../modules/reload/cleanAndReload';
+import { alert } from '../../helpers/alert';
+import { cleanAndReload } from '../../../modules/reload/cleanAndReload';
 
 export const SettingsScreen = React.memo(() => {
     const safeArea = useSafeAreaInsets();
@@ -68,7 +68,7 @@ export const SettingsScreen = React.memo(() => {
 
     const quote = React.useMemo(() => randomQuote(), []);
     return (
-        <ScrollView contentContainerStyle={{ flexGrow: 1, paddingBottom: 64 + safeArea.bottom }} alwaysBounceVertical={false}>
+        <ScrollView contentContainerStyle={{ flexGrow: 1, paddingBottom: 64 + safeArea.bottom }} alwaysBounceVertical={false} style={{ backgroundColor: Theme.background }}>
             <Item title="Profile" />
             {!profile && (
                 <View style={{ alignItems: 'flex-start', paddingHorizontal: 16, flexDirection: 'column' }}>

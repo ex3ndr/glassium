@@ -4,7 +4,7 @@ import { FlashList } from '@shopify/flash-list';
 import { ActivityIndicator, Text, View } from 'react-native';
 import { Theme } from '../../theme';
 import { useAppModel } from '../../global';
-import { FeedState, FeedViewItem } from '../../modules/state/FeedService';
+import { FeedViewItem } from '../../modules/state/FeedService';
 
 const Header = React.memo((props: { loading: boolean }) => {
     return (
@@ -17,7 +17,7 @@ const Header = React.memo((props: { loading: boolean }) => {
 
 const Footer = React.memo(() => {
     return (
-        <View style={{ height: 80 }} />
+        <View style={{ height: 16 }} />
     );
 });
 

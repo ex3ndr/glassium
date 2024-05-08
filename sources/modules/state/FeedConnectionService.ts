@@ -6,6 +6,7 @@ import { InvalidateSync } from "../../utils/sync";
 import { log } from "../../utils/logs";
 import { UserService } from "./UserService";
 import { UpdateFeedPosted } from "../api/schema";
+import { uptime } from "../../utils/uptime";
 
 export class FeedConnectionService {
     readonly id: string;
@@ -37,6 +38,7 @@ export class FeedConnectionService {
     onReachedEnd = (next: number | null) => {
         if (next !== null && this.#next === next) {
             this.#needMore = true;
+            this.#sync.invalidate();
         }
     }
 
@@ -74,7 +76,7 @@ export class FeedConnectionService {
         log('FDD', 'FeedService: Feed starts at ' + seqno);
 
         // Load feed
-        let initialList = await this.client.getFeedList(null);
+        let initialList = await this.client.getFeedList({ source: this.id, before: null, after: null });
 
         // Assume users
         await this.users.assumeUsers(initialList.items.map((v) => v.by));
@@ -106,14 +108,15 @@ export class FeedConnectionService {
         }
 
         // Load next
-        let loaded = await this.client.getFeedList(this.#next);
+        let start = uptime();
+        let loaded = await this.client.getFeedList({ source: this.id, before: this.#next, after: null });
 
         // Assume users
         await this.users.assumeUsers(loaded.items.map((v) => v.by));
 
         // Merge with existing
         let added: FeedViewItem[] = [];
-        log('FDD', 'FeedService: Loaded ' + loaded.items.length + ' items');
+        log('FDD', 'FeedService: Loaded ' + loaded.items.length + ' items in ' + (uptime() - start) + ' ms');
         for (let u of loaded.items) {
             log('FDD', 'FeedService: Item ' + u.seq + ' at ' + u.date + ' by ' + u.by + ' with content ' + JSON.stringify(u.content));
 

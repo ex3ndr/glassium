@@ -171,8 +171,8 @@ export class BubbleClient {
         return Schema.feedState.parse(res.data).seqno;
     }
 
-    async getFeedList(after: number | null) {
-        let res = await this.client.post('/app/feed/list', { after });
+    async getFeedList(args: { source: string, before: number | null, after: number | null }) {
+        let res = await this.client.post('/app/feed/list', args);
         let parsed = Schema.feedList.parse(res.data);
         let items: { seq: number, date: number, by: string, content: Content }[] = [];
         for (let i of parsed.items) {

@@ -37,6 +37,13 @@ export class FeedService {
         }
     };
 
+    onReachedEnd = (feed: string, next: number | null) => {
+        let svc = this.#feeds.get(feed);
+        if (svc) {
+            svc.onReachedEnd(next);
+        }
+    }
+
     use(feed: 'default' | string): FeedState {
         if (!this.#feeds.has(feed)) {
             this.#feeds.set(feed, new FeedConnectionService(feed, this.users, this.client, this.jotai));

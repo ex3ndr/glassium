@@ -21,21 +21,53 @@ const Footer = React.memo(() => {
     );
 });
 
-export const Feed = React.memo((props: { feed: FeedState }) => {
+export const Feed = React.memo((props: {
+    feed: string,
+    inverted?: boolean,
+    empty?: React.ReactNode
+}) => {
+
+    // State
     const app = useAppModel();
+    const feed = app.feed.use(props.feed);
     const itemRender = React.useCallback((args: { item: FeedViewItem }) => {
         return <FeedItemComponent item={args.item} app={app} />
     }, [app]);
     const header = React.useCallback(() => {
-        return <Header loading={!!props.feed && !!props.feed.next} />
-    }, [props.feed && props.feed.next]);
+        return <Header loading={!!feed && !!feed.next} />
+    }, [feed && feed.next]);
+    const onEndReached = React.useCallback(() => {
+        let n = feed ? feed.next : null;
+        app.feed.onReachedEnd(props.feed, n);
+    }, [feed && feed.next]);
+
+    // Loading
+    if (!feed) {
+        return (
+            <View style={{ flex: 1, justifyContent: 'center', alignItems: 'center' }}>
+                <ActivityIndicator size="large" color={Theme.text} />
+            </View>
+        );
+    }
+
+    // Empty
+    if (feed.items.length === 0) {
+        return (
+            <View style={{ flex: 1, justifyContent: 'center', alignItems: 'center' }}>
+                {props.empty || <Text style={{ color: Theme.text, fontSize: 24, opacity: 0.7 }}>Soon.</Text>}
+            </View>
+        );
+    }
+
     return (
         <FlashList
-            data={props.feed!.items}
+            data={feed.items}
             renderItem={itemRender}
-            ListHeaderComponent={Footer}
-            ListFooterComponent={header}
-            inverted={true}
+            keyExtractor={(item) => 'post-' + item.seq}
+            ListHeaderComponent={props.inverted ? Footer : header}
+            ListFooterComponent={props.inverted ? header : Footer}
+            onEndReached={onEndReached}
+            inverted={props.inverted}
         />
     )
 });

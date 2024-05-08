@@ -61,6 +61,7 @@ export class UpdatesModel {
             // Apply updates
             while (this.#queue.length > 0 && this.#queue[0].seq === this.#seq + 1) {
                 let update = this.#queue.shift()!;
+                log('UPD', 'Applying update:' + update.seq);
                 if (this.onUpdates && update.update !== null) {
                     await this.onUpdates(update.update);
                 }

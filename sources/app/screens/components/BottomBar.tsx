@@ -33,14 +33,9 @@ export const BottomBar = React.memo((props: {
 }) => {
     return (
         <View style={{ height: 64, flexDirection: 'row', alignItems: 'stretch', alignSelf: 'stretch', backgroundColor: Theme.background }}>
-            <TabBarItem icon={require('../../assets/scroll_3d.png')} active={props.active === 'memories'} title="Memories" onPress={() => props.onPress('memories')} />
+            <TabBarItem icon={require('../../assets/camera_with_flash_3d.png')} active={props.active === 'memories'} title="Memories" onPress={() => props.onPress('memories')} />
             <TabBarItem icon={require('../../assets/sparkles_3d.png')} active={props.active === 'ai'} title="AI" onPress={() => props.onPress('ai')} />
             <TabBarItem icon={require('../../assets/satellite_3d.png')} active={props.active === 'log'} title="Updates" onPress={() => props.onPress('log')} />
-            {/* <TabBarItem icon={require('../../assets/magnifying_glass_tilted_left_3d.png')} active={props.active === 'search'} title="Search" onPress={() => props.onPress('search')} /> */}
-            {/* <TabBarItem icon="search" active={props.active === 'search'} onPress={() => props.onPress('search')} /> */}
-            {/* <ActionBarItem icon={props.actionIcon} kind={props.actionStyle} onPress={props.onActionPress} /> */}
-            {/* <TabBarItem icon="stats-chart" active={props.active === 'sessions'} onPress={() => props.onPress('sessions')} /> */}
-            {/* <TabBarItem icon={require('../../assets/gear_3d.png')} active={props.active === 'settings'} title="Settings" onPress={() => props.onPress('settings')} /> */}
         </View>
     );
 });

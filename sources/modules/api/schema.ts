@@ -110,7 +110,7 @@ export type FullSession = z.infer<typeof fullSession>;
 
 export const sseUpdate = z.object({
     seq: z.number(),
-    data: z.any()
+    data: z.any().optional()
 });
 
 export const Schema = {

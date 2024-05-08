@@ -7,9 +7,9 @@ import { AsyncLock } from "../../utils/lock";
 
 export class UpdatesModel {
     readonly client: BubbleClient;
+    #maxKnownSeq: number = 0;
     #seq: number | null = null;
     #sync: InvalidateSync;
-    #lock = new AsyncLock();
     #queue = new Array<{ seq: number, update: Update | null }>();
     onUpdates?: (updates: Update) => Promise<void>;
 
@@ -31,71 +31,75 @@ export class UpdatesModel {
     }
 
     #doReceive = (seq: number, update: Update | null) => {
-        if (!this.#seq) { // Not ready
-            return;
-        }
         log('UPD', 'Received update:' + seq);
-        if (seq > this.#seq) {
+        this.#maxKnownSeq = Math.max(this.#maxKnownSeq, seq);
+        if (this.#seq === null || seq >= this.#seq) {
             this.#queue.push({ seq, update: update });
             this.#sync.invalidate();
         }
     }
 
     #doSync = async () => {
-        await this.#lock.inLock(async () => {
-            while (true) {
-                if (this.#seq === null) {
-                    this.#seq = await this.client.getUpdatesSeq();
-                    storage.set('updates-seq', this.#seq);
-                    log('UPD', 'Initial seq:' + this.#seq);
-                } else {
-                    // Process queue
-                    if (this.#queue.length > 0) {
 
-                        // Sort
-                        this.#queue.sort((a, b) => a.seq - b.seq);
+        // Do initial sync if needed
+        if (this.#seq === null) {
+            this.#seq = await this.client.getUpdatesSeq();
+            this.#maxKnownSeq = Math.max(this.#seq, this.#maxKnownSeq);
+            storage.set('updates-seq', this.#seq);
+            log('UPD', 'Initial seq:' + this.#seq);
+        }
 
-                        // Remove outdated
-                        this.#queue = this.#queue.filter(item => item.seq > this.#seq!);
+        // Process queue
+        if (this.#queue.length > 0) {
 
-                        // Apply updates
-                        while (this.#queue.length > 0 && this.#queue[0].seq === this.#seq + 1) {
-                            let update = this.#queue.shift()!;
-                            if (this.onUpdates && update.update !== null) {
-                                await this.onUpdates(update.update);
-                            }
-                            this.#seq++;
-                            storage.set('updates-seq', this.#seq);
-                        }
-                    }
+            // Sort
+            this.#queue.sort((a, b) => a.seq - b.seq);
 
-                    let diff = await this.client.getUpdatesDiff(this.#seq);
-                    log('UPD', 'Diff:' + diff.seq + ', hasMore:' + diff.hasMore + ', updates:' + diff.updates.length);
+            // Remove outdated
+            this.#queue = this.#queue.filter(item => item.seq > this.#seq!);
 
-                    // Apply updates
-                    if (this.onUpdates) {
-                        for (let upd of diff.updates) {
-                            let parsed = Updates.safeParse(upd);
-                            if (parsed.success) {
-                                await this.onUpdates(parsed.data);
-                            } else {
-                                log('UPD', 'Failed to parse update:' + JSON.stringify(upd));
-                            }
-                        }
-                    }
+            // Apply updates
+            while (this.#queue.length > 0 && this.#queue[0].seq === this.#seq + 1) {
+                let update = this.#queue.shift()!;
+                if (this.onUpdates && update.update !== null) {
+                    await this.onUpdates(update.update);
+                }
+                this.#seq++;
+                storage.set('updates-seq', this.#seq);
+            }
+        }
 
-                    // Update seq
-                    if (this.#seq !== diff.seq) {
-                        this.#seq = diff.seq;
-                        storage.set('updates-seq', this.#seq);
-                    }
+        // Check if we are behind
+        if (this.#seq < this.#maxKnownSeq) {
+            log('UPD', 'Detected hole from ' + this.#seq + ' to ' + this.#maxKnownSeq);
 
-                    // Nothing to do
-                    if (!diff.hasMore) {
-                        break;
+            // Load diff
+            let diff = await this.client.getUpdatesDiff(this.#seq);
+            log('UPD', 'Diff:' + diff.seq + ', hasMore:' + diff.hasMore + ', updates:' + diff.updates.length);
+
+            // Apply updates
+            if (this.onUpdates) {
+                for (let upd of diff.updates) {
+                    let parsed = Updates.safeParse(upd);
+                    if (parsed.success) {
+                        await this.onUpdates(parsed.data);
+                    } else {
+                        log('UPD', 'Failed to parse update:' + JSON.stringify(upd));
                     }
                 }
             }
-        });
+
+            // Update seq
+            if (this.#seq !== diff.seq) {
+                this.#seq = diff.seq;
+                this.#maxKnownSeq = Math.max(this.#seq, this.#maxKnownSeq);
+                storage.set('updates-seq', this.#seq);
+            }
+
+            // Invalidate
+            if (diff.hasMore) {
+                this.#sync.invalidate();
+            }
+        }
     }
 }

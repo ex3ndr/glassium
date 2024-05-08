@@ -4,6 +4,7 @@ import { Schema, Update, Updates, sseUpdate } from "./schema";
 import { sse } from "./sse";
 import { SERVER_ENDPOINT } from "../../config";
 import { Content, contentCodec } from "./content";
+import { log } from "../../utils/logs";
 
 export class BubbleClient {
 
@@ -100,13 +101,19 @@ export class BubbleClient {
             if (!parsed.success) {
                 return;
             }
-            let parsedUpdate = Updates.safeParse(parsed.data.data);
-            if (parsedUpdate.success) {
-                handler(parsed.data.seq, parsedUpdate.data);
+            if (parsed.data.data) {
+                let parsedUpdate = Updates.safeParse(parsed.data.data);
+                if (parsedUpdate.success) {
+                    handler(parsed.data.seq, parsedUpdate.data);
+                } else {
+                    console.error('Failed to parse update:', JSON.parse(update));
+                    handler(parsed.data.seq, null);
+                }
             } else {
-                console.error('Failed to parse update:', JSON.parse(update));
+                log('UPD', 'Received last known seq:' + parsed.data.seq);
                 handler(parsed.data.seq, null);
             }
+
         });
     }
 

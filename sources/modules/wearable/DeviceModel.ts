@@ -196,7 +196,7 @@ export class DeviceModel {
                         // Subscribe
                         if (canNotify) {
                             this.#deviceBatterySubscription = batteryChar.subscribe(async (data) => {
-                                let value = convertCompassVoltage(new DataView(data.buffer).getFloat32(0, true));
+                                let value = convertCompassVoltage(new DataView(data.buffer).getUint32(0, false));
                                 log('BT', 'Battery:' + value);
                                 this.#deviceBattery = value;
                                 received = true;
@@ -212,7 +212,7 @@ export class DeviceModel {
                             }
                             backoff(async () => {
                                 while (!stop) {
-                                    let value = convertCompassVoltage(new DataView((await batteryChar.read()).buffer).getFloat32(0, true));
+                                    let value = convertCompassVoltage(new DataView((await batteryChar.read()).buffer).getUint32(0, false));
                                     this.#deviceBattery = value;
                                     log('BT', 'Battery:' + value);
                                     received = true;
@@ -222,15 +222,7 @@ export class DeviceModel {
                         }
 
                         // Read initial value
-                        let s = new DataView((await batteryChar.read()).buffer);
-                        console.warn((await batteryChar.read()));
-                        log('BT', 'Battery (f32,t):' + s.getFloat32(0, true));
-                        log('BT', 'Battery (f32,f):' + s.getFloat32(0, false));
-                        log('BT', 'Battery (i32,t):' + s.getInt32(0, true));
-                        log('BT', 'Battery (i32,f):' + s.getInt32(0, false));
-                        log('BT', 'Battery (u32,t):' + s.getUint32(0, true));
-                        log('BT', 'Battery (u32,f):' + s.getUint32(0, false));
-                        let percent = convertCompassVoltage(new DataView((await batteryChar.read()).buffer).getFloat32(0, true));
+                        let percent = convertCompassVoltage(new DataView((await batteryChar.read()).buffer).getUint32(0, false));
                         if (!received) {
                             this.#deviceBattery = percent;
                             log('BT', 'Battery:' + percent);

@@ -6,6 +6,7 @@ import { Theme } from '../../theme';
 import { AppService } from '../../modules/services/AppService';
 import { Image } from 'expo-image';
 import { useRouter } from '../../routing';
+import { RoundButton } from '../components/RoundButton';
 
 export const ContentView = React.memo((props: { content: Content, app: AppService, display: 'normal' | 'large' }) => {
     if (Array.isArray(props.content)) {
@@ -70,6 +71,9 @@ const ContentMemory = React.memo((props: { id: string, display: 'normal' | 'larg
     return (
         <View style={{ marginHorizontal: 0, marginVertical: 4 }}>
             <Text style={{ color: Theme.text, fontStyle: 'italic' }}>New memory: <Text style={{ fontWeight: '600' }}>{memory.title}</Text></Text>
+            <View style={{ alignItems: 'flex-start', marginTop: 8 }}>
+                <RoundButton size='small' title={'View'} onPress={() => router.navigate('memory', { id: memory.id })} />
+            </View>
         </View>
     )
 });

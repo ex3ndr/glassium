@@ -33,7 +33,7 @@ export async function loadDeviceProfile(protocol: ProtocolDefinition, device: BT
     if (protocol.kind === 'super') {
         return {
             id: device.id,
-            vendor: device.name.toLowerCase().startsWith('Friend') ? 'friend' : 'bubble',
+            vendor: device.name.toLowerCase().startsWith('friend') ? 'friend' : 'bubble',
             name: device.name,
             features: { // TODO: Read from characteristics
                 hasMuteSwitch: device.name.toLowerCase().startsWith('Friend') ? undefined : true,

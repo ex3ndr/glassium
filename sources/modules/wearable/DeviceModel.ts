@@ -9,7 +9,6 @@ import { uptime } from "../../utils/uptime";
 import { track } from "../track/track";
 import { InvalidateSync } from "../../utils/sync";
 import { AsyncLock } from "../../utils/lock";
-import { run } from "../../utils/run";
 import { backoff, delay } from "../../utils/time";
 import { convertCompassVoltage } from "./protocol/compass";
 

@@ -4,8 +4,8 @@ import { Image } from 'expo-image';
 import { Theme } from '../../theme';
 import { TimeView } from '../components/TimeView';
 import { Content } from '../../modules/api/content';
-import { FeedViewItem } from '../../modules/state/FeedService';
-import { AppModel } from '../../modules/state/AppModel';
+import { FeedViewItem } from '../../modules/services/FeedService';
+import { AppModel } from '../../modules/services/AppModel';
 
 export const FeedItemComponent = React.memo((props: { item: FeedViewItem, app: AppModel }) => {
     let app = props.app;

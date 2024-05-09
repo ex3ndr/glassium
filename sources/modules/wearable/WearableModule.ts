@@ -1,4 +1,4 @@
-import { Jotai } from "../state/_types";
+import { Jotai } from "../services/_types";
 import { atom, useAtomValue } from "jotai";
 import { storage } from "../../storage";
 import { ProtocolDefinition, resolveProtocol } from "./protocol/protocol";
@@ -13,7 +13,7 @@ import { bluetoothServices } from "./protocol/services";
 import { track } from "../track/track";
 import { uptime } from "../../utils/uptime";
 import { AsyncLock } from "../../utils/lock";
-import { DebugService } from "../state/DebugService";
+import { DebugService } from "../services/DebugService";
 
 export class WearableModule {
     private static lock = new AsyncLock(); // Use static lock to prevent multiple BT operations

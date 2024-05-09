@@ -3,7 +3,7 @@ import axios from 'axios';
 import { storage } from './storage';
 import { BubbleClient } from './modules/api/client';
 import * as Notifications from 'expo-notifications';
-import { AppModel } from './modules/state/AppModel';
+import { AppModel } from './modules/services/AppModel';
 import { cleanAndReload } from './modules/reload/cleanAndReload';
 import { backoff } from './utils/time';
 import { SERVER_ENDPOINT } from './config';

@@ -136,7 +136,7 @@ export const AIScreen = React.memo(() => {
                 })}
                 onPress={() => router.navigate('transcriptions')}
             >
-                <Text style={{ color: Theme.text, fontSize: 18 }}>View transcriptions</Text>
+                <Text style={{ color: Theme.text, fontSize: 18 }}>View transcripts</Text>
             </Pressable>
             <Text style={{ fontSize: 18, color: Theme.text, paddingHorizontal: 32, marginTop: 16, fontWeight: '700' }}>Chats</Text>
             <Pressable

@@ -4,7 +4,7 @@ import { useSafeAreaInsets } from 'react-native-safe-area-context';
 import { Theme } from '../../theme';
 import { useAppModel } from '../../global';
 import { useRouter } from '../../routing';
-import { ViewSession } from '../../modules/state/SessionsModel';
+import { ViewSession } from '../../modules/services/SessionsModel';
 import { FlashList } from '@shopify/flash-list';
 
 const SessionComponent = React.memo((props: { session: ViewSession }) => {

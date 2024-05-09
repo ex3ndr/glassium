@@ -1,11 +1,11 @@
 import { atom, useAtomValue } from "jotai";
-import { Jotai } from "../state/_types";
+import { Jotai } from "../services/_types";
 import { WearableModule } from "../wearable/WearableModule";
 import { EndpointingModule } from "./EndpointingModule";
 import { storage } from "../../storage";
 import { log } from "../../utils/logs";
 import { AsyncLock } from "../../utils/lock";
-import { RealtimeModel } from "../state/RealtimeModel";
+import { RealtimeModel } from "../services/RealtimeModel";
 
 export class CaptureModule {
 

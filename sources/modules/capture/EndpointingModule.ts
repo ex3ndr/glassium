@@ -5,7 +5,7 @@ import { WaveFile } from "wavefile";
 import { compress } from "../../../modules/audio";
 import { randomKey } from "../crypto/randomKey";
 import { atom, useAtomValue } from "jotai";
-import { Jotai } from "../state/_types";
+import { Jotai } from "../services/_types";
 import { track } from "../track/track";
 import { uptime } from "../../utils/uptime";
 

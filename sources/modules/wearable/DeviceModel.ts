@@ -1,5 +1,5 @@
 import { log } from "../../utils/logs";
-import { Jotai } from "../state/_types";
+import { Jotai } from "../services/_types";
 import { atom } from "jotai";
 import { ProtocolDefinition, resolveProtocol } from "./protocol/protocol";
 import { BTDevice } from "./bluetooth/types";

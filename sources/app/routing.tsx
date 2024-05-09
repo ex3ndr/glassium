@@ -64,7 +64,7 @@ export const App = (
         <Stack.Screen
             name='chat'
             component={ChatScreen}
-            options={{ title: 'Chat', presentation: Platform.OS === 'ios' ? 'formSheet' : 'card' }}
+            options={{ title: 'Chat' }}
         />
         <Stack.Screen
             name="settings"
@@ -74,7 +74,7 @@ export const App = (
         <Stack.Screen
             name="transcriptions"
             component={TranscriptionsScreen}
-            options={{ title: 'Transcriptions', presentation: Platform.OS === 'ios' ? 'formSheet' : 'card' }}
+            options={{ title: 'Transcripts' }}
         />
     </>
 );

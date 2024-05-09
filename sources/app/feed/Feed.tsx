@@ -4,7 +4,7 @@ import { FlashList } from '@shopify/flash-list';
 import { ActivityIndicator, Text, View } from 'react-native';
 import { Theme } from '../../theme';
 import { useAppModel } from '../../global';
-import { FeedViewItem } from '../../modules/state/FeedService';
+import { FeedViewItem } from '../../modules/services/FeedService';
 
 const Header = React.memo((props: { loading: boolean }) => {
     return (

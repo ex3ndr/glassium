@@ -223,6 +223,7 @@ export class DeviceModel {
 
                         // Read initial value
                         let s = new DataView((await batteryChar.read()).buffer);
+                        console.warn((await batteryChar.read()));
                         log('BT', 'Battery (f32,t):' + s.getFloat32(0, true));
                         log('BT', 'Battery (f32,f):' + s.getFloat32(0, false));
                         log('BT', 'Battery (i32,t):' + s.getInt32(0, true));

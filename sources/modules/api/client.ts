@@ -41,6 +41,12 @@ export class BubbleClient {
         })
     }
 
+    registerPushToken(token: string) {
+        return backoff(async () => {
+            await this.client.post('/app/register_push_token', { token });
+        })
+    }
+
     //
     // Session Operations
     //

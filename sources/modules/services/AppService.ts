@@ -18,6 +18,7 @@ import { DebugService } from "./DebugService";
 import { FeedService } from "./FeedService";
 import { UserService } from "./UserService";
 import { MemoryService } from "./MemoryService";
+import { NotificationsService } from "./NotificationsService";
 
 export class AppService {
     readonly client: BubbleClient;
@@ -37,6 +38,7 @@ export class AppService {
     readonly users: UserService;
     readonly memory: MemoryService;
     readonly feed: FeedService;
+    readonly notifications: NotificationsService;
 
     constructor(client: BubbleClient) {
         this.client = client;
@@ -56,6 +58,7 @@ export class AppService {
         this.users = new UserService(client);
         this.memory = new MemoryService(client);
         this.feed = new FeedService(client, this.jotai, this.users, this.memory);
+        this.notifications = new NotificationsService(client);
         this.updates.onUpdates = this.#handleUpdate;
         this.wearable.onStreamingStart = this.capture.onCaptureStart;
         this.wearable.onStreamingStop = this.capture.onCaptureStop;

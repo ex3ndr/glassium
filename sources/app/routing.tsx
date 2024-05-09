@@ -18,8 +18,9 @@ import { MemoryScreen } from './screens/MemoryScreen';
 import { LogsScreen } from './dev/LogsScreen';
 import { Platform } from 'react-native';
 import { DevScreen } from './dev/DevScreen';
-import { DiscussScreen } from './discuss/DiscussScreen';
 import { SettingsScreen } from './screens/settings/SettingsScreen';
+import { ChatScreen } from './screens/chat/ChatScreen';
+import { TranscriptionsScreen } from './screens/TranscriptionsScreen';
 
 export const Stack = createNativeStackNavigator();
 
@@ -33,7 +34,7 @@ export const App = (
         <Stack.Screen
             name='session'
             component={SessionScreen}
-            options={{ title: 'Session' }}
+            options={{ title: 'Session', presentation: Platform.OS === 'ios' ? 'formSheet' : 'card' }}
         />
         <Stack.Screen
             name='sessions'
@@ -61,14 +62,19 @@ export const App = (
             options={{ title: 'Developer', presentation: Platform.OS === 'ios' ? 'formSheet' : 'card' }}
         />
         <Stack.Screen
-            name='discussion'
-            component={DiscussScreen}
-            options={{ title: 'Discussion', presentation: Platform.OS === 'ios' ? 'formSheet' : 'card' }}
+            name='chat'
+            component={ChatScreen}
+            options={{ title: 'Chat', presentation: Platform.OS === 'ios' ? 'formSheet' : 'card' }}
         />
         <Stack.Screen
             name="settings"
             component={SettingsScreen}
             options={{ title: 'Settings', presentation: Platform.OS === 'ios' ? 'formSheet' : 'card' }}
+        />
+        <Stack.Screen
+            name="transcriptions"
+            component={TranscriptionsScreen}
+            options={{ title: 'Transcriptions', presentation: Platform.OS === 'ios' ? 'formSheet' : 'card' }}
         />
     </>
 );

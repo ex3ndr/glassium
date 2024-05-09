@@ -32,8 +32,15 @@ export class UpdatesModel {
 
     #doReceive = (seq: number, update: Update | null) => {
         log('UPD', 'Received update:' + seq);
-        this.#maxKnownSeq = Math.max(this.#maxKnownSeq, seq);
-        if (this.#seq === null || seq >= this.#seq) {
+
+        // Update max known seq
+        if (seq > this.#maxKnownSeq) {
+            this.#maxKnownSeq = Math.max(this.#maxKnownSeq, seq);
+            this.#sync.invalidate();
+        }
+
+        // Push update to queue
+        if (this.#seq === null || seq >= this.#seq && !!update) {
             this.#queue.push({ seq, update: update });
             this.#sync.invalidate();
         }

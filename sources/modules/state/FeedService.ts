@@ -28,6 +28,7 @@ export class FeedService {
         this.jotai = jotai;
         this.users = users;
         this.#feeds.set('default', new FeedConnectionService('default', users, client, jotai));
+        this.#feeds.set('ai', new FeedConnectionService('ai', users, client, jotai));
     }
 
     onUpdate = (update: UpdateFeedPosted) => {

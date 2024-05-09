@@ -1,20 +1,22 @@
 import { useRoute } from '@react-navigation/native';
 import * as React from 'react';
-import { Pressable, ScrollView, Text, View } from 'react-native';
+import { ScrollView, Text, View } from 'react-native';
 import { Image } from 'expo-image';
-import { Memory } from '../../modules/api/schema';
 import { Theme } from '../../theme';
 import { useSafeAreaInsets } from 'react-native-safe-area-context';
 import { useRouter } from '../../routing';
+import { useAppModel } from '../../global';
 
 export const MemoryScreen = React.memo(() => {
+    const id = (useRoute().params as any).id as string;
+    const app = useAppModel();
     const safeArea = useSafeAreaInsets();
     const router = useRouter();
-    let memory = (useRoute().params as any).data as Memory;
+    let memory = app.memory.use(id);
     return (
         <>
             <ScrollView style={{ flexGrow: 1, backgroundColor: Theme.background }} contentContainerStyle={{ paddingBottom: safeArea.bottom + 64 + 32 }}>
-                {memory.image && memory.imageMetadata && <Image style={{ height: 'auto', aspectRatio: memory.imageMetadata.width / memory.imageMetadata.height, borderBottomLeftRadius: 16, borderBottomRightRadius: 16 }} source={{ uri: memory.image }} placeholder={{ thumbhash: memory.imageMetadata.thumbhash }} />}
+                {memory.image && <Image style={{ height: 'auto', aspectRatio: memory.image.width / memory.image.height, borderBottomLeftRadius: 16, borderBottomRightRadius: 16 }} source={{ uri: memory.image.url }} placeholder={{ thumbhash: memory.image.thumbhash }} />}
                 {!memory.image && <View style={{ height: 16 }} />}
                 <View style={{ flexDirection: 'column', flexGrow: 1, flexBasis: 0, paddingTop: 16, paddingHorizontal: 16 }}>
                     <Text style={{ fontSize: 24, marginBottom: 16, color: Theme.text }}>{memory.title}</Text>

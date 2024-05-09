@@ -9,6 +9,7 @@ import { Image } from 'expo-image';
 import { Memory } from '../../modules/api/schema';
 import { InvalidateSync } from '../../utils/sync';
 import { FlashList } from '@shopify/flash-list';
+import { Feed } from '../feed/Feed';
 
 const AIStatusComponent = React.memo(() => {
     const app = useAppModel();
@@ -106,7 +107,7 @@ const MemoryComponent = React.memo((props: { memory: Memory }) => {
     }
 
     return (
-        <Pressable key={props.memory.id} style={{ marginHorizontal: 16, marginVertical: 16, borderRadius: 16, borderWidth: 0.5, borderColor: '#272727', flexDirection: 'column' }} onPress={() => router.navigate('memory', { data: props.memory })}>
+        <Pressable key={props.memory.id} style={{ marginHorizontal: 16, marginVertical: 16, borderRadius: 16, borderWidth: 0.5, borderColor: '#272727', flexDirection: 'column' }} onPress={() => router.navigate('memory', { id: props.memory.id })}>
             {image}
             <View style={{ flexDirection: 'column', flexGrow: 1, flexBasis: 0, paddingTop: 8, paddingHorizontal: 8, paddingBottom: 16, backgroundColor: 'white', borderBottomLeftRadius: 16, borderBottomRightRadius: 16 }}>
                 <Text style={{ fontSize: 16, color: Theme.textInverted }} numberOfLines={3}>{props.memory.title}</Text>
@@ -118,10 +119,11 @@ const MemoryComponent = React.memo((props: { memory: Memory }) => {
 
 export const AIScreen = React.memo(() => {
     const safeArea = useSafeAreaInsets();
+    const app = useAppModel();
     const router = useRouter();
-    const memories = useMemories();
 
-    const Header = (
+    // Views
+    const header = (
         <>
             <AIStatusComponent />
             <Pressable
@@ -138,7 +140,7 @@ export const AIScreen = React.memo(() => {
             >
                 <Text style={{ color: Theme.text, fontSize: 18 }}>View transcripts</Text>
             </Pressable>
-            <Text style={{ fontSize: 18, color: Theme.text, paddingHorizontal: 32, marginTop: 16, fontWeight: '700' }}>Chats</Text>
+            {/* <Text style={{ fontSize: 18, color: Theme.text, paddingHorizontal: 32, marginTop: 16, fontWeight: '700' }}>Chats</Text>
             <Pressable
                 style={(p) => ({
                     backgroundColor: p.pressed ? '#131313' : '#1d1d1d',
@@ -160,42 +162,40 @@ export const AIScreen = React.memo(() => {
                     <Text style={{ color: Theme.text, fontSize: 18 }} numberOfLines={1}>Bubble AI Assistant</Text>
                     <Text style={{ color: Theme.text, fontSize: 16, opacity: 0.8 }} numberOfLines={1}>Tap to start a new chat</Text>
                 </View>
-            </Pressable>
+            </Pressable> */}
             <Text style={{ fontSize: 18, color: Theme.text, paddingHorizontal: 32, marginTop: 16, fontWeight: '700' }}>Moments</Text>
         </>
-    )
-
-    if (memories === null || memories.length === 0) {
+    );
+    const footer = (loading: boolean) => {
         return (
-            <ScrollView
-                style={{ flex: 1 }}
-                alwaysBounceVertical={false}
-            >
-                {Header}
-                {memories === null && (
-                    <ActivityIndicator />
-                )}
-                {memories !== null && memories.length === 0 && (
-                    <Text style={{ fontSize: 16, color: Theme.text, paddingHorizontal: 32, opacity: 0.7, marginVertical: 8 }}>Moments will appear here once AI find something interesting</Text>
-                )}
-                <View style={{ height: safeArea.bottom + 16 }} />
-            </ScrollView>
-        );
+            <View style={{ alignItems: 'center', justifyContent: 'flex-start', paddingTop: 8, height: 64, marginBottom: safeArea.bottom, flexDirection: 'column' }}>
+                {loading && (<ActivityIndicator />)}
+                {!loading && <Text style={{ color: Theme.text, opacity: 0.7 }}>The end.</Text>}
+            </View>
+        )
     }
-
+    const empty = (
+        <ScrollView style={{ flex: 1 }} alwaysBounceVertical={false}>
+            {header}
+            <Text style={{ fontSize: 16, color: Theme.text, paddingHorizontal: 32, opacity: 0.7, marginVertical: 8 }}>Moments will appear here once AI find something interesting</Text>
+            <View style={{ height: safeArea.bottom + 16 }} />
+        </ScrollView>
+    );
+    const loading = (
+        <ScrollView style={{ flex: 1 }} alwaysBounceVertical={false}>
+            {header}
+            <ActivityIndicator />
+            <View style={{ height: safeArea.bottom + 16 }} />
+        </ScrollView>
+    );
     return (
-        <View
-            style={{ flex: 1 }}
-        >
-            <FlashList
-                data={memories}
-                keyExtractor={(item) => item.id}
-                ListHeaderComponent={Header}
-                ListFooterComponent={<View style={{ height: safeArea.bottom + 16 }} />}
-                renderItem={({ item }) => (
-                    <MemoryComponent key={item.id} memory={item} />
-                )}
-            />
-        </View>
-    )
+        <Feed
+            feed='smart'
+            display='large'
+            header={() => header}
+            footer={footer}
+            empty={empty}
+            loading={loading}
+        />
+    );
 });

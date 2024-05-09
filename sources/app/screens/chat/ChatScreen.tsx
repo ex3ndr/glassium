@@ -17,7 +17,7 @@ export const ChatScreen = React.memo(() => {
             <View style={{ flex: 1 }}>
                 <Feed
                     feed={id}
-                    inverted={true}
+                    display='inverted'
                     empty={<Text style={{ color: Theme.text, fontSize: 20, opacity: 0.6 }}>What can I help you with today?</Text>}
                 />
             </View>

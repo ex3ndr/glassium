@@ -8,7 +8,7 @@ export const TranscriptionsScreen = React.memo(() => {
     const safeArea = useSafeAreaInsets();
     return (
         <View style={{ flexGrow: 1, paddingBottom: safeArea.bottom, backgroundColor: Theme.background }}>
-            <Feed feed={'default'} inverted={true} />
+            <Feed feed={'default'} display='inverted' />
         </View>
     );
 });

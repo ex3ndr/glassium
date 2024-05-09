@@ -118,15 +118,6 @@ export class BubbleClient {
     }
 
     //
-    // Memories
-    //
-
-    async getMemories() {
-        let res = await this.client.post('/app/memories/list', {});
-        return Schema.listMemories.parse(res.data).memories;
-    }
-
-    //
     // Services
     //
 
@@ -160,6 +151,20 @@ export class BubbleClient {
     async users(ids: string[]) {
         let res = await this.client.post('/app/users', { ids });
         return Schema.users.parse(res.data).users;
+    }
+
+    //
+    // Memories
+    //
+
+    async getMemories() {
+        let res = await this.client.post('/app/memories/list', {});
+        return Schema.listMemories.parse(res.data).memories;
+    }
+
+    async memories(ids: string[]) {
+        let res = await this.client.post('/app/memories', { ids });
+        return Schema.listMemories.parse(res.data).memories;
     }
 
     //

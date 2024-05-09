@@ -1,4 +1,5 @@
 import { AsyncLock } from "../../utils/lock";
+import { backoff } from "../../utils/time";
 import { BubbleClient } from "../api/client";
 
 export type UserViewItem = {
@@ -29,7 +30,7 @@ export class UserService {
             }
 
             // Load
-            let res = await this.client.users(Array.from(missing));
+            let res = await backoff(() => this.client.users(Array.from(missing)));
             for (let i of res) {
                 this.#profiles.set(i.id, i);
             }

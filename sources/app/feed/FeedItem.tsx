@@ -5,9 +5,10 @@ import { Theme } from '../../theme';
 import { TimeView } from '../components/TimeView';
 import { Content } from '../../modules/api/content';
 import { FeedViewItem } from '../../modules/services/FeedService';
-import { AppModel } from '../../modules/services/AppModel';
+import { AppService } from '../../modules/services/AppService';
+import { useAppModel } from '../../global';
 
-export const FeedItemComponent = React.memo((props: { item: FeedViewItem, app: AppModel }) => {
+export const FeedItemComponent = React.memo((props: { item: FeedViewItem, app: AppService }) => {
     let app = props.app;
     let by = app.users.use(props.item.by);
     let image: any = null;
@@ -15,6 +16,8 @@ export const FeedItemComponent = React.memo((props: { item: FeedViewItem, app: A
         image = require('../assets/avatar_transcribe.png')
     } else if (by.username === 'overlord') {
         image = require('../assets/avatar_overlord.png')
+    }else if (by.username === 'memory') {
+        image = require('../assets/avatar_memory.png')
     }
     return (
         <View style={{ marginHorizontal: 8, flexDirection: 'row', marginVertical: 4 }}>
@@ -57,9 +60,24 @@ const ContentView = React.memo((props: { content: Content }) => {
             <ContentTranscription transcription={props.content.transcription} />
         );
     }
+    if (props.content.kind === 'memory') {
+        return (
+            <ContentMemory id={props.content.id} />
+        );
+    }
     return (
         <ContentText text={'Unknown content'} />
     );
+});
+
+const ContentMemory = React.memo((props: { id: string }) => {
+    let app = useAppModel();
+    let memory = app.memory.use(props.id).title;
+    return (
+        <View>
+            <Text style={{ color: Theme.text, fontStyle: 'italic' }}>New memory: <Text style={{ fontWeight: '600' }}>{memory}</Text></Text>
+        </View>
+    )
 });
 
 const ContentText = React.memo((props: { text: string }) => {

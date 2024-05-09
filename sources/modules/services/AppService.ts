@@ -17,8 +17,9 @@ import { ProfileService } from "./ProfileService";
 import { DebugService } from "./DebugService";
 import { FeedService } from "./FeedService";
 import { UserService } from "./UserService";
+import { MemoryService } from "./MemoryService";
 
-export class AppModel {
+export class AppService {
     readonly client: BubbleClient;
     readonly jotai: Jotai;
     readonly posthog: PostHog;
@@ -34,6 +35,7 @@ export class AppModel {
     readonly profile: ProfileService;
     readonly debug: DebugService;
     readonly users: UserService;
+    readonly memory: MemoryService;
     readonly feed: FeedService;
 
     constructor(client: BubbleClient) {
@@ -52,7 +54,8 @@ export class AppModel {
         this.background = new BackgroundService();
         this.profile = new ProfileService(client, this.jotai);
         this.users = new UserService(client);
-        this.feed = new FeedService(client, this.jotai, this.users);
+        this.memory = new MemoryService(client);
+        this.feed = new FeedService(client, this.jotai, this.users, this.memory);
         this.updates.onUpdates = this.#handleUpdate;
         this.wearable.onStreamingStart = this.capture.onCaptureStart;
         this.wearable.onStreamingStop = this.capture.onCaptureStop;

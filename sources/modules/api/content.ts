@@ -14,6 +14,9 @@ type ContentBase = {
 } | {
     kind: 'text',
     text: string;
+} | {
+    kind: 'memory',
+    id: string
 } | UnknownContent;
 
 export type Content = ContentBase | Content[];
@@ -30,6 +33,10 @@ const baseContentCodec: z.ZodType<ContentBase> = z.union([
     z.object({
         kind: z.literal('text'),
         text: z.string()
+    }),
+    z.object({
+        kind: z.literal('memory'),
+        id: z.string()
     }),
     z.object({
         kind: z.literal('transcription'),

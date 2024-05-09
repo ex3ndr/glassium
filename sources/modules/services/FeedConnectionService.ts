@@ -5,14 +5,17 @@ import { Jotai } from "./_types";
 import { InvalidateSync } from "../../utils/sync";
 import { log } from "../../utils/logs";
 import { UserService } from "./UserService";
-import { UpdateFeedPosted } from "../api/schema";
+import { UpdateFeed } from "../api/schema";
 import { uptime } from "../../utils/uptime";
+import { MemoryService } from "./MemoryService";
+import { Content } from "../api/content";
 
 export class FeedConnectionService {
     readonly id: string;
     readonly client: BubbleClient;
     readonly jotai: Jotai;
     readonly users: UserService;
+    readonly memories: MemoryService;
 
     // Sync
     #sync: InvalidateSync;
@@ -23,13 +26,14 @@ export class FeedConnectionService {
     #atom = atom<{ items: FeedViewItem[], next: number | null } | null>(null);
     #next: number | null = null;
     #needMore = false;
-    #pending: UpdateFeedPosted[] = [];
+    #pending: UpdateFeed[] = [];
 
-    constructor(id: string, users: UserService, client: BubbleClient, jotai: Jotai) {
+    constructor(id: string, users: UserService, memories: MemoryService, client: BubbleClient, jotai: Jotai) {
         this.id = id;
         this.client = client;
         this.jotai = jotai;
         this.users = users;
+        this.memories = memories;
         this.#sync = new InvalidateSync(this.#doSync);
         this.#sync.invalidate();
         setInterval(() => this.#sync.invalidate(), 5000);
@@ -46,7 +50,7 @@ export class FeedConnectionService {
     // Sync
     //
 
-    onUpdate = (update: UpdateFeedPosted) => {
+    onUpdate = (update: UpdateFeed) => {
         this.#pending.push(update);
         this.#sync.invalidate();
     }
@@ -79,7 +83,7 @@ export class FeedConnectionService {
         let initialList = await this.client.getFeedList({ source: this.id, before: null, after: null });
 
         // Assume users
-        await this.users.assumeUsers(initialList.items.map((v) => v.by));
+        await this.#assumeHistoryEntities(initialList.items);
 
         // Lod items
         log('FDD', 'FeedService: Loaded ' + initialList.items.length + ' items');
@@ -96,7 +100,18 @@ export class FeedConnectionService {
 
     #doSyncPending = async () => {
         while (this.#pending.length > 0) {
-            await this.#applyUpdate(this.#pending.shift()!);
+
+            // Load pending (to avoid race conditions)
+            let picked = [...this.#pending];
+            this.#pending = [];
+
+            // Assume entities
+            await this.#assumeUpdateEntities(picked);
+
+            // Apply update
+            for (let i of picked) {
+                await this.#applyUpdate(i);
+            }
         }
     }
 
@@ -111,8 +126,8 @@ export class FeedConnectionService {
         let start = uptime();
         let loaded = await this.client.getFeedList({ source: this.id, before: this.#next, after: null });
 
-        // Assume users
-        await this.users.assumeUsers(loaded.items.map((v) => v.by));
+        // Assume entities
+        await this.#assumeHistoryEntities(loaded.items);
 
         // Merge with existing
         let added: FeedViewItem[] = [];
@@ -135,48 +150,7 @@ export class FeedConnectionService {
         this.jotai.set(this.#atom, { items: this.#items, next: this.#next });
     }
 
-    // #doSyncDelta = async () => {
-
-    //     // Should not happen
-    //     if (this.#seqno === null) {
-    //         return;
-    //     }
-
-    //     // Detect update
-    //     let seqno = await this.client.getFeedSeq();
-    //     if (seqno <= this.#seqno) {
-    //         return;
-    //     }
-
-    //     // Load missing items
-    //     let loaded: FeedViewItem[] = [];
-    //     let last: number | null = null;
-    //     outer: while (true) {
-
-    //         // Load new feed
-    //         let updated = await this.client.getFeedList(last);
-
-    //         // Assume users
-    //         await this.users.assumeUsers(updated.items.map((v) => v.by));
-
-    //         // Merge with existing
-    //         log('FDD', 'FeedService: Loaded ' + updated.items.length + ' items');
-    //         for (let u of updated.items) {
-    //             if (u.seq < this.#seqno) {
-    //                 break outer;
-    //             }
-    //             log('FDD', 'FeedService: Item ' + u.seq + ' at ' + u.date + ' by ' + u.by + ' with content ' + JSON.stringify(u.content));
-    //             loaded.push(u);
-    //         }
-    //     }
-
-    //     // Merge
-    //     this.#items = loaded.concat(this.#items);
-    //     this.#seqno = seqno;
-    //     this.jotai.set(this.#atom, { items: this.#items, next: this.#next });
-    // }
-
-    #applyUpdate = async (update: UpdateFeedPosted) => {
+    #applyUpdate = async (update: UpdateFeed) => {
 
         // Assume users
         await this.users.assumeUsers([update.by]);
@@ -203,6 +177,74 @@ export class FeedConnectionService {
             return;
         }
     }
+
+    //
+    // Entities
+    //
+
+    #assumeHistoryEntities = async (items: { by: string, content: Content }[]) => {
+
+        // Extract content entities
+        let contents: Content[] = items.map((v) => v.content);
+        let { users, memories } = this.#collectContentEntities(contents);
+
+        // Extract users from update
+        for (let u of items) {
+            users.add(u.by);
+        }
+
+        // Assume
+        await this.users.assumeUsers(Array.from(users));
+        await this.memories.assumeMemories(Array.from(memories));
+    }
+
+    #assumeUpdateEntities = async (updates: UpdateFeed[]) => {
+
+        // Extract content entities
+        let contents: Content[] = [];
+        for (let u of updates) {
+            if (u.type === 'feed-posted') {
+                contents.push(u.content);
+            }
+        }
+        let { users, memories } = this.#collectContentEntities(contents);
+
+        // Extract users from update
+        for (let u of updates) {
+            if (u.type === 'feed-posted') {
+                users.add(u.by);
+            }
+        }
+
+        // Assume
+        await this.users.assumeUsers(Array.from(users));
+        await this.memories.assumeMemories(Array.from(memories));
+    }
+
+    #collectContentEntities = (items: Content[]) => {
+        let users = new Set<string>();
+        let memories = new Set<string>();
+
+        for (let i of items) {
+            if (Array.isArray(i)) {
+                let inner = this.#collectContentEntities(i);
+
+                // TODO: Faster?
+                users = new Set([...users, ...inner.users]);
+                memories = new Set([...memories, ...inner.memories]);
+            } else {
+                if (i.kind === 'memory') {
+                    memories.add(i.id);
+                }
+            }
+        }
+
+        return { users, memories };
+    }
+
+    //
+    // Public
+    //
 
     use() {
         return useAtomValue(this.#atom);

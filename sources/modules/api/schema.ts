@@ -89,6 +89,7 @@ export type UpdateMemoryCreated = z.infer<typeof updateMemoryCreated>;
 export type UpdateMemoryUpdated = z.infer<typeof updateMemoryUpdated>;
 export type UpdateFeedPosted = z.infer<typeof updateFeedPost>;
 export type Update = UpdateSessionCreated | UpdateSessionUpdated | UpdateSessionAudio | UpdateSessionTranscription | UpdateMemoryCreated | UpdateMemoryUpdated | UpdateSessionClassified | UpdateFeedPosted;
+export type UpdateFeed = UpdateFeedPosted;
 
 const session = z.object({
     id: z.string(),

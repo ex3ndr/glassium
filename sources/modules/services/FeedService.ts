@@ -4,6 +4,7 @@ import { Jotai } from "./_types";
 import { Content } from "../api/content";
 import { FeedConnectionService } from "./FeedConnectionService";
 import { UpdateFeedPosted } from "../api/schema";
+import { MemoryService } from "./MemoryService";
 
 export type FeedViewItem = {
     seq: number;
@@ -20,15 +21,18 @@ export type FeedState = {
 export class FeedService {
     readonly client: BubbleClient;
     readonly users: UserService;
+    readonly memories: MemoryService;
     readonly jotai: Jotai;
     #feeds = new Map<string, FeedConnectionService>();
 
-    constructor(client: BubbleClient, jotai: Jotai, users: UserService) {
+    constructor(client: BubbleClient, jotai: Jotai, users: UserService, memories: MemoryService) {
         this.client = client;
         this.jotai = jotai;
         this.users = users;
-        this.#feeds.set('default', new FeedConnectionService('default', users, client, jotai));
-        this.#feeds.set('ai', new FeedConnectionService('ai', users, client, jotai));
+        this.memories = memories;
+        this.#feeds.set('default', new FeedConnectionService('default', users, memories, client, jotai));
+        this.#feeds.set('smart', new FeedConnectionService('smart', users, memories, client, jotai));
+        this.#feeds.set('ai', new FeedConnectionService('ai', users, memories, client, jotai));
     }
 
     onUpdate = (update: UpdateFeedPosted) => {
@@ -47,7 +51,7 @@ export class FeedService {
 
     use(feed: 'default' | string): FeedState {
         if (!this.#feeds.has(feed)) {
-            this.#feeds.set(feed, new FeedConnectionService(feed, this.users, this.client, this.jotai));
+            this.#feeds.set(feed, new FeedConnectionService(feed, this.users, this.memories, this.client, this.jotai));
         }
         return this.#feeds.get(feed)!.use();
     }

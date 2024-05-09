@@ -3,7 +3,7 @@ import axios from 'axios';
 import { storage } from './storage';
 import { BubbleClient } from './modules/api/client';
 import * as Notifications from 'expo-notifications';
-import { AppModel } from './modules/services/AppModel';
+import { AppService } from './modules/services/AppService';
 import { cleanAndReload } from './modules/reload/cleanAndReload';
 import { backoff } from './utils/time';
 import { SERVER_ENDPOINT } from './config';
@@ -39,7 +39,7 @@ export type GlobalState = {
     client: BubbleClient
 };
 
-let globalAppModel: AppModel | null = null;
+let globalAppModel: AppService | null = null;
 
 export const GlobalStateContext = React.createContext<GlobalState>({ kind: 'empty' });
 
@@ -94,7 +94,7 @@ export function loadAppModelIfNeeded() {
             Authorization: `Bearer ${token}`,
         },
     }), token);
-    globalAppModel = new AppModel(client);
+    globalAppModel = new AppService(client);
 }
 
 //
@@ -222,7 +222,7 @@ export function useNewGlobalController(): [GlobalState, GlobalStateController] {
 
         // If onboarding is completed - we are ready
         if (isOnboardingCompleted()) {
-            globalAppModel = new AppModel(client);
+            globalAppModel = new AppService(client);
             return {
                 kind: 'ready',
                 token: token,
@@ -296,7 +296,7 @@ export function useNewGlobalController(): [GlobalState, GlobalStateController] {
                 // Requirements satisfied
                 if (!onboardingState) {
                     onboardingMarkCompleted();
-                    globalAppModel = new AppModel(client);
+                    globalAppModel = new AppService(client);
                     currentState = {
                         kind: 'ready',
                         token: currentState.token,

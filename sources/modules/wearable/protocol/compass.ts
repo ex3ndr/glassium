@@ -23,7 +23,6 @@ const data = [
 ];
 
 export function convertCompassVoltage(src: number) {
-    console.warn(src);
     let v = data.find((d) => d.voltage < src / 1000000000);
     if (v) {
         return v.percentage;

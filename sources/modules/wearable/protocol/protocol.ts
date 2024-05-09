@@ -85,7 +85,7 @@ async function resolveCompasProtocol(device: BTDevice): Promise<ProtocolDefiniti
     }
 
     // Search for characteristic
-    let audioCharacteristic = service.characteristics.find((v) => v.id === 'beb5483e-36e1-4688-b7f5-ea07361b26a8');
+    let audioCharacteristic = service.characteristics.find((v) => v.id === 'beb5483e-36e1-4688-b7f5-ea07361b26a8' || v.id === 'aeab4b05-a5fd-4c89-89de-17f1509e2734');
     if (!audioCharacteristic) {
         return null;
     }
@@ -100,8 +100,8 @@ async function resolveCompasProtocol(device: BTDevice): Promise<ProtocolDefiniti
 
     return {
         kind: 'compass',
-        codec: 'pcm-8' as const,
-        samplingRate: 8000,
+        codec: audioCharacteristic.id === 'beb5483e-36e1-4688-b7f5-ea07361b26a8' ? 'pcm-8' as const : 'mulaw-16' as const,
+        samplingRate: audioCharacteristic.id === 'beb5483e-36e1-4688-b7f5-ea07361b26a8' ? 8000 : 16000,
         source: audioCharacteristic
     };
 }

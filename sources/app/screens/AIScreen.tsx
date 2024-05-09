@@ -72,7 +72,7 @@ export const AIScreen = React.memo(() => {
     // Views
     const header = (
         <>
-            {updates.isUpdateAvailable && (
+            {updates.isUpdatePending && (
                 <Banner title='New version available!' text="Press to restart app to apply update" kind="alert" onPress={() => Updates.reloadAsync()} />
             )}
             <AIStatusComponent />

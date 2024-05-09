@@ -24,11 +24,11 @@ export function useHappyAction(action: () => Promise<void>) {
                                     break;
                                 }
                             } else {
-                                await alert('Error', e.message, [{ text: 'Cancel', style: 'cancel' }]);
+                                await alert('Error', e.message, [{ text: 'OK', style: 'cancel' }]);
                                 break;
                             }
                         } else {
-                            await alert('Error', 'Unknown error', [{ text: 'Cancel', style: 'cancel' }]);
+                            await alert('Error', 'Unknown error', [{ text: 'OK', style: 'cancel' }]);
                             break;
                         }
                     }

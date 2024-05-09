@@ -74,9 +74,9 @@ export const TopBar = React.memo(() => {
 
     return (
         <View style={{ height: 48, alignItems: 'center', justifyContent: 'center', flexDirection: 'row', alignSelf: 'stretch' }}>
-            <View style={{ flexGrow: 1, flexBasis: 0, flexDirection: 'row', justifyContent: 'flex-start', paddingHorizontal: 16, gap: 8 }}>
+            <View style={{ flexGrow: 1, flexBasis: 0, flexDirection: 'row', alignItems: 'center', justifyContent: 'flex-start', paddingHorizontal: 16, gap: 16 }}>
+                {enableMuteButton && <Pressable onPress={() => appModel.capture.setLocalMute(!capture.localMute)} hitSlop={16}><Ionicons name={capture.localMute ? 'mic-off' : 'mic'} size={24} color={Theme.accent} /></Pressable>}
                 {battery !== null && (<BatteryComponent level={battery} />)}
-                {enableMuteButton && <Pressable onPress={() => appModel.capture.setLocalMute(!capture.localMute)}><Ionicons name={capture.localMute ? 'mic-off' : 'mic'} size={24} color={Theme.accent} /></Pressable>}
             </View>
             <View style={{ flexDirection: 'column', justifyContent: 'center', alignItems: 'center' }}>
                 <Text style={{ color: Theme.text, fontSize: 20, fontWeight: '600' }}>{title}</Text>

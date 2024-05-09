@@ -114,10 +114,18 @@ export class BluetoothModel implements BluetoothModelInterface {
         let start = uptime();
         log('Bluetooth', 'Connecting to device:' + id)
         try {
-            btDevice = await this.#manager.connectToDevice(id, {
+            let devPromise = this.#manager.connectToDevice(id, {
                 requestMTU: 250,
                 // timeout: 5000 // NOTE: There is a bug in the library that causes this to drop connections on Android
             });
+
+            // Implement timeout
+            let timeoutPromise = new Promise<Device | null>((resolve) => { setTimeout(() => resolve(null), 5000) });
+            let resolved = await Promise.any([devPromise, timeoutPromise]);
+            if (!resolved) {
+                return null;
+            }
+            btDevice = resolved as Device;
         } catch (error) {
             // console.error(error);
             return null;

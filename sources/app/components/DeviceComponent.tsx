@@ -1,7 +1,7 @@
 import * as React from 'react';
 import { ActivityIndicator, Image, Pressable, Text, View } from 'react-native';
 import { Theme } from '../../theme';
-import { useAsyncCommand } from '../../utils/useAsyncCommand';
+import { useHappyAction } from '../helpers/useHappyAction';
 
 const icons = {
     'compass': require('../assets/device_compass.png'),
@@ -10,7 +10,7 @@ const icons = {
 }
 
 export const DeviceComponent = React.memo((props: { kind: 'compass' | 'friend' | 'bubble', title: string, subtitle: string, action?: () => Promise<any> }) => {
-    const [action, doAction] = useAsyncCommand(props.action ?? (() => Promise.resolve()));
+    const [action, doAction] = useHappyAction(props.action ?? (() => Promise.resolve()));
     return (
         <Pressable
             style={(p) => ({
@@ -26,7 +26,7 @@ export const DeviceComponent = React.memo((props: { kind: 'compass' | 'friend' |
             disabled={!props.action || action}
         >
             <View>
-                <Image source={icons[props.kind]} style={{ width: 64, height: 64, borderRadius: 8 }} />
+                <Image source={icons[props.kind]} style={{ width: 64, height: 64, borderRadius: 8 }} resizeMode='stretch' />
                 {action && (
                     <View style={{ position: 'absolute', top: 0, left: 0, right: 0, bottom: 0, borderRadius: 8, justifyContent: 'center', alignItems: 'center', backgroundColor: 'rgba(0,0,0,0.3)' }}>
                         <ActivityIndicator />

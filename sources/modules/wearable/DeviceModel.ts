@@ -9,6 +9,9 @@ import { uptime } from "../../utils/uptime";
 import { track } from "../track/track";
 import { InvalidateSync } from "../../utils/sync";
 import { AsyncLock } from "../../utils/lock";
+import { run } from "../../utils/run";
+import { backoff, delay } from "../../utils/time";
+import { convertCompassVoltage } from "./protocol/compass";
 
 export class DeviceModel {
     static #lock = new AsyncLock(); // Use static lock to prevent multiple BT operations
@@ -127,22 +130,106 @@ export class DeviceModel {
 
             // Handling battery state
             if (!this.#deviceReady && !this.#deviceBatterySubscription) {
+
+                // Official battery service
                 let batteryService = this.#device.services.find((v) => v.id === bluetoothServices.battery);
                 if (batteryService) {
-                    let batteryChar = batteryService.characteristics.find((v) => v.id === '00002a19-0000-1000-8000-00805f9b34fb' && v.canRead && v.canNotify);
+                    let batteryChar = batteryService.characteristics.find((v) => v.id === '00002a19-0000-1000-8000-00805f9b34fb' && v.canRead);
                     if (batteryChar) {
 
                         // Subscribe
                         let received = false;
-                        this.#deviceBatterySubscription = batteryChar.subscribe(async (data) => {
-                            log('BT', 'Battery:' + data[0]);
-                            this.#deviceBattery = data[0];
-                            received = true;
-                            this.#flushUI();
-                        });
+                        let canNotify = batteryChar.canNotify;
+
+                        // Subscribe
+                        if (canNotify) {
+                            this.#deviceBatterySubscription = batteryChar.subscribe(async (data) => {
+                                log('BT', 'Battery:' + data[0]);
+                                this.#deviceBattery = data[0];
+                                received = true;
+                                this.#flushUI();
+                            });
+                        } else {
+                            log('BT', 'Battery: notify not supported');
+
+                            // Run polling
+                            let stop = false;
+                            this.#deviceBatterySubscription = () => {
+                                stop = true;
+                            }
+                            backoff(async () => {
+                                while (!stop) {
+                                    let percent = (await batteryChar.read())[0];
+                                    if (!received) {
+                                        this.#deviceBattery = percent;
+                                        log('BT', 'Battery:' + percent);
+                                    }
+                                    await delay(15000);
+                                }
+                            });
+                        }
 
                         // Read initial value
                         let percent = (await batteryChar.read())[0];
+                        if (!received) {
+                            this.#deviceBattery = percent;
+                            log('BT', 'Battery:' + percent);
+                        }
+                    }
+                }
+
+                // Compass battery service
+                batteryService = this.#device.services.find((v) => v.id === bluetoothServices.compass);
+                if (batteryService) {
+                    let batteryChar = batteryService.characteristics.find((v) => v.id === '9f83442c-7da2-49ca-94e3-b06201a58508' && v.canRead);
+                    if (batteryChar) {
+
+                        // Subscribe
+                        let received = false;
+                        let canNotify = batteryChar.canNotify;
+
+                        // For old firmware notify is not supported
+                        if (batteryService.characteristics.find((v) => v.id === 'beb5483e-36e1-4688-b7f5-ea07361b26a8')) { // This is audio characteristic that exists only in V1 firmware
+                            canNotify = false;
+                        }
+
+                        // Subscribe
+                        if (canNotify) {
+                            this.#deviceBatterySubscription = batteryChar.subscribe(async (data) => {
+                                let value = convertCompassVoltage(new DataView(data.buffer).getFloat32(0, true));
+                                log('BT', 'Battery:' + value);
+                                this.#deviceBattery = value;
+                                received = true;
+                                this.#flushUI();
+                            });
+                        } else {
+                            log('BT', 'Battery: notify not supported');
+
+                            // Run polling
+                            let stop = false;
+                            this.#deviceBatterySubscription = () => {
+                                stop = true;
+                            }
+                            backoff(async () => {
+                                while (!stop) {
+                                    let value = convertCompassVoltage(new DataView((await batteryChar.read()).buffer).getFloat32(0, true));
+                                    this.#deviceBattery = value;
+                                    log('BT', 'Battery:' + value);
+                                    received = true;
+                                    await delay(15000);
+                                }
+                            });
+                        }
+
+                        // Read initial value
+                        let s = new DataView((await batteryChar.read()).buffer);
+                        log('BT', 'Battery (f32,t):' + s.getFloat32(0, true));
+                        log('BT', 'Battery (f32,f):' + s.getFloat32(0, false));
+                        log('BT', 'Battery (i32,t):' + s.getInt32(0, true));
+                        log('BT', 'Battery (i32,f):' + s.getInt32(0, false));
+                        log('BT', 'Battery (u32,t):' + s.getUint32(0, true));
+                        log('BT', 'Battery (u32,f):' + s.getUint32(0, false));
+                        let percent = convertCompassVoltage(new DataView((await batteryChar.read()).buffer).getFloat32(0, true));
                         if (!received) {
                             this.#deviceBattery = percent;
                             log('BT', 'Battery:' + percent);

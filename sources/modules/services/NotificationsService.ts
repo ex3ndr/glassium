@@ -8,19 +8,21 @@ export class NotificationsService {
     constructor(client: BubbleClient) {
         this.client = client;
 
-        backoff(async () => {
+        if (!__DEV__) {
+            backoff(async () => {
 
-            // Request permissions
-            let permission = await Notifications.getPermissionsAsync();
-            if (!permission.granted) {
-                return;
-            }
+                // Request permissions
+                let permission = await Notifications.getPermissionsAsync();
+                if (!permission.granted) {
+                    return;
+                }
 
-            // Get token
-            let token = await Notifications.getExpoPushTokenAsync();
-            
-            // Register push token
-            await this.client.registerPushToken(token.data);
-        });
+                // Get token
+                let token = await Notifications.getExpoPushTokenAsync();
+
+                // Register push token
+                await this.client.registerPushToken(token.data);
+            });
+        }
     }
 }

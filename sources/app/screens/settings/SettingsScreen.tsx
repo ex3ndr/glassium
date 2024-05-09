@@ -108,7 +108,7 @@ export const SettingsScreen = React.memo(() => {
                 <View style={{ alignItems: 'flex-start', paddingHorizontal: 16, flexDirection: 'column' }}>
                     <DeviceComponent
                         title={wearable.profile!.name}
-                        kind='bubble'
+                        kind={wearable.profile!!.vendor}
                         subtitle={
                             (wearable.device.status === 'connected' || wearable.device.status === 'subscribed')
                                 ? (wearable.device.battery !== null ? wearable.device.battery + '% battery' : 'Connected')

@@ -5,11 +5,10 @@ import { useSafeAreaInsets } from 'react-native-safe-area-context';
 import { useAppModel } from '../../global';
 import { useRouter } from '../../routing';
 import { Theme } from '../../theme';
-import { Image } from 'expo-image';
-import { Memory } from '../../modules/api/schema';
-import { InvalidateSync } from '../../utils/sync';
-import { FlashList } from '@shopify/flash-list';
 import { Feed } from '../feed/Feed';
+import { openSystemSettings } from '../../utils/openSystemSettings';
+import { useUpdates } from 'expo-updates';
+import * as Updates from 'expo-updates'
 
 const AIStatusComponent = React.memo(() => {
     const app = useAppModel();
@@ -22,6 +21,9 @@ const AIStatusComponent = React.memo(() => {
             await app.wearable.pick();
         }
     };
+    const doOpenSettings = () => {
+        router.navigate('settings')
+    }
     let state: 'online' | 'offline' | 'disconnected' | 'denied' | 'unavailable' | 'pairing' | 'unknown' = 'unknown';
     if (wearable.pairing === 'denied') {
         state = 'denied';
@@ -38,13 +40,13 @@ const AIStatusComponent = React.memo(() => {
     }
 
     if (state === 'denied') {
-        return (<Banner title='Bluetooth permission' text="Bubble needs a bluetooth permission to connect to your device. Please, open settings and allow bluetooth for this app." kind="warning" />);
+        return (<Banner title='Bluetooth permission' text="Bubble needs a bluetooth permission to connect to your device. Please, open settings and allow bluetooth for this app." kind="warning" onPress={openSystemSettings} />);
     }
     if (state === 'unavailable') {
-        return (<Banner title='Bluetooth unavailable' text="Unfortunatelly this device doesn't have a bluetooth and Bubble can't connect to any device." kind="warning" />);
+        return (<Banner title='Bluetooth unavailable' text="Unfortunatelly this device doesn't have a bluetooth and Bubble can't connect to any device." kind="warning" onPress={openSystemSettings} />);
     }
     if (state === 'pairing') {
-        return (<Banner title='Pairing needed' text="Press to connect a new device to allow AI start collection of experiences around you" kind="alert" />);
+        return (<Banner title='Pairing needed' text="Press to connect a new device to allow AI start collection of experiences around you" kind="alert" onPress={doPair} />);
     }
 
     // Everyday statuses
@@ -52,79 +54,27 @@ const AIStatusComponent = React.memo(() => {
     //     return (<Banner title='Offline' text='Connection to AI is lost. Processing will resume on reconnection.' kind="normal" fixedSize={true} />);
     // }
     if (state === 'disconnected') {
-        return (<Banner title='Disconnected' text='Device disconnected. Some experiences may be lost.' kind="normal" fixedSize={true} />);
+        return (<Banner title='Disconnected' text='Device disconnected. Some experiences may be lost.' kind="normal" fixedSize={true} onPress={doOpenSettings} />);
     }
     if (state === 'online') {
-        return <Banner title='Online' text='AI is connected to your device and collects experiences around you.' kind="normal" fixedSize={true} />;
+        return <Banner title='Online' text='AI is connected to your device and collects experiences around you.' kind="normal" fixedSize={true} onPress={doOpenSettings} />;
     }
 
     // Unknown
     return null;
 });
 
-function useMemories() {
-    const app = useAppModel();
-    const [list, setList] = React.useState<Memory[] | null>(null);
-    React.useEffect(() => {
-        let exited = false;
-        let sync = new InvalidateSync(async () => {
-            if (exited) {
-                return;
-            }
-            let memories = await app.client.getMemories();
-            if (exited) {
-                return;
-            }
-            setList(memories);
-        });
-        sync.invalidate();
-        let inteval = setInterval(() => {
-            sync.invalidate();
-        }, 5000);
-        return () => {
-            exited = true;
-            clearInterval(inteval);
-        };
-    }, []);
-    return list;
-}
-
-const MemoryComponent = React.memo((props: { memory: Memory }) => {
-    const router = useRouter();
-
-    let image;
-    if (props.memory.image && props.memory.imageMetadata) {
-        image = (
-            <Image
-                source={{ uri: props.memory.image }}
-                placeholder={{ thumbhash: props.memory.imageMetadata.thumbhash }}
-                style={{ width: 'auto', height: 'auto', aspectRatio: props.memory.imageMetadata.width / props.memory.imageMetadata.height, borderTopLeftRadius: 16, borderTopRightRadius: 16 }}
-
-            />
-        )
-    } else {
-        image = <View style={{ width: 64, height: 64, borderRadius: 32, backgroundColor: Theme.warninig }} />
-    }
-
-    return (
-        <Pressable key={props.memory.id} style={{ marginHorizontal: 16, marginVertical: 16, borderRadius: 16, borderWidth: 0.5, borderColor: '#272727', flexDirection: 'column' }} onPress={() => router.navigate('memory', { id: props.memory.id })}>
-            {image}
-            <View style={{ flexDirection: 'column', flexGrow: 1, flexBasis: 0, paddingTop: 8, paddingHorizontal: 8, paddingBottom: 16, backgroundColor: 'white', borderBottomLeftRadius: 16, borderBottomRightRadius: 16 }}>
-                <Text style={{ fontSize: 16, color: Theme.textInverted }} numberOfLines={3}>{props.memory.title}</Text>
-                <Text style={{ fontSize: 14, opacity: 0.6, color: Theme.textInverted }} numberOfLines={2}>{props.memory.summary.replaceAll('\n', ' ')}</Text>
-            </View>
-        </Pressable>
-    );
-});
-
 export const AIScreen = React.memo(() => {
     const safeArea = useSafeAreaInsets();
-    const app = useAppModel();
     const router = useRouter();
+    const updates = useUpdates();
 
     // Views
     const header = (
         <>
+            {updates.isUpdateAvailable && (
+                <Banner title='New version available!' text="Press to restart app to apply update" kind="alert" onPress={() => Updates.reloadAsync()} />
+            )}
             <AIStatusComponent />
             <Pressable
                 style={(p) => ({

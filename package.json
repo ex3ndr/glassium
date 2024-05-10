@@ -9,6 +9,7 @@
     "prebuild": "expo prebuild",
     "build-web": "expo export -p web",
     "ota": "eas update --branch next",
+    "ota:production": "eas update --branch production",
     "submit:next": "eas build --platform ios --profile next --no-wait --non-interactive --auto-submit",
     "submit:ios": "eas build --platform ios --profile production --no-wait --non-interactive --auto-submit",
     "submit:android": "eas build --platform android --profile production --no-wait --non-interactive --auto-submit",

@@ -21,6 +21,7 @@ import { DevScreen } from './dev/DevScreen';
 import { SettingsScreen } from './screens/settings/SettingsScreen';
 import { ChatScreen } from './screens/chat/ChatScreen';
 import { TranscriptionsScreen } from './screens/TranscriptionsScreen';
+import { UpdateLogScreen } from './dev/UpdateLogScreen';
 
 export const Stack = createNativeStackNavigator();
 
@@ -55,6 +56,11 @@ export const App = (
             name='logs'
             component={LogsScreen}
             options={{ title: 'Logs', presentation: Platform.OS === 'ios' ? 'formSheet' : 'card' }}
+        />
+        <Stack.Screen
+            name='update-logs'
+            component={UpdateLogScreen}
+            options={{ title: 'Update Logs', presentation: Platform.OS === 'ios' ? 'formSheet' : 'card' }}
         />
         <Stack.Screen
             name='dev'

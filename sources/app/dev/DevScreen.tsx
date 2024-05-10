@@ -31,6 +31,8 @@ export const DevScreen = React.memo(() => {
                 <RoundButton title={'Restart app'} size='small' action={restartApp} />
                 <View style={{ height: 16 }} />
                 <RoundButton title={'View logs'} size='small' onPress={() => router.navigate('logs')} />
+                <View style={{ height: 16 }} />
+                <RoundButton title={'View update logs'} size='small' onPress={() => router.navigate('update-logs')} />
             </View>
             <View style={{ height: 16 }} />
             <Item title="Debug Capture" />

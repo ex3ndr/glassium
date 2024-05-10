@@ -13,7 +13,7 @@ export default {
   "expo": {
     "name": "Bubble",
     "slug": "bubble",
-    "version": "1.1.0",
+    "version": "1.2.0",
     "runtimeVersion": RUNTIME_VERSION,
     "orientation": "portrait",
     "icon": IS_NEXT ? './assets/icon_next.png' : "./assets/icon.png",

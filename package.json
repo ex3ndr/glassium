@@ -10,7 +10,8 @@
     "build-web": "expo export -p web",
     "ota": "eas update --branch next",
     "submit:next": "eas build --platform ios --profile next --no-wait --non-interactive --auto-submit",
-    "submit:release": "eas build --platform ios --profile production --no-wait --non-interactive --auto-submit",
+    "submit:ios": "eas build --platform ios --profile production --no-wait --non-interactive --auto-submit",
+    "submit:android": "eas build --platform android --profile production --no-wait --non-interactive --auto-submit",
     "postinstall": "patch-package"
   },
   "dependencies": {

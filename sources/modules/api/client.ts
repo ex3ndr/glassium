@@ -159,6 +159,10 @@ export class BubbleClient {
         return Schema.users.parse(res.data).users;
     }
 
+    async uploadVoiceSample(sample: string) {
+        await this.client.post('/app/profile/edit/voice', { sample });
+    }
+
     //
     // Memories
     //

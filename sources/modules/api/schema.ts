@@ -177,6 +177,7 @@ export const Schema = {
             lastName: z.string().nullable(),
             username: z.string(),
             phone: z.string().nullable(),
+            voiceSample: z.boolean(),
         })
     }),
     users: z.object({
@@ -203,5 +204,8 @@ export const Schema = {
             by: z.string(),
         })),
         next: z.number().nullable()
-    })
+    }),
+    ok: z.object({
+        ok: z.literal(true)
+    }),
 };

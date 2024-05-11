@@ -6,15 +6,18 @@ import { atom, useAtomValue } from 'jotai';
 import { AppState } from 'react-native';
 import { posthogIdentity } from '../track/track';
 import { InvalidateSync } from '../../utils/sync';
+import * as FileSystem from 'expo-file-system';
+import { backoff } from '../../utils/time';
 
 const ProfileSchema = z.object({
-    version: z.literal(1),
+    version: z.literal(2),
     body: z.object({
         id: z.string(),
         firstName: z.string(),
         lastName: z.string().nullable(),
         username: z.string(),
         phone: z.string().nullable(),
+        voiceSample: z.boolean(),
     })
 });
 
@@ -48,7 +51,7 @@ export class ProfileService {
             this.#existing = loaded;
             this.jotai.set(this.profile, loaded);
             posthogIdentity(loaded.id)
-            storageSetTyped('user-profile', ProfileSchema, { version: 1, body: loaded } satisfies ProfileStorage);
+            storageSetTyped('user-profile', ProfileSchema, { version: 2, body: loaded } satisfies ProfileStorage);
         });
         this.#sync.invalidate();
 
@@ -58,6 +61,12 @@ export class ProfileService {
                 this.#sync.invalidate();
             }
         });
+    }
+
+    uploadVoiceSample = async (uri: string) => {
+        let sample = await FileSystem.readAsStringAsync(uri, { encoding: 'base64' });
+        await backoff(() => this.client.uploadVoiceSample(sample));
+        await this.#sync.invalidateAndAwait();
     }
 
     use = () => {

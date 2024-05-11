@@ -65,6 +65,8 @@ const AIStatusComponent = React.memo(() => {
 });
 
 export const AIScreen = React.memo(() => {
+    const app = useAppModel();
+    const me = app.profile.use();
     const safeArea = useSafeAreaInsets();
     const router = useRouter();
     const updates = useUpdates();
@@ -76,6 +78,9 @@ export const AIScreen = React.memo(() => {
                 <Banner title='New version available!' text="Press to restart app to apply update" kind="alert" onPress={() => Updates.reloadAsync()} />
             )}
             <AIStatusComponent />
+            {me && !me.voiceSample && (
+                <Banner title="Voice sample needed" text="To improve AI experience, please, record a voice sample" kind="normal" onPress={() => router.navigate('voice-sample')} />
+            )}
             <Pressable
                 style={(p) => ({
                     backgroundColor: p.pressed ? '#131313' : '#1d1d1d',

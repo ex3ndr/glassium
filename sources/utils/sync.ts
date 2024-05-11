@@ -5,6 +5,7 @@ export class InvalidateSync {
     private _invalidatedDouble = false;
     private _stopped = false;
     private _command: () => Promise<void>;
+    private _pendings: (() => void)[] = [];
 
     constructor(command: () => Promise<void>) {
         this._command = command;
@@ -25,12 +26,31 @@ export class InvalidateSync {
         }
     }
 
+    async invalidateAndAwait() {
+        if (this._stopped) {
+            return;
+        }
+        await new Promise<void>(resolve => {
+            this._pendings.push(resolve);
+            this.invalidate();
+        });
+    }
+
     stop() {
         if (this._stopped) {
             return;
         }
+        this._notifyPendings();
         this._stopped = true;
     }
+
+    private _notifyPendings = () => {
+        for (let pending of this._pendings) {
+            pending();
+        }
+        this._pendings = [];
+    }
+
 
     private _doSync = async () => {
         await backoff(async () => {
@@ -40,6 +60,7 @@ export class InvalidateSync {
             await this._command();
         });
         if (this._stopped) {
+            this._notifyPendings();
             return;
         }
         if (this._invalidatedDouble) {
@@ -47,6 +68,7 @@ export class InvalidateSync {
             this._doSync();
         } else {
             this._invalidated = false;
+            this._notifyPendings();
         }
     }
 }

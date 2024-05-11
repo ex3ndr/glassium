@@ -22,6 +22,7 @@ import { SettingsScreen } from './screens/settings/SettingsScreen';
 import { ChatScreen } from './screens/chat/ChatScreen';
 import { TranscriptionsScreen } from './screens/TranscriptionsScreen';
 import { UpdateLogScreen } from './dev/UpdateLogScreen';
+import { VoiceSampleScreen } from './screens/settings/VoiceSampleScreen';
 
 export const Stack = createNativeStackNavigator();
 
@@ -46,6 +47,11 @@ export const App = (
             name='manage-device'
             component={SettingsManageDevice}
             options={{ title: 'Device Management', presentation: Platform.OS === 'ios' ? 'formSheet' : 'card' }}
+        />
+         <Stack.Screen
+            name='voice-sample'
+            component={VoiceSampleScreen}
+            options={{ title: 'Voice Sample', presentation: Platform.OS === 'ios' ? 'formSheet' : 'card' }}
         />
         <Stack.Screen
             name='memory'

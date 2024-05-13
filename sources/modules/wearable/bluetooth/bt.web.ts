@@ -49,7 +49,7 @@ export class BluetoothModel implements BluetoothModelInterface {
         }
     }
 
-    async connect(id: string): Promise<BTDevice | null> {
+    async connect(id: string, timeout: number): Promise<BTDevice | null> {
 
         // Find picked device
         const dev = this.#pickedDevices.get(id);

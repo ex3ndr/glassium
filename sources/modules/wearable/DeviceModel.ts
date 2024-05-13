@@ -118,7 +118,7 @@ export class DeviceModel {
             // Connect to device
             if (!this.#device) {
                 log('BT', 'Device is not connected: connecting');
-                let dev = await this.bluetooth.connect(this.id);
+                let dev = await this.bluetooth.connect(this.id, 30000);
                 if (!dev) {
                     throw new Error('Device not found'); // Backoff retry
                 }

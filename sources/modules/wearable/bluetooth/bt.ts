@@ -107,7 +107,7 @@ export class BluetoothModel implements BluetoothModelInterface {
         this.#manager.stopDeviceScan();
     }
 
-    async connect(id: string): Promise<BTDevice | null> {
+    async connect(id: string, timeout: number): Promise<BTDevice | null> {
 
         // Connect to the device
         let btDevice: Device;
@@ -120,7 +120,7 @@ export class BluetoothModel implements BluetoothModelInterface {
             });
 
             // Implement timeout
-            let timeoutPromise = new Promise<Device | null>((resolve) => { setTimeout(() => resolve(null), 5000) });
+            let timeoutPromise = new Promise<Device | null>((resolve) => { setTimeout(() => resolve(null), timeout) });
             let resolved = await Promise.any([devPromise, timeoutPromise]);
             if (!resolved) {
                 return null;

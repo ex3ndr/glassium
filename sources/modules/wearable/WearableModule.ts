@@ -175,7 +175,7 @@ export class WearableModule {
             }
 
             // Connecting to device
-            let connected = await this.bluetooth.connect(id);
+            let connected = await this.bluetooth.connect(id, 5000);
             if (!connected) {
                 return 'connection-error' as const;
             }
@@ -430,7 +430,7 @@ export class WearableModule {
     }
 
     #notifyStreamingFrame = (data: Int16Array) => {
-        
+
         // Debug
         this.debug.onCaptureFrame(data);
 

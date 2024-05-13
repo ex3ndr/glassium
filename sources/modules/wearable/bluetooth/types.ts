@@ -45,5 +45,5 @@ export interface BluetoothModelInterface {
     pick(services: string[]): Promise<BTDiscoveredDevice | null>;
 
     // Device connection
-    connect(id: string): Promise<BTDevice | null>;
+    connect(id: string, timeout: number): Promise<BTDevice | null>;
 }

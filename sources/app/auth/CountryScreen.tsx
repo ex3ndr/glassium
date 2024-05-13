@@ -43,7 +43,7 @@ export const CountryPicker = React.memo(() => {
     }, [filter]);
     return (
         <View style={{ flexGrow: 1, alignSelf: 'stretch', alignItems: 'stretch', backgroundColor: Theme.background, flexDirection: 'column' }}>
-            <View style={{ paddingHorizontal: 8, flexDirection: 'row', alignItems: 'center', backgroundColor: '#F2F2F2', height: 54 }}>
+            <View style={{ paddingHorizontal: 8, flexDirection: 'row', alignItems: 'center', backgroundColor: Theme.background, height: 54 }}>
                 <View style={{ flexGrow: 1, flexBasis: 0, backgroundColor: '#E3E3E3', borderRadius: 8, paddingLeft: 8, height: 36, marginTop: 4, flexDirection: 'row' }}>
                     <Ionicons name="search" size={20} color="#8D8D8F" style={{ marginTop: 8 }} />
                     <TextInput
@@ -56,7 +56,7 @@ export const CountryPicker = React.memo(() => {
                     />
                 </View>
                 <View style={{ paddingTop: 4, paddingLeft: 4 }}>
-                    <Button title='Cancel' onPress={() => router.goBack()} color={'#000'} />
+                    <Button title='Cancel' onPress={() => router.goBack()} color={'#fff'} />
                 </View>
             </View>
             <View style={{ height: 0.5, backgroundColor: Theme.divider }} />

@@ -1,6 +1,6 @@
 import * as React from 'react';
 import { SafeAreaProvider, initialWindowMetrics } from 'react-native-safe-area-context';
-import { NavigationContainer } from '@react-navigation/native';
+import { DarkTheme, NavigationContainer } from '@react-navigation/native';
 import { Platform, View } from 'react-native';
 import { Theme } from './theme';
 import { GlobalStateContext, GlobalStateControllerContext, getAppModel, useNewGlobalController } from './global';
@@ -15,11 +15,13 @@ if (Platform.OS === 'android') {
     startMetrics!.insets.bottom = 0;
 }
 
+let theme = DarkTheme;
+
 export function Boot() {
     const [state, controller] = useNewGlobalController();
 
     let content = (
-        <NavigationContainer>
+        <NavigationContainer theme={theme}>
             <PostHogProvider client={getPostHog()}>
                 <Stack.Navigator
                     screenOptions={{

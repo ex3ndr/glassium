@@ -31,7 +31,7 @@ export default {
     ],
     "ios": {
       "backgroundColor": "#000",
-      "supportsTablet": false,
+      "supportsTablet": true,
       "bundleIdentifier": "com.bubbleapp.ios",
       "infoPlist": {
         "UIBackgroundModes": [

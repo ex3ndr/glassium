@@ -8,10 +8,12 @@ import { SButton } from '../components/SButton';
 import { useHappyAction } from '../helpers/useHappyAction';
 import { requestPhoneAuthVerify } from '../../modules/api/auth';
 import { storeToken, useGlobalStateController } from '../../global';
+import { useLayout } from '../../utils/useLayout';
 
 export const CodeScreen = React.memo(() => {
 
     const controller = useGlobalStateController();
+    const layout = useLayout();
     const router = useRouter();
     const number = (useRoute().params as { number: string }).number;
     const safeArea = useSafeAreaInsets();
@@ -41,14 +43,14 @@ export const CodeScreen = React.memo(() => {
         setCode(v);
     }, []);
     return (
-        <View style={{ flexGrow: 1, backgroundColor: Theme.background }}>
+        <View style={{ flexGrow: 1, backgroundColor: Theme.background, flexDirection: 'row', alignItems: 'stretch', justifyContent: 'center' }}>
             <KeyboardAvoidingView
-                style={{ flexGrow: 1, alignItems: 'center', flexDirection: 'column', paddingHorizontal: 32, marginBottom: safeArea.bottom }}
+                style={{ flexGrow: 1, alignItems: 'center', flexDirection: 'column', paddingHorizontal: 32, marginBottom: safeArea.bottom, maxWidth: 500 }}
                 behavior="padding"
                 keyboardVerticalOffset={safeArea.top + 44}
             >
-                <View style={{ justifyContent: 'space-between', flexGrow: 1, flexBasis: 0, alignSelf: 'stretch' }}>
-                    <View />
+                <View style={{ flexGrow: 1, flexBasis: 0, alignSelf: 'stretch' }}>
+                    <View style={{ flexGrow: 1 }} />
                     <View style={{ alignItems: 'center' }} >
                         <Text style={{ fontSize: 36, alignSelf: 'center', marginBottom: 8, color: Theme.text }}>Enter code</Text>
                         <Text style={{ fontSize: 22, alignSelf: 'center', lineHeight: 30, color: Theme.text }}>We've sent the code</Text>
@@ -78,7 +80,13 @@ export const CodeScreen = React.memo(() => {
                             maxLength={6}
                         />
                     </View>
+                    {layout === 'small' && (
+                        <View style={{ flexGrow: 1 }} />
+                    )}
                     <SButton title='Continue' style={{ alignSelf: 'stretch', marginTop: 48, paddingBottom: 16 }} onPress={doRequest} loading={requesting} />
+                    {layout === 'large' && (
+                        <View style={{ flexGrow: 1 }} />
+                    )}
                 </View>
             </KeyboardAvoidingView>
         </View>

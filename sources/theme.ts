@@ -3,7 +3,7 @@ export const Theme = {
     // Core
     background: '#000',
     accent: '#fff',
-    divider: '#f0f0f0',
+    divider: '#333',
 
     // Text
     text: '#fff',

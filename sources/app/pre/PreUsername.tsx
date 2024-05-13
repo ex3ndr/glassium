@@ -13,9 +13,11 @@ import { ShakeInstance, Shaker } from '../components/Shaker';
 import { SInput } from '../components/SInput';
 import { useHappyAction } from '../helpers/useHappyAction';
 import { alert } from '../helpers/alert';
+import { useLayout } from '../../utils/useLayout';
 
 export const PreUsernameScreen = React.memo(() => {
     const safeArea = useSafeAreaInsets();
+    const layout = useLayout();
     const client = useClient();
     const controller = useGlobalStateController();
 
@@ -48,17 +50,17 @@ export const PreUsernameScreen = React.memo(() => {
         }
     });
     return (
-        <View style={{ flexGrow: 1, backgroundColor: Theme.background }}>
+        <View style={{ flexGrow: 1, backgroundColor: Theme.background, flexDirection: 'row', alignItems: 'stretch', justifyContent: 'center' }}>
             <KeyboardAvoidingView
-                style={{ flexGrow: 1, alignItems: 'center', flexDirection: 'column', paddingHorizontal: 32, marginBottom: safeArea.bottom }}
+                style={{ flexGrow: 1, alignItems: 'center', flexDirection: 'column', paddingHorizontal: 32, marginBottom: safeArea.bottom, maxWidth: 500 }}
                 behavior="padding"
-                keyboardVerticalOffset={safeArea.top + 44}
+                keyboardVerticalOffset={safeArea.top}
             >
-                <View style={{ flexGrow: 1, flexBasis: 0, alignSelf: 'stretch', justifyContent: 'space-between' }}>
-                    <View />
+                <View style={{ flexGrow: 1, flexBasis: 0, alignSelf: 'stretch' }}>
+                    <View style={{ flexGrow: 1 }} />
                     <View>
-                        <Text style={{ fontSize: 36, alignSelf: 'center', marginBottom: 8 }}>Pick a username</Text>
-                        <Text style={{ fontSize: 22, alignSelf: 'center', lineHeight: 30 }}>How your friends should find you?</Text>
+                        <Text style={{ fontSize: 36, alignSelf: 'center', marginBottom: 8, color: Theme.text }}>Pick a username</Text>
+                        <Text style={{ fontSize: 22, alignSelf: 'center', lineHeight: 30, color: Theme.text }}>How your friends should find you?</Text>
                         <Shaker ref={usernameRef}>
                             <SInput
                                 placeholder='Username'
@@ -70,7 +72,13 @@ export const PreUsernameScreen = React.memo(() => {
                             />
                         </Shaker>
                     </View>
-                    <SButton title='Continue' style={{ alignSelf: 'stretch', marginTop: 48, paddingBottom: 16 }} onPress={doRequest} loading={requesting} />
+                    {layout === 'small' && (
+                        <View style={{ flexGrow: 1 }} />
+                    )}
+                    <SButton title='Continue' style={{ alignSelf: 'stretch', marginTop: 48 }} onPress={doRequest} loading={requesting} />
+                    {layout === 'large' && (
+                        <View style={{ flexGrow: 1 }} />
+                    )}
                 </View>
             </KeyboardAvoidingView>
         </View>

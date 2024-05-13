@@ -45,17 +45,17 @@ export function Boot() {
         </NavigationContainer>
     );
 
-    if (Platform.OS === 'web') {
-        content = (
-            <View style={{ flexGrow: 1, alignSelf: 'stretch', flexBasis: 0, backgroundColor: '#333', flexDirection: 'column', justifyContent: 'center', alignItems: 'stretch' }}>
-                <View style={{ flexGrow: 1, flexBasis: 0, maxHeight: 980, justifyContent: 'center', flexDirection: 'row', alignItems: 'stretch' }}>
-                    <View style={{ flexGrow: 1, flexBasis: 480, maxWidth: 600, flexDirection: 'column', overflow: 'hidden', alignItems: 'stretch', borderRadius: 8 }}>
-                        {content}
-                    </View>
-                </View>
-            </View>
-        );
-    }
+    // if (Platform.OS === 'web') {
+    //     content = (
+    //         <View style={{ flexGrow: 1, alignSelf: 'stretch', flexBasis: 0, backgroundColor: '#333', flexDirection: 'column', justifyContent: 'center', alignItems: 'stretch' }}>
+    //             <View style={{ flexGrow: 1, flexBasis: 0, maxHeight: 980, justifyContent: 'center', flexDirection: 'row', alignItems: 'stretch' }}>
+    //                 <View style={{ flexGrow: 1, flexBasis: 480, maxWidth: 600, flexDirection: 'column', overflow: 'hidden', alignItems: 'stretch', borderRadius: 8 }}>
+    //                     {content}
+    //                 </View>
+    //             </View>
+    //         </View>
+    //     );
+    // }
 
     return (
         <View style={{ flexGrow: 1, flexBasis: 0, alignSelf: 'stretch' }}>

@@ -9,6 +9,7 @@ import { Feed } from '../feed/Feed';
 import { openSystemSettings } from '../../utils/openSystemSettings';
 import { useUpdates } from 'expo-updates';
 import * as Updates from 'expo-updates'
+import { Content } from '../components/Content';
 
 const AIStatusComponent = React.memo(() => {
     const app = useAppModel();
@@ -146,13 +147,15 @@ export const AIScreen = React.memo(() => {
         </ScrollView>
     );
     return (
-        <Feed
-            feed='smart'
-            display='large'
-            header={() => header}
-            footer={footer}
-            empty={empty}
-            loading={loading}
-        />
+        <Content>
+            <Feed
+                feed='smart'
+                display='large'
+                header={() => header}
+                footer={footer}
+                empty={empty}
+                loading={loading}
+            />
+        </Content>
     );
 });

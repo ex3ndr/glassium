@@ -6,7 +6,6 @@ import { Audio } from 'expo-av';
 import { useHappyAction } from '../../helpers/useHappyAction';
 import { openSystemSettings } from '../../../utils/openSystemSettings';
 import * as Haptics from 'expo-haptics';
-import * as FileSystem from 'expo-file-system';
 import { delay } from '../../../utils/time';
 import { useRouter } from '../../../routing';
 import { useAppModel } from '../../../global';

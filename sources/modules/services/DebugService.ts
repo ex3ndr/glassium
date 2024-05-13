@@ -1,4 +1,3 @@
-import * as fs from 'expo-file-system';
 import { storage } from "../../storage";
 import { AsyncLock } from "../../utils/lock";
 import { log, setLogHandler } from "../../utils/logs";
@@ -7,10 +6,10 @@ import { ProtocolDefinition } from "../wearable/protocol/protocol";
 import { Jotai } from "./_types";
 import { atom } from 'jotai';
 import { fromByteArray } from 'react-native-quick-base64';
-import { zip } from 'react-native-zip-archive'
 import { format } from 'date-fns';
 import { framesToWav } from '../media/framesToWav';
 import { randomId } from '../crypto/randomId';
+import { makeDirectoryAsync, writeAsStringAsync, zip } from '../fs/fs';
 
 function timeBasedId() {
     return format(new Date().getTime(), 'yyyyMMddHHmm') + '_' + randomId(4);
@@ -243,8 +242,8 @@ export class DebugService {
             // Persist
             let path = `${this.#sessionId}/${this.#deviceCaptureId}.wav`;
             let enc = fromByteArray(wav);
-            await fs.makeDirectoryAsync(fs.documentDirectory + this.#sessionId, { intermediates: true });
-            await fs.writeAsStringAsync(fs.documentDirectory + path, enc, { encoding: fs.EncodingType.Base64 });
+            await makeDirectoryAsync(this.#sessionId);
+            await writeAsStringAsync(path, enc, 'base64');
 
             // Persist to log
             this.#log(`Capture saved to ${path}`);
@@ -266,14 +265,14 @@ export class DebugService {
 
         // Persist logs
         let start = uptime();
-        await fs.makeDirectoryAsync(fs.documentDirectory + this.#sessionId, { intermediates: true });
-        await fs.writeAsStringAsync(fs.documentDirectory + `${this.#sessionId}/log.txt`, this.#logs, { encoding: fs.EncodingType.UTF8 });
+        await makeDirectoryAsync(this.#sessionId);
+        await writeAsStringAsync(`${this.#sessionId}/log.txt`, this.#logs, 'utf8');
         log("DBG", `Flushed logs in ${uptime() - start}ms`);
 
         // Compress everything
         start = uptime();
-        let files = [`${fs.documentDirectory}${this.#sessionId}/log.txt`, ...this.#captured.map(id => `${fs.documentDirectory}${this.#sessionId}/${id}.wav`)];
-        await zip(files, `${fs.documentDirectory}${this.#sessionId}.zip`);
+        let files = [`${this.#sessionId}/log.txt`, ...this.#captured.map(id => `${this.#sessionId}/${id}.wav`)];
+        await zip(files, `${this.#sessionId}.zip`);
         log("DBG", `Compressed in ${uptime() - start}ms`);
 
         // Persist index

@@ -6,8 +6,8 @@ import { atom, useAtomValue } from 'jotai';
 import { AppState } from 'react-native';
 import { posthogIdentity } from '../track/track';
 import { InvalidateSync } from '../../utils/sync';
-import * as FileSystem from 'expo-file-system';
 import { backoff } from '../../utils/time';
+import { readFileAsync } from '../fs/fs';
 
 const ProfileSchema = z.object({
     version: z.literal(2),
@@ -64,7 +64,7 @@ export class ProfileService {
     }
 
     uploadVoiceSample = async (uri: string) => {
-        let sample = await FileSystem.readAsStringAsync(uri, { encoding: 'base64' });
+        let sample = await readFileAsync(uri, 'base64');
         await backoff(() => this.client.uploadVoiceSample(sample));
         await this.#sync.invalidateAndAwait();
     }

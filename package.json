@@ -84,6 +84,7 @@
     "react-native-webview": "13.6.4",
     "react-native-worklets-core": "^0.4.0",
     "react-native-zip-archive": "^6.1.0",
+    "sweetalert2": "^11.11.0",
     "ts-jest": "^29.1.2",
     "wavefile": "^11.0.0",
     "zod": "^3.22.4"

@@ -8,6 +8,7 @@ import { App, Auth, Modals, Pre, Stack } from './app/routing';
 import { Provider } from 'jotai';
 import { PostHogProvider } from 'posthog-react-native';
 import { getPostHog } from './modules/track/track';
+import { posthog } from './modules/track/posthog';
 
 let startMetrics = initialWindowMetrics;
 if (Platform.OS === 'android') {
@@ -22,7 +23,7 @@ export function Boot() {
 
     let content = (
         <NavigationContainer theme={theme}>
-            <PostHogProvider client={getPostHog()}>
+            <PostHogProvider client={posthog}>
                 <Stack.Navigator
                     screenOptions={{
                         headerShadowVisible: false,

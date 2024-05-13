@@ -3,7 +3,7 @@
 //
 
 const IS_NEXT = process.env.APP_ENV !== 'production';
-const RUNTIME_VERSION = "10";
+const RUNTIME_VERSION = "11";
 
 //
 // Config
@@ -80,7 +80,10 @@ export default {
             "minSdkVersion": 31
           }
         }
-      ]
+      ],
+      ["expo-router",{
+        "root": "./sources/app/routes",
+      }]
     ],
     "extra": {
       "eas": {

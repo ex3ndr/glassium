@@ -56,7 +56,7 @@ export const SessionsScreens = React.memo(() => {
                 </View>
             )}
             {sessions !== null && sessions.length > 0 && (
-                <View style={{ flexGrow: 1, alignSelf: 'stretch' }}>
+                <View style={{ flexGrow: 1, flexBasis: 0, alignSelf: 'stretch' }}>
                     <FlashList
                         contentContainerStyle={{ paddingBottom: safeArea.bottom + 64 }}
                         data={sessions}

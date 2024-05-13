@@ -60,18 +60,20 @@ export const CountryPicker = React.memo(() => {
                 </View>
             </View>
             <View style={{ height: 0.5, backgroundColor: Theme.divider }} />
-            <FlashList<Country>
-                renderItem={({ item }) => <Row item={item} callback={(i) => {
-                    params.callback(i);
-                    router.goBack();
-                }} />}
-                ItemSeparatorComponent={() => ListDivider}
-                ListFooterComponent={data.length > 0 ? () => ListDivider : null}
-                data={data}
-                estimatedItemSize={48}
-                keyboardDismissMode='on-drag'
-                keyboardShouldPersistTaps="handled"
-            />
+            <View style={{ flexGrow: 1, flexBasis: 0 }}>
+                <FlashList<Country>
+                    renderItem={({ item }) => <Row item={item} callback={(i) => {
+                        params.callback(i);
+                        router.goBack();
+                    }} />}
+                    ItemSeparatorComponent={() => ListDivider}
+                    ListFooterComponent={data.length > 0 ? () => ListDivider : null}
+                    data={data}
+                    estimatedItemSize={48}
+                    keyboardDismissMode='on-drag'
+                    keyboardShouldPersistTaps="handled"
+                />
+            </View>
         </View>
     );
 });

@@ -137,15 +137,17 @@ export const Feed = React.memo((props: {
     }
 
     return (
-        <FlashList
-            data={feed.items}
-            drawDistance={1000}
-            renderItem={itemRender}
-            keyExtractor={(item) => 'post-' + item.seq}
-            ListHeaderComponent={props.display === 'inverted' ? footer : header}
-            ListFooterComponent={props.display === 'inverted' ? header : footer}
-            onEndReached={onEndReached}
-            inverted={props.display === 'inverted'}
-        />
+        <View style={{ flexGrow: 1, flexBasis: 0 }}>
+            <FlashList
+                data={feed.items}
+                drawDistance={1000}
+                renderItem={itemRender}
+                keyExtractor={(item) => 'post-' + item.seq}
+                ListHeaderComponent={props.display === 'inverted' ? footer : header}
+                ListFooterComponent={props.display === 'inverted' ? header : footer}
+                onEndReached={onEndReached}
+                inverted={props.display === 'inverted'}
+            />
+        </View>
     )
 });

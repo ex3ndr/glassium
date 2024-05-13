@@ -1,5 +1,5 @@
 import * as React from 'react';
-import { ActivityIndicator, Pressable, ScrollView, Text, View } from 'react-native';
+import { ActivityIndicator, Platform, Pressable, ScrollView, Text, View } from 'react-native';
 import { Banner } from './components/Banner';
 import { useSafeAreaInsets } from 'react-native-safe-area-context';
 import { useAppModel } from '../../global';
@@ -77,7 +77,9 @@ export const AIScreen = React.memo(() => {
             {updates.isUpdatePending && (
                 <Banner title='New version available!' text="Press to restart app to apply update" kind="alert" onPress={() => Updates.reloadAsync()} />
             )}
-            <AIStatusComponent />
+            {Platform.OS !== 'web' && (
+                <AIStatusComponent />
+            )}
             {me && !me.voiceSample && (
                 <Banner title="Voice sample needed" text="To improve AI experience, please, record a voice sample" kind="normal" onPress={() => router.navigate('voice-sample')} />
             )}

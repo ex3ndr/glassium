@@ -1,5 +1,5 @@
 import { useGlobalState } from "@/global";
-import { Redirect, Stack } from "expo-router";
+import { Redirect, Slot, Stack } from "expo-router";
 
 export default function AppLayout() {
     const state = useGlobalState();
@@ -10,6 +10,6 @@ export default function AppLayout() {
         return <Redirect href="/(app)" />;
     }
     return (
-        <Stack screenOptions={{ navigationBarHidden: true }} />
+        <Stack screenOptions={{ headerBackVisible: false, headerShown: false }} />
     );
 }

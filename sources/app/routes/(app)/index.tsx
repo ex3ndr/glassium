@@ -95,7 +95,7 @@ export default React.memo(() => {
                         paddingVertical: 16,
                         flexDirection: 'row'
                     })}
-                    onPress={() => router.navigate('transcriptions')}
+                    onPress={() => router.navigate('/data/transcripts')}
                 >
                     <Text style={{ color: Theme.text, fontSize: 18 }}>View transcripts</Text>
                 </Pressable>

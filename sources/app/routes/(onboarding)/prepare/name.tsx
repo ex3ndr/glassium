@@ -1,18 +1,19 @@
 import * as React from 'react';
-import { Alert, KeyboardAvoidingView, Text, View } from 'react-native';
+import { KeyboardAvoidingView, Text, View } from 'react-native';
 import * as Haptics from 'expo-haptics';
-import { Theme } from '../theme';
 import { useSafeAreaInsets } from 'react-native-safe-area-context';
-import { useClient, useGlobalStateController } from '../../global';
-import { ShakeInstance, Shaker } from '../components/Shaker';
-import { SInput } from '../components/SInput';
-import { SButton } from '../components/SButton';
-import { useHappyAction } from '../../utils/useHappyAction';
-import { alert } from '../../utils/alert';
-import { useLayout } from '../../utils/useLayout';
+import { useClient, useGlobalStateController } from '@/global';
+import { useLayout } from '@/utils/useLayout';
+import { ShakeInstance, Shaker } from '@/app/components/Shaker';
+import { useHappyAction } from '@/utils/useHappyAction';
+import { alert } from '@/utils/alert';
+import { Theme } from '@/app/theme';
+import { SInput } from '@/app/components/SInput';
+import { SButton } from '@/app/components/SButton';
+import { useRefresh } from '../_resolve';
 
-export const PreNameScreen = React.memo(() => {
-    const controller = useGlobalStateController();
+export default React.memo(() => {
+    const refresh = useRefresh();
     const safeArea = useSafeAreaInsets();
     const layout = useLayout();
     const client = useClient();
@@ -38,7 +39,7 @@ export const PreNameScreen = React.memo(() => {
                 return;
             }
         } else {
-            await controller.refresh(); // This moves to the next screen
+            await refresh(); // This moves to the next screen
         }
     });
     return (

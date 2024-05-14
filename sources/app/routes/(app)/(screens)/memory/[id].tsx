@@ -14,7 +14,7 @@ export default React.memo(() => {
     return (
         <>
             <ScrollView style={{ flexGrow: 1, backgroundColor: Theme.background }} contentContainerStyle={{ paddingBottom: safeArea.bottom + 64 + 32 }}>
-                {memory.image && <Image style={{ height: 'auto', aspectRatio: memory.image.width / memory.image.height, borderBottomLeftRadius: 16, borderBottomRightRadius: 16 }} source={{ uri: memory.image.url }} placeholder={{ thumbhash: memory.image.thumbhash }} />}
+                {memory.image && <Image style={{ height: 'auto', aspectRatio: memory.image.width / memory.image.height, borderRadius: 16, maxWidth: 400, maxHeight: 400 }} source={{ uri: memory.image.url }} placeholder={{ thumbhash: memory.image.thumbhash }} />}
                 {!memory.image && <View style={{ height: 16 }} />}
                 <View style={{ flexDirection: 'column', flexGrow: 1, flexBasis: 0, paddingTop: 16, paddingHorizontal: 16 }}>
                     <Text style={{ fontSize: 24, marginBottom: 16, color: Theme.text }}>{memory.title}</Text>

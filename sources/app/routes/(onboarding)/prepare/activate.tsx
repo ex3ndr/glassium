@@ -1,19 +1,20 @@
+import { RoundButton } from '@/app/components/RoundButton';
+import { Theme } from '@/app/theme';
+import { useClient } from '@/global';
+import { useLayout } from '@/utils/useLayout';
 import * as React from 'react';
-import { Theme } from '../theme';
 import { Text, View } from 'react-native';
-import { RoundButton } from '../components/RoundButton';
 import { useSafeAreaInsets } from 'react-native-safe-area-context';
-import { useClient, useGlobalStateController } from '../../global';
-import { useLayout } from '../../utils/useLayout';
+import { _resolve, useRefresh } from '../_resolve';
 
-export const PreActivationScreen = React.memo(() => {
+export default React.memo(() => {
+    const refresh = useRefresh();
     const safeArea = useSafeAreaInsets();
-    const controller = useGlobalStateController();
     const client = useClient();
     const layout = useLayout();
     const action = React.useCallback(async () => {
         await client.preComplete();
-        await controller.refresh();
+        await refresh();
     }, []);
     return (
         <View style={{ flexGrow: 1, backgroundColor: Theme.background, justifyContent: 'center', paddingHorizontal: 32, paddingTop: safeArea.top, paddingBottom: safeArea.bottom }}>

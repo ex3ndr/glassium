@@ -1,19 +1,20 @@
 import * as React from 'react';
 import { Text, View } from 'react-native';
-import { Theme } from '../theme';
-import { markSkipNotifications, useGlobalStateController } from '../../global';
 import * as Notifications from 'expo-notifications';
-import { RoundButton } from '../components/RoundButton';
+import { markSkipNotifications, useGlobalStateController } from '@/global';
+import { Theme } from '@/app/theme';
+import { RoundButton } from '@/app/components/RoundButton';
+import { useRefresh } from '../_resolve';
 
-export const PreNotificationsScreen = React.memo(() => {
-    const controller = useGlobalStateController();
+export default React.memo(() => {
+    const refresh = useRefresh();
     const action = React.useCallback(async () => {
         await Notifications.requestPermissionsAsync();
-        await controller.refresh();
+        await refresh();
     }, []);
     const skip = React.useCallback(async () => {
         markSkipNotifications();
-        await controller.refresh();
+        await refresh();
     }, []);
     return (
         <View style={{ flexGrow: 1, backgroundColor: Theme.background, justifyContent: 'center' }}>

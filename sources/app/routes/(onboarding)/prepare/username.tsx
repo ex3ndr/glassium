@@ -1,25 +1,23 @@
 import * as React from 'react';
 import { useSafeAreaInsets } from 'react-native-safe-area-context';
-import { useClient, useGlobalStateController } from '../../global';
-import { Alert, KeyboardAvoidingView, Text, View } from 'react-native';
-import { Theme } from '../theme';
-import { checkUsername } from '../../utils/checkUsername';
+import { KeyboardAvoidingView, Text, View } from 'react-native';
 import * as Haptics from 'expo-haptics';
-// import { run } from '../../utils/run';
-// import { backoff } from '../../utils/backoff';
-// import { t } from '../../text/t';
-import { SButton } from '../components/SButton';
-import { ShakeInstance, Shaker } from '../components/Shaker';
-import { SInput } from '../components/SInput';
-import { useHappyAction } from '../../utils/useHappyAction';
-import { alert } from '../../utils/alert';
-import { useLayout } from '../../utils/useLayout';
+import { useLayout } from '@/utils/useLayout';
+import { useClient, useGlobalStateController } from '@/global';
+import { ShakeInstance, Shaker } from '@/app/components/Shaker';
+import { useHappyAction } from '@/utils/useHappyAction';
+import { checkUsername } from '@/utils/checkUsername';
+import { alert } from '@/utils/alert';
+import { Theme } from '@/app/theme';
+import { SInput } from '@/app/components/SInput';
+import { SButton } from '@/app/components/SButton';
+import { useRefresh } from '../_resolve';
 
-export const PreUsernameScreen = React.memo(() => {
+export default React.memo(() => {
     const safeArea = useSafeAreaInsets();
     const layout = useLayout();
     const client = useClient();
-    const controller = useGlobalStateController();
+    const refresh = useRefresh();
 
     const [username, setUsername] = React.useState('');
     const usernameRef = React.useRef<ShakeInstance>(null);
@@ -37,7 +35,7 @@ export const PreUsernameScreen = React.memo(() => {
         // Create username
         let res = await client.preUsername(name);
         if (res.ok) {
-            await controller.refresh(); // This moves to the next screen
+            await refresh(); // This moves to the next screen
         } else {
             if (res.error === 'invalid_username') {
                 usernameRef.current?.shake();

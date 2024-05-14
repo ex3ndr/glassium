@@ -1,5 +1,5 @@
 import * as React from 'react';
-import { HappyError } from '../../modules/errors/HappyError';
+import { HappyError } from '../modules/errors/HappyError';
 import { alert } from './alert';
 
 export function useHappyAction(action: () => Promise<void>) {

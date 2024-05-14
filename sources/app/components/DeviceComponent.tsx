@@ -1,7 +1,7 @@
 import * as React from 'react';
 import { ActivityIndicator, Image, Pressable, Text, View } from 'react-native';
 import { Theme } from '../../theme';
-import { useHappyAction } from '../helpers/useHappyAction';
+import { useHappyAction } from '../../utils/useHappyAction';
 
 const icons = {
     'compass': require('../assets/device_compass.png'),

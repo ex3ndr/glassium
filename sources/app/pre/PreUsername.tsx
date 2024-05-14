@@ -11,8 +11,8 @@ import * as Haptics from 'expo-haptics';
 import { SButton } from '../components/SButton';
 import { ShakeInstance, Shaker } from '../components/Shaker';
 import { SInput } from '../components/SInput';
-import { useHappyAction } from '../helpers/useHappyAction';
-import { alert } from '../helpers/alert';
+import { useHappyAction } from '../../utils/useHappyAction';
+import { alert } from '../../utils/alert';
 import { useLayout } from '../../utils/useLayout';
 
 export const PreUsernameScreen = React.memo(() => {

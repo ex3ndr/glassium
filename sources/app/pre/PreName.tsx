@@ -7,8 +7,8 @@ import { useClient, useGlobalStateController } from '../../global';
 import { ShakeInstance, Shaker } from '../components/Shaker';
 import { SInput } from '../components/SInput';
 import { SButton } from '../components/SButton';
-import { useHappyAction } from '../helpers/useHappyAction';
-import { alert } from '../helpers/alert';
+import { useHappyAction } from '../../utils/useHappyAction';
+import { alert } from '../../utils/alert';
 import { useLayout } from '../../utils/useLayout';
 
 export const PreNameScreen = React.memo(() => {

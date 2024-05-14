@@ -6,7 +6,7 @@ import { parsePhoneNumber } from 'libphonenumber-js';
 import { useRouter } from '@/routing';
 import { useLayout } from '@/utils/useLayout';
 import { Country, countries } from '@/utils/countries';
-import { useHappyAction } from '@/app/helpers/useHappyAction';
+import { useHappyAction } from '@/utils/useHappyAction';
 import { requestPhoneAuth } from '@/modules/api/auth';
 import { Theme } from '@/theme';
 import { SButton } from '@/app/components/SButton';

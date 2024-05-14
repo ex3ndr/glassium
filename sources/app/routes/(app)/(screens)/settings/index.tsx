@@ -1,20 +1,20 @@
 import * as React from 'react';
 import { ActivityIndicator, Platform, Pressable, ScrollView, Text, View } from 'react-native';
-import { useRouter } from '../../../routing';
-import { Item } from '../../components/Item';
-import { useAppModel } from '../../../global';
-import { RoundButton } from '../../components/RoundButton';
-import { Theme } from '../../../theme';
-import { DeviceComponent } from '../../components/DeviceComponent';
-import { isDevMode, setDevMode } from '../../../devmode';
-import { randomQuote } from '../../../modules/fun/randomQuote';
+import { useRouter } from '../../../../../routing';
+import { Item } from '../../../../components/Item';
+import { useAppModel } from '../../../../../global';
+import { RoundButton } from '../../../../components/RoundButton';
+import { Theme } from '../../../../../theme';
+import { DeviceComponent } from '../../../../components/DeviceComponent';
+import { isDevMode, setDevMode } from '../../../../../devmode';
+import { randomQuote } from '../../../../../modules/fun/randomQuote';
 import * as Application from 'expo-application';
 import * as Update from 'expo-updates';
 import { useSafeAreaInsets } from 'react-native-safe-area-context';
-import { alert } from '../../helpers/alert';
-import { cleanAndReload } from '../../../modules/reload/cleanAndReload';
+import { alert } from '../../../../../utils/alert';
+import { cleanAndReload } from '../../../../../modules/reload/cleanAndReload';
 
-export const SettingsScreen = React.memo(() => {
+export default React.memo(() => {
     const safeArea = useSafeAreaInsets();
     const appModel = useAppModel();
     const wearable = appModel.wearable.use();

@@ -1,12 +1,12 @@
 import * as React from 'react';
 import { Pressable, Text, View } from 'react-native';
-import { Content } from '../../modules/api/content';
-import { useAppModel } from '../../global';
-import { Theme } from '../../theme';
-import { AppService } from '../../modules/services/AppService';
+import { Content } from '../../../modules/api/content';
+import { useAppModel } from '../../../global';
+import { Theme } from '../../../theme';
+import { AppService } from '../../../modules/services/AppService';
 import { Image } from 'expo-image';
-import { useRouter } from '../../routing';
-import { RoundButton } from '../components/RoundButton';
+import { RoundButton } from '../RoundButton';
+import { router } from 'expo-router';
 
 export const ContentView = React.memo((props: { content: Content, app: AppService, display: 'normal' | 'large' }) => {
     if (Array.isArray(props.content)) {
@@ -41,7 +41,6 @@ export const ContentView = React.memo((props: { content: Content, app: AppServic
 const ContentMemory = React.memo((props: { id: string, display: 'normal' | 'large' }) => {
     let app = useAppModel();
     let memory = app.memory.use(props.id);
-    let router = useRouter();
 
     if (props.display === 'large') {
 
@@ -59,7 +58,7 @@ const ContentMemory = React.memo((props: { id: string, display: 'normal' | 'larg
         }
 
         return (
-            <Pressable key={memory.id} style={{ marginHorizontal: 16, marginVertical: 8, borderRadius: 16, borderWidth: 0.5, borderColor: '#272727', flexDirection: 'column' }} onPress={() => router.navigate('memory', { id: memory.id })}>
+            <Pressable key={memory.id} style={{ marginHorizontal: 16, marginVertical: 8, borderRadius: 16, borderWidth: 0.5, borderColor: '#272727', flexDirection: 'column' }} onPress={() => router.navigate('/memory/' + props.id)}>
                 {image}
                 <View style={{ flexDirection: 'column', flexGrow: 1, flexBasis: 0, paddingTop: 8, paddingHorizontal: 8, paddingBottom: 16, backgroundColor: 'white', borderBottomLeftRadius: 16, borderBottomRightRadius: 16 }}>
                     <Text style={{ fontSize: 16, color: Theme.textInverted }} numberOfLines={3}>{memory.title}</Text>
@@ -72,7 +71,7 @@ const ContentMemory = React.memo((props: { id: string, display: 'normal' | 'larg
         <View style={{ marginHorizontal: 0, marginVertical: 4 }}>
             <Text style={{ color: Theme.text, fontStyle: 'italic' }}>New memory: <Text style={{ fontWeight: '600' }}>{memory.title}</Text></Text>
             <View style={{ alignItems: 'flex-start', marginTop: 8 }}>
-                <RoundButton size='small' title={'View'} onPress={() => router.navigate('memory', { id: memory.id })} />
+                <RoundButton size='small' title={'View'} onPress={() => router.navigate('/memory/' + props.id)} />
             </View>
         </View>
     )

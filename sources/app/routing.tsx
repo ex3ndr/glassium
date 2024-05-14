@@ -1,9 +1,5 @@
 import { createNativeStackNavigator } from '@react-navigation/native-stack';
 import * as React from 'react';
-import { CountryPicker } from './auth/CountryScreen';
-import { Splash } from './Splash';
-import { PhoneScreen } from './auth/PhoneScreen';
-import { CodeScreen } from './auth/CodeScreen';
 import { OnboardingState } from '../global';
 import { PreUsernameScreen } from './pre/PreUsername';
 import { PrePreparingScreen } from './pre/PrePreparing';
@@ -12,17 +8,16 @@ import { PreNameScreen } from './pre/PreName';
 import { PreNotificationsScreen } from './pre/PreNotifications';
 import { PreActivationScreen } from './pre/PreActivation';
 import { SessionScreen } from './screens/SessionScreen';
-import { SettingsManageDevice } from './screens/settings/SettingsManageDevice';
+import { SettingsManageDevice } from './routes/(app)/(screens)/settings/device';
 import { SessionsScreens } from './screens/SessionsScreen';
 import { MemoryScreen } from './screens/MemoryScreen';
 import { LogsScreen } from './dev/LogsScreen';
 import { Platform } from 'react-native';
 import { DevScreen } from './dev/DevScreen';
-import { SettingsScreen } from './screens/settings/SettingsScreen';
-import { ChatScreen } from './screens/chat/ChatScreen';
-import { TranscriptionsScreen } from './screens/TranscriptionsScreen';
+import { SettingsScreen } from './routes/(app)/(screens)/settings';
+import { TranscriptionsScreen } from './routes/(app)/(screens)/transcriptions';
 import { UpdateLogScreen } from './dev/UpdateLogScreen';
-import { VoiceSampleScreen } from './screens/settings/VoiceSampleScreen';
+import { VoiceSampleScreen } from './routes/(app)/(screens)/settings/voice_sample';
 
 export const Stack = createNativeStackNavigator();
 
@@ -72,11 +67,6 @@ export const App = (
             name='dev'
             component={DevScreen}
             options={{ title: 'Developer', presentation: Platform.OS === 'ios' ? 'formSheet' : 'card' }}
-        />
-        <Stack.Screen
-            name='chat'
-            component={ChatScreen}
-            options={{ title: 'Chat' }}
         />
         <Stack.Screen
             name="settings"
@@ -149,33 +139,3 @@ export const Pre = (state: OnboardingState) => {
     }
     return null;
 }
-
-export const Auth = (
-    <>
-        <Stack.Screen
-            name='splash'
-            component={Splash}
-            options={{
-                headerShown: false
-            }}
-        />
-        <Stack.Screen
-            name='phone'
-            component={PhoneScreen}
-        />
-        <Stack.Screen
-            name='code'
-            component={CodeScreen}
-        />
-    </>
-);
-
-export const Modals = (
-    <>
-        <Stack.Screen
-            name='country'
-            component={CountryPicker}
-            options={{ headerShown: false }}
-        />
-    </>
-);

@@ -1,5 +1,6 @@
-import { useGlobalState } from "@/global";
+import { getAppModel, useGlobalState } from "@/global";
 import { Redirect, Stack } from "expo-router";
+import { Provider } from 'jotai';
 
 export default function AppLayout() {
     const state = useGlobalState();
@@ -10,6 +11,15 @@ export default function AppLayout() {
         return <Redirect href="(auth)" />;
     }
     return (
-        <Stack />
+        <Provider store={getAppModel().jotai}>
+            <Stack
+                screenOptions={{
+                    title: '',
+                    headerShadowVisible: false,
+                    headerBackTitle: 'Back',
+                    headerTintColor: '#fff'
+                }}
+            />
+        </Provider>
     );
 }

@@ -1,17 +1,17 @@
 import * as React from 'react';
 import { Text, View } from 'react-native';
-import { Theme } from '../../../theme';
-import { RoundButton } from '../../components/RoundButton';
+import { Theme } from '../../../../../theme';
+import { RoundButton } from '../../../../components/RoundButton';
 import { Audio } from 'expo-av';
-import { useHappyAction } from '../../helpers/useHappyAction';
-import { openSystemSettings } from '../../../utils/openSystemSettings';
+import { useHappyAction } from '../../../../../utils/useHappyAction';
+import { openSystemSettings } from '../../../../../utils/openSystemSettings';
 import * as Haptics from 'expo-haptics';
-import { delay } from '../../../utils/time';
-import { useRouter } from '../../../routing';
-import { useAppModel } from '../../../global';
+import { delay } from '../../../../../utils/time';
+import { useRouter } from '../../../../../routing';
+import { useAppModel } from '../../../../../global';
 import { Image } from 'expo-image';
 
-export const VoiceSampleScreen = React.memo(() => {
+export default React.memo(() => {
 
     const app = useAppModel();
     const router = useRouter();
@@ -73,7 +73,7 @@ export const VoiceSampleScreen = React.memo(() => {
 
     return (
         <View style={{ flexGrow: 1, backgroundColor: Theme.background, alignItems: 'center', justifyContent: 'center', paddingHorizontal: 32 }}>
-            <Image source={require('../../assets/singer_3d_default.png')} style={{ width: 200, height: 200, marginBottom: 32 }} />
+            <Image source={require('@/app/assets/singer_3d_default.png')} style={{ width: 200, height: 200, marginBottom: 32 }} />
             <Text style={{ color: Theme.text, fontSize: 22, alignSelf: 'center', lineHeight: 30, textAlign: 'center', marginBottom: 48 }}>To improve performance, {'\n'}AI need 5 seconds of your voice</Text>
             <Text style={{ color: Theme.text, fontSize: 20, marginBottom: 48, height: 24 }} numberOfLines={1}>{state}</Text>
             <RoundButton title='Record voice sample' onPress={action} loading={executing} />

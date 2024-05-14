@@ -104,7 +104,7 @@ export function loadAppModelIfNeeded() {
 export type GlobalStateController = {
     login(token: string): void,
     logout(): void,
-    refresh(): Promise<void>,
+    refresh(): Promise<GlobalState>,
 };
 
 export const GlobalStateControllerContext = React.createContext<GlobalStateController | null>(null);
@@ -281,7 +281,7 @@ export function useNewGlobalController(): [GlobalState, GlobalStateController] {
             refresh: async () => {
 
                 if (currentState.kind === 'empty') { // Why?
-                    return;
+                    return currentState;
                 }
                 const client = currentState.client;
                 const onboardingState = await backoff(async () => {
@@ -303,7 +303,7 @@ export function useNewGlobalController(): [GlobalState, GlobalStateController] {
                         client: currentState.client,
                     };
                     setState(currentState);
-                    return;
+                    return currentState;
                 }
 
                 // Update state with new onboarding state
@@ -314,6 +314,8 @@ export function useNewGlobalController(): [GlobalState, GlobalStateController] {
                     client: currentState.client
                 };
                 setState(currentState);
+
+                return currentState;
             },
         } satisfies GlobalStateController;
     }, []);

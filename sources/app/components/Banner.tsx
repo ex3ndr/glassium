@@ -1,6 +1,6 @@
 import * as React from 'react';
 import { Pressable, Text, View } from 'react-native';
-import { Theme } from '../../../theme';
+import { Theme } from '../../theme';
 
 export const Banner = React.memo((props: { title: string, text: string, kind: 'normal' | 'warning' | 'alert', fixedSize?: true, onPress: () => void }) => {
 

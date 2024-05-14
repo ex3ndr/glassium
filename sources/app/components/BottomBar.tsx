@@ -1,7 +1,7 @@
 import * as React from 'react';
 import { Image, Pressable, Text, View } from 'react-native';
 import { Ionicons } from '@expo/vector-icons';
-import { Theme } from '../../../theme';
+import { Theme } from '../../theme';
 
 const TabBarItem = React.memo((props: { icon: string, active: boolean, title: string, onPress: () => void }) => {
     return (

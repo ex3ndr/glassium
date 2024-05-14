@@ -1,13 +1,13 @@
 import * as React from 'react';
 import { ActivityIndicator, Platform, ScrollView, Text, View } from 'react-native';
-import { Theme } from '../../../theme';
-import { useAppModel } from '../../../global';
+import { Theme } from '../../../../../theme';
+import { useAppModel } from '../../../../../global';
 import { useAtomValue } from 'jotai';
-import { RoundButton } from '../../components/RoundButton';
-import { DeviceComponent } from '../../components/DeviceComponent';
+import { RoundButton } from '../../../../components/RoundButton';
+import { DeviceComponent } from '../../../../components/DeviceComponent';
 import { useSafeAreaInsets } from 'react-native-safe-area-context';
-import { HappyError } from '../../../modules/errors/HappyError';
-import { useRouter } from '../../../routing';
+import { HappyError } from '../../../../../modules/errors/HappyError';
+import { useRouter } from '../../../../../routing';
 
 function inferVendorFromName(name: string): 'compass' | 'friend' | 'bubble' {
     if (name.toLowerCase().includes('compass')) return 'compass';
@@ -75,7 +75,7 @@ const ManageDevice = React.memo(() => {
     )
 });
 
-export const SettingsManageDevice = React.memo(() => {
+export default React.memo(() => {
     const appModel = useAppModel();
     const wearable = appModel.useWearable();
 

@@ -2,7 +2,7 @@ import * as React from 'react';
 import { StyleSheet, View } from 'react-native';
 import { useSafeAreaInsets } from 'react-native-safe-area-context';
 import { Theme } from '../../theme';
-import { TopBar } from './components/TopBar';
+import { TopBar } from '../components/TopBar';
 import { AIScreen } from './AIScreen';
 import { useLayout } from '../../utils/useLayout';
 

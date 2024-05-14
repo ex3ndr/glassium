@@ -4,7 +4,7 @@ import { useSafeAreaInsets } from 'react-native-safe-area-context';
 import { useGlobalStateController } from '@/global';
 import { useLayout } from '@/utils/useLayout';
 import { useRouter } from '@/routing';
-import { useHappyAction } from '@/app/helpers/useHappyAction';
+import { useHappyAction } from '@/utils/useHappyAction';
 import { requestPhoneAuthVerify } from '@/modules/api/auth';
 import { storage } from '@/storage';
 import { Theme } from '@/theme';

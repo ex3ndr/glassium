@@ -1,12 +1,12 @@
 import * as React from 'react';
 import { FlashList } from '@shopify/flash-list';
 import { ActivityIndicator, Text, View } from 'react-native';
-import { Theme } from '../../theme';
-import { useAppModel } from '../../global';
-import { FeedViewItem } from '../../modules/services/FeedService';
-import { AppService } from '../../modules/services/AppService';
+import { Theme } from '../../../theme';
+import { useAppModel } from '../../../global';
+import { FeedViewItem } from '../../../modules/services/FeedService';
+import { AppService } from '../../../modules/services/AppService';
 import { Image } from 'expo-image';
-import { TimeView } from '../components/TimeView';
+import { TimeView } from '../TimeView';
 import { ContentView } from './ContentView';
 
 const Header = React.memo((props: { loading: boolean, display: 'normal' | 'inverted' | 'large', }) => {
@@ -29,11 +29,11 @@ const Item = React.memo((props: { item: FeedViewItem, app: AppService, display: 
     let by = app.users.use(props.item.by);
     let image: any = null;
     if (by.username === 'transcribe') {
-        image = require('../assets/avatar_transcribe.png')
+        image = require('@/app/assets/avatar_transcribe.png')
     } else if (by.username === 'overlord') {
-        image = require('../assets/avatar_overlord.png')
+        image = require('@/app/assets/avatar_overlord.png')
     } else if (by.username === 'memory') {
-        image = require('../assets/avatar_memory.png')
+        image = require('@/app/assets/avatar_memory.png')
     }
 
     // Handle large case

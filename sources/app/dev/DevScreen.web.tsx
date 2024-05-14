@@ -4,7 +4,7 @@ import * as Update from 'expo-updates';
 import { Item } from '../components/Item';
 import { RoundButton } from '../components/RoundButton';
 import { useRouter } from '../../routing';
-import { Theme } from '../../theme';
+import { Theme } from '../theme';
 
 export const DevScreen = React.memo(() => {
     const router = useRouter();

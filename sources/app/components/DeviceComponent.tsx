@@ -1,6 +1,6 @@
 import * as React from 'react';
 import { ActivityIndicator, Image, Pressable, Text, View } from 'react-native';
-import { Theme } from '../../theme';
+import { Theme } from '../theme';
 import { useHappyAction } from '../../utils/useHappyAction';
 
 const icons = {

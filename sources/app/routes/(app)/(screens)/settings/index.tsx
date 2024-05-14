@@ -4,7 +4,7 @@ import { useRouter } from '../../../../../routing';
 import { Item } from '../../../../components/Item';
 import { useAppModel } from '../../../../../global';
 import { RoundButton } from '../../../../components/RoundButton';
-import { Theme } from '../../../../../theme';
+import { Theme } from '../../../../theme';
 import { DeviceComponent } from '../../../../components/DeviceComponent';
 import { isDevMode, setDevMode } from '../../../../../devmode';
 import { randomQuote } from '../../../../../modules/fun/randomQuote';

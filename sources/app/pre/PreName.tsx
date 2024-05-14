@@ -1,7 +1,7 @@
 import * as React from 'react';
 import { Alert, KeyboardAvoidingView, Text, View } from 'react-native';
 import * as Haptics from 'expo-haptics';
-import { Theme } from '../../theme';
+import { Theme } from '../theme';
 import { useSafeAreaInsets } from 'react-native-safe-area-context';
 import { useClient, useGlobalStateController } from '../../global';
 import { ShakeInstance, Shaker } from '../components/Shaker';

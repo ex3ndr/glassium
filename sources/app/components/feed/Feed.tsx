@@ -1,7 +1,7 @@
 import * as React from 'react';
 import { FlashList } from '@shopify/flash-list';
 import { ActivityIndicator, Text, View } from 'react-native';
-import { Theme } from '../../../theme';
+import { Theme } from '../../theme';
 import { useAppModel } from '../../../global';
 import { FeedViewItem } from '../../../modules/services/FeedService';
 import { AppService } from '../../../modules/services/AppService';

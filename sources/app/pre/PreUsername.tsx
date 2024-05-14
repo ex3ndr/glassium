@@ -2,7 +2,7 @@ import * as React from 'react';
 import { useSafeAreaInsets } from 'react-native-safe-area-context';
 import { useClient, useGlobalStateController } from '../../global';
 import { Alert, KeyboardAvoidingView, Text, View } from 'react-native';
-import { Theme } from '../../theme';
+import { Theme } from '../theme';
 import { checkUsername } from '../../utils/checkUsername';
 import * as Haptics from 'expo-haptics';
 // import { run } from '../../utils/run';

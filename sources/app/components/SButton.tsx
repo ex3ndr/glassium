@@ -1,6 +1,6 @@
 import * as React from 'react'
 import { ActivityIndicator, Pressable, StyleProp, Text, View, ViewStyle } from 'react-native';
-import { Theme, ThemeApp } from '../../theme';
+import { Theme, ThemeApp } from '../theme';
 
 export const SButton = React.memo((props: { title: string, style?: StyleProp<ViewStyle>, loading?: boolean, disabled?: boolean, onPress?: () => void }) => {
     return (

@@ -3,7 +3,7 @@ import { ScrollView, Text, View } from 'react-native';
 import { Image } from 'expo-image';
 import { useSafeAreaInsets } from 'react-native-safe-area-context';
 import { useAppModel } from '@/global';
-import { Theme } from '@/theme';
+import { Theme } from '@/app/theme';
 import { useLocalSearchParams } from 'expo-router';
 
 export default React.memo(() => {

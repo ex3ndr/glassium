@@ -3,7 +3,7 @@ import { Button, Platform, Pressable, Text, TextInput, View } from 'react-native
 import { FlashList } from '@shopify/flash-list';
 import { Ionicons } from '@expo/vector-icons';
 import { Country, countries } from '@/utils/countries';
-import { Theme } from '@/theme';
+import { Theme } from '@/app/theme';
 import { useRouter } from '@/routing';
 import { storage } from '@/storage';
 

@@ -1,6 +1,6 @@
 import * as React from 'react';
 import { ActivityIndicator, View } from 'react-native';
-import { Theme } from '../../../theme';
+import { Theme } from '../../theme';
 import { useGlobalStateController } from '@/global';
 import { backoff } from '@/utils/time';
 

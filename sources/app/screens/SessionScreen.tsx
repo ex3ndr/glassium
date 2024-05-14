@@ -1,6 +1,6 @@
 import * as React from 'react';
 import { ActivityIndicator, ScrollView, Text, View } from 'react-native';
-import { Theme } from '../../theme';
+import { Theme } from '../theme';
 import { useRoute } from '@react-navigation/native';
 import { useAppModel } from '../../global';
 import humanizeDuration from 'humanize-duration';

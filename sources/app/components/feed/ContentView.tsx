@@ -2,7 +2,7 @@ import * as React from 'react';
 import { Pressable, Text, View } from 'react-native';
 import { Content } from '../../../modules/api/content';
 import { useAppModel } from '../../../global';
-import { Theme } from '../../../theme';
+import { Theme } from '../../theme';
 import { AppService } from '../../../modules/services/AppService';
 import { Image } from 'expo-image';
 import { RoundButton } from '../RoundButton';

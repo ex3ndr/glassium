@@ -81,7 +81,7 @@ export default {
           }
         }
       ],
-      ["expo-router",{
+      ["expo-router", {
         "root": "./sources/app/routes",
       }]
     ],
@@ -96,6 +96,9 @@ export default {
     "owner": "bulkacorp",
     "updates": {
       "url": "https://u.expo.dev/37bd4d62-0528-40ac-9dfb-4a9b2d172597"
+    },
+    "experiments": {
+      "typedRoutes": true
     }
   }
 }

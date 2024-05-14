@@ -1,6 +1,6 @@
 import { RoundButton } from '@/app/components/RoundButton';
 import { useRouter } from '@/routing';
-import { Theme } from '@/theme';
+import { Theme } from '@/app/theme';
 import { useLayout } from '@/utils/useLayout';
 import { Stack } from 'expo-router';
 import * as React from 'react';

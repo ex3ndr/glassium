@@ -1,7 +1,7 @@
 import * as React from 'react';
 import { useAppModel } from '../../global';
 import { Text, View } from 'react-native';
-import { Theme } from '../../theme';
+import { Theme } from '../theme';
 import { RoundButton } from './RoundButton';
 import { openSystemSettings } from '../../utils/openSystemSettings';
 import { useRouter } from '../../routing';

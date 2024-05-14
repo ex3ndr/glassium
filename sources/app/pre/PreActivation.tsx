@@ -1,5 +1,5 @@
 import * as React from 'react';
-import { Theme } from '../../theme';
+import { Theme } from '../theme';
 import { Text, View } from 'react-native';
 import { RoundButton } from '../components/RoundButton';
 import { useSafeAreaInsets } from 'react-native-safe-area-context';

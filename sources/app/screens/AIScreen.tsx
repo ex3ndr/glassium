@@ -4,7 +4,7 @@ import { Banner } from '../components/Banner';
 import { useSafeAreaInsets } from 'react-native-safe-area-context';
 import { useAppModel } from '../../global';
 import { useRouter } from '../../routing';
-import { Theme } from '../../theme';
+import { Theme } from '../theme';
 import { Feed } from '../components/feed/Feed';
 import { openSystemSettings } from '../../utils/openSystemSettings';
 import { useUpdates } from 'expo-updates';

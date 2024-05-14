@@ -8,7 +8,7 @@ import { useLayout } from '@/utils/useLayout';
 import { Country, countries } from '@/utils/countries';
 import { useHappyAction } from '@/utils/useHappyAction';
 import { requestPhoneAuth } from '@/modules/api/auth';
-import { Theme } from '@/theme';
+import { Theme } from '@/app/theme';
 import { SButton } from '@/app/components/SButton';
 import { storage } from '@/storage';
 

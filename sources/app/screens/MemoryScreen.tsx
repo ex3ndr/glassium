@@ -2,7 +2,7 @@ import { useRoute } from '@react-navigation/native';
 import * as React from 'react';
 import { ScrollView, Text, View } from 'react-native';
 import { Image } from 'expo-image';
-import { Theme } from '../../theme';
+import { Theme } from '../theme';
 import { useSafeAreaInsets } from 'react-native-safe-area-context';
 import { useRouter } from '../../routing';
 import { useAppModel } from '../../global';

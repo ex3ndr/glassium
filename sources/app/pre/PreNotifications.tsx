@@ -1,6 +1,6 @@
 import * as React from 'react';
 import { Text, View } from 'react-native';
-import { Theme } from '../../theme';
+import { Theme } from '../theme';
 import { markSkipNotifications, useGlobalStateController } from '../../global';
 import * as Notifications from 'expo-notifications';
 import { RoundButton } from '../components/RoundButton';

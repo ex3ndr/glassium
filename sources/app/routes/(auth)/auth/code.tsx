@@ -7,7 +7,7 @@ import { useRouter } from '@/routing';
 import { useHappyAction } from '@/utils/useHappyAction';
 import { requestPhoneAuthVerify } from '@/modules/api/auth';
 import { storage } from '@/storage';
-import { Theme } from '@/theme';
+import { Theme } from '@/app/theme';
 import { SButton } from '@/app/components/SButton';
 
 export default function CodeScreen() {

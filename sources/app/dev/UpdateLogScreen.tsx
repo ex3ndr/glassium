@@ -1,6 +1,6 @@
 import * as React from 'react';
 import * as Updates from 'expo-updates';
-import { Theme } from '../../theme';
+import { Theme } from '../theme';
 import { ScrollView, Text } from 'react-native';
 import { useSafeAreaInsets } from 'react-native-safe-area-context';
 

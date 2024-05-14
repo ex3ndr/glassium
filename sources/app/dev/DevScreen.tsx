@@ -5,7 +5,7 @@ import * as Update from 'expo-updates';
 import { Item } from '../components/Item';
 import { RoundButton } from '../components/RoundButton';
 import { useRouter } from '../../routing';
-import { Theme } from '../../theme';
+import { Theme } from '../theme';
 import { useAppModel } from '../../global';
 import { useAtomValue } from 'jotai';
 import { SButton } from '../components/SButton';

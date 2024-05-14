@@ -1,6 +1,6 @@
 import * as React from 'react';
 import { ActivityIndicator, Platform, ScrollView, Text, View } from 'react-native';
-import { Theme } from '../../../../../theme';
+import { Theme } from '../../../../theme';
 import { useAppModel } from '../../../../../global';
 import { useAtomValue } from 'jotai';
 import { RoundButton } from '../../../../components/RoundButton';

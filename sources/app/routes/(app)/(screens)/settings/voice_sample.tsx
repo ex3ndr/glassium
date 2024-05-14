@@ -1,6 +1,6 @@
 import * as React from 'react';
 import { Text, View } from 'react-native';
-import { Theme } from '../../../../../theme';
+import { Theme } from '../../../../theme';
 import { RoundButton } from '../../../../components/RoundButton';
 import { Audio } from 'expo-av';
 import { useHappyAction } from '../../../../../utils/useHappyAction';

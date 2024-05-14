@@ -6,10 +6,12 @@ import * as Updates from 'expo-updates'
 import { useAppModel } from '@/global';
 import { useRouter } from '@/routing';
 import { Banner } from '@/app/components/Banner';
-import { Theme } from '@/theme';
+import { Theme } from '@/app/theme';
 import { Content } from '@/app/components/Content';
 import { Feed } from '@/app/components/feed/Feed';
 import { openSystemSettings } from '@/utils/openSystemSettings';
+import { useLayout } from '@/utils/useLayout';
+import { Stack } from 'expo-router';
 
 const AIStatusComponent = React.memo(() => {
     const app = useAppModel();
@@ -71,6 +73,7 @@ export default React.memo(() => {
     const safeArea = useSafeAreaInsets();
     const router = useRouter();
     const updates = useUpdates();
+    const layout = useLayout();
 
     // Views
     const header = (
@@ -84,20 +87,22 @@ export default React.memo(() => {
             {me && !me.voiceSample && (
                 <Banner title="Voice sample needed" text="To improve AI experience, please, record a voice sample" kind="normal" onPress={() => router.navigate('voice-sample')} />
             )}
-            <Pressable
-                style={(p) => ({
-                    backgroundColor: p.pressed ? '#131313' : '#1d1d1d',
-                    borderRadius: 16,
-                    marginHorizontal: 16,
-                    marginVertical: 8,
-                    paddingHorizontal: 16,
-                    paddingVertical: 16,
-                    flexDirection: 'row'
-                })}
-                onPress={() => router.navigate('transcriptions')}
-            >
-                <Text style={{ color: Theme.text, fontSize: 18 }}>View transcripts</Text>
-            </Pressable>
+            {layout === 'small' && (
+                <Pressable
+                    style={(p) => ({
+                        backgroundColor: p.pressed ? '#131313' : '#1d1d1d',
+                        borderRadius: 16,
+                        marginHorizontal: 16,
+                        marginVertical: 8,
+                        paddingHorizontal: 16,
+                        paddingVertical: 16,
+                        flexDirection: 'row'
+                    })}
+                    onPress={() => router.navigate('transcriptions')}
+                >
+                    <Text style={{ color: Theme.text, fontSize: 18 }}>View transcripts</Text>
+                </Pressable>
+            )}
             {/* <Text style={{ fontSize: 18, color: Theme.text, paddingHorizontal: 32, marginTop: 16, fontWeight: '700' }}>Chats</Text>
             <Pressable
                 style={(p) => ({
@@ -147,15 +152,18 @@ export default React.memo(() => {
         </ScrollView>
     );
     return (
-        <Content>
-            <Feed
-                feed='smart'
-                display='large'
-                header={() => header}
-                footer={footer}
-                empty={empty}
-                loading={loading}
-            />
-        </Content>
+        <>
+            <Stack.Screen options={{ headerShown: false }} />
+            <Content>
+                <Feed
+                    feed='smart'
+                    display='large'
+                    header={() => header}
+                    footer={footer}
+                    empty={empty}
+                    loading={loading}
+                />
+            </Content>
+        </>
     );
 });

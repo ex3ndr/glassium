@@ -33,7 +33,12 @@ export default function AppLayout() {
                 <View
                     style={{ flexGrow: 1, flexBasis: 0 }}
                 >
-                    <Stack />
+                    <Stack
+                        screenOptions={{
+                            headerShadowVisible: false,
+                            headerTintColor: Theme.text
+                        }}
+                    />
                     {/* <Drawer
                         screenOptions={{
                             drawerType: layout === 'large' ? 'permanent' : 'front',

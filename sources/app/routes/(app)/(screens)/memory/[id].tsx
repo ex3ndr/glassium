@@ -21,11 +21,6 @@ export default React.memo(() => {
                     <Text style={{ fontSize: 16, opacity: 0.7, color: Theme.text }}>{memory.summary}</Text>
                 </View>
             </ScrollView>
-            {/* <View style={{ position: 'absolute', bottom: safeArea.bottom, left: 0, right: 0, alignItems: 'stretch' }}>
-                <Pressable style={{ height: 48, borderRadius: 32, backgroundColor: '#222222', justifyContent: 'center', alignItems: 'center', marginHorizontal: 16, marginVertical: 16 }} onPress={() => router.navigate('discussion')}>
-                    <Text style={{ color: Theme.text, fontSize: 16 }}>Chat with AI</Text>
-                </Pressable>
-            </View> */}
         </>
     );
 });

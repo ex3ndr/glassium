@@ -10,6 +10,7 @@ import { useHappyAction } from '@/app/helpers/useHappyAction';
 import { requestPhoneAuth } from '@/modules/api/auth';
 import { Theme } from '@/theme';
 import { SButton } from '@/app/components/SButton';
+import { storage } from '@/storage';
 
 export default function Phone() {
 
@@ -29,21 +30,33 @@ export default function Phone() {
     }, []);
     const [country, setCountry] = React.useState(defaultCountry);
     const [number, setNumber] = React.useState('');
+    React.useEffect(() => {
+        let l = storage.addOnValueChangedListener((k) => {
+            if (k === 'auth-country') {
+                let c = storage.getString('auth-country');
+                if (c) {
+                    let country = countries.find((v) => v.shortname === c);
+                    if (country) {
+                        setCountry(country);
+                    }
+                }
+            }
+        });
+        return () => {
+            l.remove();
+        };
+    }, []);
 
     // Actions
     const [requesting, doRequest] = useHappyAction(async () => {
         let val = country.value + ' ' + number;
         await requestPhoneAuth(val, '');
-        router.navigate('code', { number: val });
+        storage.set('auth-number', val);
+        router.navigate('auth/code');
     });
     const openCountryPicker = React.useCallback(() => {
-        router.navigate('country', {
-            current: country,
-            callback: (item: Country) => {
-                setCountry(item);
-            }
-        });
-    }, [country]);
+        router.navigate('auth/country');
+    }, []);
     const setNumberValue = React.useCallback((src: string) => {
         if (requesting) {
             return;

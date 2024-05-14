@@ -33,7 +33,7 @@ export default function Splash() {
                 <View style={{ flexGrow: 1 }} />
                 <Image source={require('@/app/assets/splash_2.png')} style={layout === 'large' ? { width: 256, height: 256 } : { width: 200, height: 200 }} />
                 <Text style={{ fontSize: 32, color: Theme.text, marginTop: 16, fontWeight: '600' }}>
-                    Bubble AI
+                    Glassium
                 </Text>
                 <Text style={{ fontSize: 18, color: Theme.text, textAlign: 'center', marginTop: 8, marginBottom: 64 }}>
                     All-in-one app for AI Wearable devices

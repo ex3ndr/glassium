@@ -4,12 +4,12 @@ import { Redirect, Stack } from "expo-router";
 export default function AppLayout() {
     const state = useGlobalState();
     if (state.kind === 'empty') {
-        return <Redirect href="(auth)" />;
+        return <Redirect href="/(auth)" />;
     }
     if (state.kind === 'ready') {
-        return <Redirect href="(app)" />;
+        return <Redirect href="/(app)" />;
     }
     return (
-        <Stack />
+        <Stack screenOptions={{ navigationBarHidden: true }} />
     );
 }

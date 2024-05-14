@@ -75,11 +75,11 @@ const Sidebar = (props: DrawerContentComponentProps) => {
         <View style={{ flexGrow: 1, flexBasis: 0, marginHorizontal: 8, gap: 4 }}>
             <View style={{ height: 64, alignItems: 'center', flexDirection: 'row', marginLeft: 8, marginTop: 2 }}>
                 <Image source={require('@/app/assets/splash_2.png')} style={{ width: 24, height: 24 }} />
-                <Text style={{ color: Theme.text, marginLeft: 12, fontSize: 24 }}>Glass</Text>
+                <Text style={{ color: Theme.text, marginLeft: 12, fontSize: 24 }}>Glassium</Text>
             </View>
             <SidebarButton icon="home-outline" title='Home' pathname='/' />
             {layout === 'large' && (
-                <SidebarButton icon="document-text-outline" title='Transcripts' pathname='/transcripts' />
+                <SidebarButton icon="document-text-outline" title='Transcripts' pathname='/data/transcripts' />
             )}
             <SidebarButton icon="cog" title='Settings' pathname='/settings' />
         </View>

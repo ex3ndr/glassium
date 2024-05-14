@@ -1,14 +1,13 @@
 import * as React from 'react';
 import { ActivityIndicator, Pressable, Text, View } from 'react-native';
 import { useSafeAreaInsets } from 'react-native-safe-area-context';
-import { Theme } from '../theme';
-import { useAppModel } from '../../global';
-import { useRouter } from '../../routing';
-import { ViewSession } from '../../modules/services/SessionsModel';
+import { Theme } from '../../../../../theme';
+import { useAppModel } from '../../../../../../global';
+import { ViewSession } from '../../../../../../modules/services/SessionsModel';
 import { FlashList } from '@shopify/flash-list';
+import { router } from 'expo-router';
 
 const SessionComponent = React.memo((props: { session: ViewSession }) => {
-    const router = useRouter();
     let status: string = props.session.state;
     if (props.session.classification === 'boring') {
         status = 'boring 🥱';
@@ -30,7 +29,7 @@ const SessionComponent = React.memo((props: { session: ViewSession }) => {
                 paddingVertical: 18,
                 flexDirection: 'row'
             })}
-            onPress={() => { router.navigate('session', { id: props.session.id }) }}
+            onPress={() => { router.navigate('/data/sessions/' + props.session.id) }}
         >
             <Text style={{ color: Theme.text, fontSize: 24, flexGrow: 1, flexBasis: 0, alignSelf: 'center' }}>Session #{(props.session.index + 1)}</Text>
             <Text style={{ color: Theme.text, alignSelf: 'center' }}>{status}</Text>
@@ -38,7 +37,7 @@ const SessionComponent = React.memo((props: { session: ViewSession }) => {
     );
 });
 
-export const SessionsScreens = React.memo(() => {
+export default React.memo(() => {
     const safeArea = useSafeAreaInsets();
     const appModel = useAppModel();
     const sessions = appModel.useSessions();

@@ -1,6 +1,5 @@
 import * as React from 'react';
 import { ActivityIndicator, Platform, Pressable, ScrollView, Text, View } from 'react-native';
-import { useRouter } from '../../../../../routing';
 import { Item } from '../../../../components/Item';
 import { useAppModel } from '../../../../../global';
 import { RoundButton } from '../../../../components/RoundButton';
@@ -13,12 +12,12 @@ import * as Update from 'expo-updates';
 import { useSafeAreaInsets } from 'react-native-safe-area-context';
 import { alert } from '../../../../../utils/alert';
 import { cleanAndReload } from '../../../../../modules/reload/cleanAndReload';
+import { router } from 'expo-router';
 
 export default React.memo(() => {
     const safeArea = useSafeAreaInsets();
     const appModel = useAppModel();
     const wearable = appModel.wearable.use();
-    const router = useRouter();
     const updates = Update.useUpdates();
     const profile = appModel.profile.use();
     const restartApp = async () => {
@@ -60,7 +59,7 @@ export default React.memo(() => {
     };
     const doPair = async () => {
         if (appModel.wearable.bluetooth.supportsScan) {
-            router.navigate('manage-device')
+            router.navigate('/settings/device')
         } else if (appModel.wearable.bluetooth.supportsPick) {
             await appModel.wearable.pick();
         }
@@ -114,7 +113,7 @@ export default React.memo(() => {
                                 ? (wearable.device.battery !== null ? wearable.device.battery + '% battery' : 'Connected')
                                 : 'Connecting...'
                         }
-                        action={async () => { router.navigate('manage-device') }}
+                        action={async () => { router.navigate('/settings/device') }}
                     />
                 </View>
             )}
@@ -122,7 +121,7 @@ export default React.memo(() => {
             <Item title="Data" />
             <View style={{ alignItems: 'flex-start', paddingHorizontal: 16, flexDirection: 'column' }}>
                 <Text style={{ fontSize: 18, color: Theme.text, marginBottom: 8, opacity: 0.8 }}>Data that is collected by your wearable.</Text>
-                <RoundButton title={'View sessions'} size='small' onPress={() => { router.navigate('sessions') }} />
+                <RoundButton title={'View sessions'} size='small' onPress={() => { router.navigate('/data/sessions') }} />
             </View>
             {(isDevMode() || updates.isUpdatePending) && (Platform.OS !== 'web') && (
                 <>

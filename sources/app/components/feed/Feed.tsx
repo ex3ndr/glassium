@@ -1,6 +1,6 @@
 import * as React from 'react';
-import { FlashList } from '@shopify/flash-list';
-import { ActivityIndicator, Text, View } from 'react-native';
+import { FlashList, MasonryFlashList } from '@shopify/flash-list';
+import { ActivityIndicator, FlatList, LayoutChangeEvent, LayoutRectangle, Platform, Text, View } from 'react-native';
 import { Image } from 'expo-image';
 import { Theme } from '@/app/theme';
 import { FeedViewItem } from '@/modules/services/FeedService';
@@ -111,15 +111,31 @@ export const Feed = React.memo((props: {
         let n = feed ? feed.next : null;
         app.feed.onReachedEnd(props.feed, n);
     }, [feed && feed.next]);
+    const [layout, setLayout] = React.useState<LayoutRectangle | null>(null);
+    const onLayout = React.useCallback((e: LayoutChangeEvent) => {
+        setLayout(e.nativeEvent.layout);
+    }, []);
+    let mansoryColumns = 1;
+    if (layout) {
+        if (layout.width > 300) {
+            mansoryColumns = Math.floor(layout.width / 300);
+        }
+    }
 
     // Loading
-    if (!feed) {
+    if (!feed || !layout) {
         if (props.loading) {
-            return props.loading;
+            return (
+                <View style={{ flexGrow: 1, flexBasis: 0, alignSelf: 'stretch', alignItems: 'stretch' }} onLayout={onLayout}>
+                    {props.loading}
+                </View>
+            );
         }
         return (
-            <View style={{ flex: 1, justifyContent: 'center', alignItems: 'center' }}>
-                <ActivityIndicator size="large" color={Theme.text} />
+            <View style={{ flexGrow: 1, flexBasis: 0, alignSelf: 'stretch', alignItems: 'stretch' }} onLayout={onLayout}>
+                <View style={{ flex: 1, justifyContent: 'center', alignItems: 'center' }}>
+                    <ActivityIndicator size="large" color={Theme.text} />
+                </View>
             </View>
         );
     }
@@ -127,27 +143,58 @@ export const Feed = React.memo((props: {
     // Empty
     if (feed.items.length === 0) {
         if (props.empty) {
-            return props.empty;
+            return (
+                <View style={{ flexGrow: 1, flexBasis: 0, alignSelf: 'stretch', alignItems: 'stretch' }} onLayout={onLayout}>
+                    {props.empty}
+                </View>
+            );
         }
         return (
-            <View style={{ flex: 1, justifyContent: 'center', alignItems: 'center' }}>
-                <Text style={{ color: Theme.text, fontSize: 24, opacity: 0.7 }}>Soon.</Text>
+            <View style={{ flexGrow: 1, flexBasis: 0, alignSelf: 'stretch', alignItems: 'stretch' }} onLayout={onLayout}>
+                <View style={{ flex: 1, justifyContent: 'center', alignItems: 'center' }}>
+                    <Text style={{ color: Theme.text, fontSize: 24, opacity: 0.7 }}>Soon.</Text>
+                </View>
             </View>
         );
     }
 
     return (
-        <View style={{ flexGrow: 1, flexBasis: 0 }}>
-            <FlashList
-                data={feed.items}
-                drawDistance={1000}
-                renderItem={itemRender}
-                keyExtractor={(item) => 'post-' + item.seq}
-                ListHeaderComponent={props.display === 'inverted' ? footer : header}
-                ListFooterComponent={props.display === 'inverted' ? header : footer}
-                onEndReached={onEndReached}
-                inverted={props.display === 'inverted'}
-            />
+        <View style={{ flexGrow: 1, flexBasis: 0, alignSelf: 'stretch', alignItems: 'stretch' }} onLayout={onLayout}>
+            {props.display !== 'large' && Platform.OS !== 'web' && (
+                <FlashList
+                    data={feed.items}
+                    drawDistance={1000}
+                    renderItem={itemRender}
+                    keyExtractor={(item) => 'post-' + item.seq}
+                    ListHeaderComponent={props.display === 'inverted' ? footer : header}
+                    ListFooterComponent={props.display === 'inverted' ? header : footer}
+                    onEndReached={onEndReached}
+                    inverted={props.display === 'inverted'}
+                />
+            )}
+            {props.display !== 'large' && Platform.OS === 'web' && (
+                <FlatList
+                    data={feed.items}
+                    renderItem={itemRender}
+                    keyExtractor={(item) => 'post-' + item.seq}
+                    ListHeaderComponent={props.display === 'inverted' ? footer : header}
+                    ListFooterComponent={props.display === 'inverted' ? header : footer}
+                    onEndReached={onEndReached}
+                    inverted={props.display === 'inverted'}
+                />
+            )}
+            {props.display === 'large' && (
+                <MasonryFlashList
+                    data={feed.items}
+                    drawDistance={1000}
+                    renderItem={itemRender}
+                    keyExtractor={(item) => 'post-' + item.seq}
+                    ListHeaderComponent={header}
+                    ListFooterComponent={footer}
+                    numColumns={mansoryColumns}
+                    onEndReached={onEndReached}
+                />
+            )}
         </View>
     )
 });

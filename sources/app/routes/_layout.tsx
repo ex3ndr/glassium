@@ -43,9 +43,9 @@ export default function RootLayout() {
                     </ThemeProvider>
                 </GestureHandlerRootView>
             </View>
-            {layout === 'large' && (
+            {/* {layout === 'large' && (
                 <View style={{ width: 240 }} />
-            )}
+            )} */}
         </View>
     );
 }

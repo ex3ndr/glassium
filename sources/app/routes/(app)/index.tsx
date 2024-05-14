@@ -151,7 +151,8 @@ export default React.memo(() => {
     return (
         <>
             <Stack.Screen options={{ headerShown: false }} />
-            <Content>
+            {/* <Content> */}
+            <View style={{ alignSelf: 'stretch', flexGrow: 1, flexBasis: 0 }}>
                 <Feed
                     feed='smart'
                     display='large'
@@ -160,7 +161,8 @@ export default React.memo(() => {
                     empty={empty}
                     loading={loading}
                 />
-            </Content>
+            </View>
+            {/* </Content> */}
         </>
     );
 });

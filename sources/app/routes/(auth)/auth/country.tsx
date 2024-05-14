@@ -4,8 +4,8 @@ import { FlashList } from '@shopify/flash-list';
 import { Ionicons } from '@expo/vector-icons';
 import { Country, countries } from '@/utils/countries';
 import { Theme } from '@/app/theme';
-import { useRouter } from '@/routing';
 import { storage } from '@/storage';
+import { router } from 'expo-router';
 
 const Row = React.memo((props: { item: Country, callback: (item: Country) => void }) => {
     return (
@@ -21,7 +21,6 @@ const Row = React.memo((props: { item: Country, callback: (item: Country) => voi
 const ListDivider = <View style={{ paddingHorizontal: 16, height: 0.5, flexDirection: 'row' }}><View style={{ flexGrow: 1, height: 0.5, backgroundColor: Theme.divider }} /></View>;
 
 export default function CountryPicker() {
-    let router = useRouter();
     let [filter, setFilter] = React.useState('');
     let data = React.useMemo(() => {
 
@@ -56,7 +55,7 @@ export default function CountryPicker() {
                 </View>
                 {Platform.OS === 'ios' && (
                     <View style={{ paddingTop: 4, paddingLeft: 4 }}>
-                        <Button title='Cancel' onPress={() => router.goBack()} color={'#fff'} />
+                        <Button title='Cancel' onPress={() => router.back()} color={'#fff'} />
                     </View>
                 )}
             </View>
@@ -65,7 +64,7 @@ export default function CountryPicker() {
                 <FlashList<Country>
                     renderItem={({ item }) => <Row item={item} callback={(i) => {
                         storage.set('auth-country', i.shortname);
-                        router.goBack();
+                        router.back();
                     }} />}
                     ItemSeparatorComponent={() => ListDivider}
                     ListFooterComponent={data.length > 0 ? () => ListDivider : null}

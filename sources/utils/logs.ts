@@ -1,5 +1,5 @@
 import * as React from 'react';
-import { isDevMode } from "../devmode";
+import { isDevMode } from "@/devmode";
 
 let logs: string[] = [];
 let subscriptions: ((logs: string[]) => void)[] = [];

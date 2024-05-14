@@ -2,18 +2,17 @@ import * as React from 'react';
 import * as fs from 'expo-file-system';
 import { ScrollView, Share, View } from 'react-native';
 import * as Update from 'expo-updates';
-import { Item } from '../components/Item';
-import { RoundButton } from '../components/RoundButton';
-import { useRouter } from '../../routing';
-import { Theme } from '../theme';
-import { useAppModel } from '../../global';
+import { Item } from '@/app/components/Item';
+import { RoundButton } from '@/app/components/RoundButton';
+import { Theme } from '@/app/theme';
+import { useAppModel } from '@/global';
 import { useAtomValue } from 'jotai';
-import { SButton } from '../components/SButton';
+import { SButton } from '@/app/components/SButton';
 import { format } from 'date-fns';
+import { router } from 'expo-router';
 
 export const DevScreen = React.memo(() => {
     const app = useAppModel();
-    const router = useRouter();
     const restartApp = async () => {
         await Update.reloadAsync();
     };

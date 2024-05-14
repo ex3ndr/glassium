@@ -1,14 +1,12 @@
 import { RoundButton } from '@/app/components/RoundButton';
-import { useRouter } from '@/routing';
 import { Theme } from '@/app/theme';
 import { useLayout } from '@/utils/useLayout';
-import { Stack } from 'expo-router';
+import { Stack, router } from 'expo-router';
 import * as React from 'react';
 import { Image, Text, View } from 'react-native';
 import { useSafeAreaInsets } from 'react-native-safe-area-context';
 
 export default function Splash() {
-    const router = useRouter();
     const safeArea = useSafeAreaInsets();
     const layout = useLayout();
     const doStart = React.useCallback(async () => {

@@ -1,4 +1,4 @@
-import { backoff } from "./time";
+import { backoff } from "@/utils/time";
 
 export class InvalidateSync {
     private _invalidated = false;

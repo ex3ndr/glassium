@@ -1,12 +1,12 @@
 import * as React from 'react';
 import axios from 'axios';
-import { storage } from './storage';
-import { BubbleClient } from './modules/api/client';
 import * as Notifications from 'expo-notifications';
-import { AppService } from './modules/services/AppService';
-import { cleanAndReload } from './modules/reload/cleanAndReload';
-import { backoff } from './utils/time';
-import { SERVER_ENDPOINT } from './config';
+import { storage } from '@/storage';
+import { BubbleClient } from '@/modules/api/client';
+import { AppService } from '@/modules/services/AppService';
+import { cleanAndReload } from '@/modules/reload/cleanAndReload';
+import { backoff } from '@/utils/time';
+import { SERVER_ENDPOINT } from '@/config';
 
 const ONBOARDING_VERSION = 1; // Increment this to reset onboarding
 

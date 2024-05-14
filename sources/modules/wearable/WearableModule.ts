@@ -1,19 +1,19 @@
 import { Jotai } from "../services/_types";
 import { atom, useAtomValue } from "jotai";
-import { storage } from "../../storage";
-import { ProtocolDefinition, resolveProtocol } from "./protocol/protocol";
-import { DeviceModel } from "./DeviceModel";
-import { DeviceProfile, loadDeviceProfile, profileCodec } from "./protocol/profile";
-import { log } from "../../utils/logs";
+import { storage } from "@/storage";
+import { ProtocolDefinition, resolveProtocol } from "@/modules/wearable/protocol/protocol";
+import { DeviceModel } from "@/modules/wearable/DeviceModel";
+import { DeviceProfile, loadDeviceProfile, profileCodec } from "@/modules/wearable/protocol/profile";
+import { log } from "@/utils/logs";
 import { Platform } from "react-native";
-import { AudioCodec, createCodec, createSkipCodec } from "../media/audioCodec";
-import { BluetoothModel } from "./bluetooth/bt";
-import { isDiscoveredDeviceSupported } from "./protocol/scan";
-import { bluetoothServices } from "./protocol/services";
-import { track } from "../track/track";
-import { uptime } from "../../utils/uptime";
-import { AsyncLock } from "../../utils/lock";
-import { DebugService } from "../services/DebugService";
+import { AudioCodec, createCodec, createSkipCodec } from "@/modules/media/audioCodec";
+import { BluetoothModel } from "@/modules/wearable/bluetooth/bt";
+import { isDiscoveredDeviceSupported } from "@/modules/wearable/protocol/scan";
+import { bluetoothServices } from "@/modules/wearable/protocol/services";
+import { track } from "@/modules/track/track";
+import { uptime } from "@/utils/uptime";
+import { AsyncLock } from "@/utils/lock";
+import { DebugService } from "@/modules/services/DebugService";
 
 export class WearableModule {
     private static lock = new AsyncLock(); // Use static lock to prevent multiple BT operations

@@ -1,20 +1,13 @@
 import * as React from 'react';
 import { Text, View } from 'react-native';
-import { Theme } from '../../../../theme';
-import { RoundButton } from '../../../../components/RoundButton';
 import { Audio } from 'expo-av';
-import { useHappyAction } from '../../../../../utils/useHappyAction';
-import { openSystemSettings } from '../../../../../utils/openSystemSettings';
 import * as Haptics from 'expo-haptics';
-import { delay } from '../../../../../utils/time';
-import { useRouter } from '../../../../../routing';
-import { useAppModel } from '../../../../../global';
 import { Image } from 'expo-image';
+import { useAppModel } from '@/global';
 
 export default React.memo(() => {
 
     const app = useAppModel();
-    const router = useRouter();
     const [state, setState] = React.useState<string>('');
     const [executing, action] = useHappyAction(async () => {
 

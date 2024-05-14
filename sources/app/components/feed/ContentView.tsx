@@ -1,12 +1,12 @@
 import * as React from 'react';
 import { Pressable, Text, View } from 'react-native';
-import { Content } from '../../../modules/api/content';
-import { useAppModel } from '../../../global';
-import { Theme } from '../../theme';
-import { AppService } from '../../../modules/services/AppService';
 import { Image } from 'expo-image';
-import { RoundButton } from '../RoundButton';
 import { router } from 'expo-router';
+import { Content } from '@/modules/api/content';
+import { AppService } from '@/modules/services/AppService';
+import { useAppModel } from '@/global';
+import { Theme } from '@/app/theme';
+import { RoundButton } from '@/app/components/RoundButton';
 
 export const ContentView = React.memo((props: { content: Content, app: AppService, display: 'normal' | 'large' }) => {
     if (Array.isArray(props.content)) {

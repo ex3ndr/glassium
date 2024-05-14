@@ -1,6 +1,6 @@
 import { Asset } from 'expo-asset';
-import { log } from '../../../../utils/logs';
-import { InferenceSession, Tensor, createSession } from '../../onnx/onnx';
+import { log } from '@/utils/logs';
+import { InferenceSession, Tensor, createSession } from '@/modules/ai/onnx/onnx';
 import { Platform } from 'react-native';
 
 export class VADModel {

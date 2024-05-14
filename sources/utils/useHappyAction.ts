@@ -1,6 +1,6 @@
 import * as React from 'react';
-import { HappyError } from '../modules/errors/HappyError';
-import { alert } from './alert';
+import { HappyError } from '@/modules/errors/HappyError';
+import { alert } from '@/utils/alert';
 
 export function useHappyAction(action: () => Promise<void>) {
     const [loading, setLoading] = React.useState(false);

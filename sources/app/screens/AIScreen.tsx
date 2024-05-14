@@ -3,18 +3,17 @@ import { ActivityIndicator, Platform, Pressable, ScrollView, Text, View } from '
 import { Banner } from '../components/Banner';
 import { useSafeAreaInsets } from 'react-native-safe-area-context';
 import { useAppModel } from '../../global';
-import { useRouter } from '../../routing';
 import { Theme } from '../theme';
 import { Feed } from '../components/feed/Feed';
 import { openSystemSettings } from '../../utils/openSystemSettings';
 import { useUpdates } from 'expo-updates';
 import * as Updates from 'expo-updates'
 import { Content } from '../components/Content';
+import { router } from 'expo-router';
 
 const AIStatusComponent = React.memo(() => {
     const app = useAppModel();
     const wearable = app.wearable.use();
-    const router = useRouter();
     const doPair = async () => {
         if (app.wearable.bluetooth.supportsScan) {
             router.navigate('manage-device')
@@ -69,7 +68,6 @@ export const AIScreen = React.memo(() => {
     const app = useAppModel();
     const me = app.profile.use();
     const safeArea = useSafeAreaInsets();
-    const router = useRouter();
     const updates = useUpdates();
 
     // Views

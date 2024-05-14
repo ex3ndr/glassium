@@ -1,7 +1,7 @@
 import * as React from 'react';
 import { ActivityIndicator, Platform, Pressable, StyleProp, Text, View, ViewStyle } from 'react-native';
 import { iOSUIKit } from 'react-native-typography';
-import { Theme } from '../theme';
+import { Theme } from '@/app/theme';
 
 export type RoundButtonSize = 'large' | 'normal' | 'small';
 const sizes: { [key in RoundButtonSize]: { height: number, fontSize: number, hitSlop: number, pad: number } } = {

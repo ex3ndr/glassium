@@ -1,6 +1,6 @@
 import * as  React from 'react';
 import { Text, View } from 'react-native';
-import { Theme } from '../theme';
+import { Theme } from '@/app/theme';
 
 export const Item = React.memo((props: { title: string }) => {
     return (

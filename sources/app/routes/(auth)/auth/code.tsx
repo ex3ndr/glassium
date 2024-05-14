@@ -3,18 +3,17 @@ import { KeyboardAvoidingView, Text, TextInput, View } from 'react-native';
 import { useSafeAreaInsets } from 'react-native-safe-area-context';
 import { useGlobalStateController } from '@/global';
 import { useLayout } from '@/utils/useLayout';
-import { useRouter } from '@/routing';
 import { useHappyAction } from '@/utils/useHappyAction';
 import { requestPhoneAuthVerify } from '@/modules/api/auth';
 import { storage } from '@/storage';
 import { Theme } from '@/app/theme';
 import { SButton } from '@/app/components/SButton';
+import { router } from 'expo-router';
 
 export default function CodeScreen() {
 
     const controller = useGlobalStateController();
     const layout = useLayout();
-    const router = useRouter();
     const number = storage.getString('auth-number')!;
     const safeArea = useSafeAreaInsets();
     const [code, setCode] = React.useState('');
@@ -25,7 +24,7 @@ export default function CodeScreen() {
         }
         let output = await requestPhoneAuthVerify(number, '', code);
         if (output === null) {
-            router.goBack();
+            router.back();
             return;
         }
 

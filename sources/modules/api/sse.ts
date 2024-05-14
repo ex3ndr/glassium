@@ -1,6 +1,5 @@
 import EventSource, { EventSourceListener } from "react-native-sse";
-import { log } from "../../utils/logs";
-import { set } from "date-fns";
+import { log } from "@/utils/logs";
 
 export function sse(url: string, token: string, handler: (update: any) => void) {
 

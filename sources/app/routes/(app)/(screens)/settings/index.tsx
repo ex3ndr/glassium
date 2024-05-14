@@ -1,18 +1,18 @@
 import * as React from 'react';
 import { ActivityIndicator, Platform, Pressable, ScrollView, Text, View } from 'react-native';
-import { Item } from '../../../../components/Item';
-import { useAppModel } from '../../../../../global';
-import { RoundButton } from '../../../../components/RoundButton';
-import { Theme } from '../../../../theme';
-import { DeviceComponent } from '../../../../components/DeviceComponent';
-import { isDevMode, setDevMode } from '../../../../../devmode';
-import { randomQuote } from '../../../../../modules/fun/randomQuote';
 import * as Application from 'expo-application';
 import * as Update from 'expo-updates';
 import { useSafeAreaInsets } from 'react-native-safe-area-context';
-import { alert } from '../../../../../utils/alert';
-import { cleanAndReload } from '../../../../../modules/reload/cleanAndReload';
 import { router } from 'expo-router';
+import { useAppModel } from '@/global';
+import { isDevMode, setDevMode } from '@/devmode';
+import { alert } from '@/utils/alert';
+import { cleanAndReload } from '@/modules/reload/cleanAndReload';
+import { randomQuote } from '@/modules/fun/randomQuote';
+import { Item } from '@/app/components/Item';
+import { Theme } from '@/app/theme';
+import { RoundButton } from '@/app/components/RoundButton';
+import { DeviceComponent } from '@/app/components/DeviceComponent';
 
 export default React.memo(() => {
     const safeArea = useSafeAreaInsets();

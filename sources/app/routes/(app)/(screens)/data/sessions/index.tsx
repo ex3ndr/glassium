@@ -1,11 +1,11 @@
 import * as React from 'react';
 import { ActivityIndicator, Pressable, Text, View } from 'react-native';
 import { useSafeAreaInsets } from 'react-native-safe-area-context';
-import { Theme } from '../../../../../theme';
-import { useAppModel } from '../../../../../../global';
-import { ViewSession } from '../../../../../../modules/services/SessionsModel';
 import { FlashList } from '@shopify/flash-list';
 import { router } from 'expo-router';
+import { ViewSession } from '@/modules/services/SessionsModel';
+import { Theme } from '@/app/theme';
+import { useAppModel } from '@/global';
 
 const SessionComponent = React.memo((props: { session: ViewSession }) => {
     let status: string = props.session.state;

@@ -3,7 +3,6 @@ import { Alert, KeyboardAvoidingView, Text, TextInput, View } from 'react-native
 import * as RNLocalize from "react-native-localize";
 import { useSafeAreaInsets } from 'react-native-safe-area-context';
 import { parsePhoneNumber } from 'libphonenumber-js';
-import { useRouter } from '@/routing';
 import { useLayout } from '@/utils/useLayout';
 import { Country, countries } from '@/utils/countries';
 import { useHappyAction } from '@/utils/useHappyAction';
@@ -11,10 +10,10 @@ import { requestPhoneAuth } from '@/modules/api/auth';
 import { Theme } from '@/app/theme';
 import { SButton } from '@/app/components/SButton';
 import { storage } from '@/storage';
+import { router } from 'expo-router';
 
 export default function Phone() {
 
-    const router = useRouter();
     const safeArea = useSafeAreaInsets();
     const layout = useLayout();
 

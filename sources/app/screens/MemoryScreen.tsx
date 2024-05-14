@@ -4,14 +4,12 @@ import { ScrollView, Text, View } from 'react-native';
 import { Image } from 'expo-image';
 import { Theme } from '../theme';
 import { useSafeAreaInsets } from 'react-native-safe-area-context';
-import { useRouter } from '../../routing';
 import { useAppModel } from '../../global';
 
 export const MemoryScreen = React.memo(() => {
     const id = (useRoute().params as any).id as string;
     const app = useAppModel();
     const safeArea = useSafeAreaInsets();
-    const router = useRouter();
     let memory = app.memory.use(id);
     return (
         <>

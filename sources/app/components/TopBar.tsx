@@ -1,12 +1,12 @@
 import * as React from 'react';
 import { Pressable, StyleSheet, Text, View } from 'react-native';
 import { Ionicons } from '@expo/vector-icons';
-import { Theme } from '../theme';
-import { useAppModel } from '../../global';
-import { BatteryComponent } from './BatteryComponent';
+import { Theme } from '@/app/theme';
+import { useAppModel } from '@/global';
+import { BatteryComponent } from '@/app/components/BatteryComponent';
 import { useAtomValue } from 'jotai';
-import { useRouter } from '../../routing';
 import { Image } from 'expo-image';
+import { router } from 'expo-router';
 
 export const TopBar = React.memo(() => {
     const appModel = useAppModel();
@@ -14,7 +14,6 @@ export const TopBar = React.memo(() => {
     const wearable = appModel.useWearable();
     const endpointing = appModel.endpointing.use();
     const debug = useAtomValue(appModel.debug.enabled);
-    const router = useRouter();
 
     // Resolve title and subtitle
     let title = 'Bubble';

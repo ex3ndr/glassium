@@ -4,19 +4,17 @@ import { useSafeAreaInsets } from 'react-native-safe-area-context';
 import { useUpdates } from 'expo-updates';
 import * as Updates from 'expo-updates'
 import { useAppModel } from '@/global';
-import { useRouter } from '@/routing';
 import { Banner } from '@/app/components/Banner';
 import { Theme } from '@/app/theme';
 import { Content } from '@/app/components/Content';
 import { Feed } from '@/app/components/feed/Feed';
 import { openSystemSettings } from '@/utils/openSystemSettings';
 import { useLayout } from '@/utils/useLayout';
-import { Stack } from 'expo-router';
+import { Stack, router } from 'expo-router';
 
 const AIStatusComponent = React.memo(() => {
     const app = useAppModel();
     const wearable = app.wearable.use();
-    const router = useRouter();
     const doPair = async () => {
         if (app.wearable.bluetooth.supportsScan) {
             router.navigate('manage-device')
@@ -71,7 +69,6 @@ export default React.memo(() => {
     const app = useAppModel();
     const me = app.profile.use();
     const safeArea = useSafeAreaInsets();
-    const router = useRouter();
     const updates = useUpdates();
     const layout = useLayout();
 

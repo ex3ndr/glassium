@@ -1,13 +1,14 @@
 import * as React from 'react';
-import { ActivityIndicator, Platform, ScrollView, Text, View } from 'react-native';
-import { Theme } from '../../../../theme';
-import { useAppModel } from '../../../../../global';
+import { ActivityIndicator, ScrollView, Text, View } from 'react-native';
 import { useAtomValue } from 'jotai';
-import { RoundButton } from '../../../../components/RoundButton';
-import { DeviceComponent } from '../../../../components/DeviceComponent';
 import { useSafeAreaInsets } from 'react-native-safe-area-context';
-import { HappyError } from '../../../../../modules/errors/HappyError';
-import { useRouter } from '../../../../../routing';
+import { useAppModel } from '@/global';
+import { Theme } from '@/app/theme';
+import { DeviceComponent } from '@/app/components/DeviceComponent';
+import { HappyError } from '@/modules/errors/HappyError';
+import { router } from 'expo-router';
+import { RoundButton } from '@/app/components/RoundButton';
+
 
 function inferVendorFromName(name: string): 'compass' | 'friend' | 'bubble' {
     if (name.toLowerCase().includes('compass')) return 'compass';
@@ -18,7 +19,6 @@ function inferVendorFromName(name: string): 'compass' | 'friend' | 'bubble' {
 const DiscoveryDevice = React.memo(() => {
     const safeArea = useSafeAreaInsets();
     const appModel = useAppModel();
-    const router = useRouter();
     const discovery = useAtomValue(appModel.wearable.discoveryStatus);
     React.useEffect(() => {
         appModel.wearable.startDiscovery();
@@ -54,7 +54,7 @@ const DiscoveryDevice = React.memo(() => {
                                     } else if (res === 'unsupported') {
                                         throw new HappyError('It seesm that his device is not supported.', false)
                                     } else {
-                                        router.goBack();
+                                        router.back();
                                     }
                                 }}
                             />

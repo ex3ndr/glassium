@@ -2,9 +2,9 @@ import { Axios } from "axios";
 import { backoff } from "../../utils/time";
 import { Schema, Update, Updates, sseUpdate } from "./schema";
 import { sse } from "./sse";
-import { SERVER_ENDPOINT } from "../../config";
+import { SERVER_ENDPOINT } from "@/config";
 import { Content, contentCodec } from "./content";
-import { log } from "../../utils/logs";
+import { log } from "@/utils/logs";
 
 export class BubbleClient {
 

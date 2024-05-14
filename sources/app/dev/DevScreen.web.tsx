@@ -1,13 +1,12 @@
 import * as React from 'react';
 import { ScrollView, View } from 'react-native';
 import * as Update from 'expo-updates';
-import { Item } from '../components/Item';
-import { RoundButton } from '../components/RoundButton';
-import { useRouter } from '../../routing';
-import { Theme } from '../theme';
+import { Item } from '@/app/components/Item';
+import { RoundButton } from '@/app/components/RoundButton';
+import { Theme } from '@/app/theme';
+import { router } from 'expo-router';
 
 export const DevScreen = React.memo(() => {
-    const router = useRouter();
     const restartApp = async () => {
         await Update.reloadAsync();
     };

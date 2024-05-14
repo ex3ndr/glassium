@@ -1,10 +1,10 @@
 import * as React from 'react';
-import { useAppModel } from '../../global';
+import { useAppModel } from '@/global';
 import { Text, View } from 'react-native';
-import { Theme } from '../theme';
+import { Theme } from '@/app/theme';
 import { RoundButton } from './RoundButton';
-import { openSystemSettings } from '../../utils/openSystemSettings';
-import { useRouter } from '../../routing';
+import { openSystemSettings } from '@/utils/openSystemSettings';
+import { router } from 'expo-router';
 
 const NotifcationComponent = React.memo((props: { title: string, text: string, actionTitle?: string, action?: () => Promise<any> }) => {
     return (
@@ -23,10 +23,9 @@ const NotifcationComponent = React.memo((props: { title: string, text: string, a
 export const HomeNotification = React.memo(() => {
     const app = useAppModel();
     const wearable = app.wearable.use();
-    const router = useRouter();
     const doPair = async () => {
         if (app.wearable.bluetooth.supportsScan) {
-            router.navigate('manage-device')
+            router.navigate('/settings/device');
         } else if (app.wearable.bluetooth.supportsPick) {
             await app.wearable.pick();
         }

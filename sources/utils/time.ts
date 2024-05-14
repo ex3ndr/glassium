@@ -1,4 +1,4 @@
-import { log } from './logs';
+import { log } from '@/utils/logs';
 
 export function exponentialBackoffDelay(currentFailureCount: number, minDelay: number, maxDelay: number, maxFailureCount: number) {
     let maxDelayRet = minDelay + ((maxDelay - minDelay) / maxFailureCount) * Math.max(currentFailureCount, maxFailureCount);

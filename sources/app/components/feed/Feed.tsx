@@ -1,13 +1,13 @@
 import * as React from 'react';
 import { FlashList } from '@shopify/flash-list';
 import { ActivityIndicator, Text, View } from 'react-native';
-import { Theme } from '../../theme';
-import { useAppModel } from '../../../global';
-import { FeedViewItem } from '../../../modules/services/FeedService';
-import { AppService } from '../../../modules/services/AppService';
 import { Image } from 'expo-image';
-import { TimeView } from '../TimeView';
+import { Theme } from '@/app/theme';
+import { FeedViewItem } from '@/modules/services/FeedService';
+import { AppService } from '@/modules/services/AppService';
 import { ContentView } from './ContentView';
+import { TimeView } from '../TimeView';
+import { useAppModel } from '@/global';
 
 const Header = React.memo((props: { loading: boolean, display: 'normal' | 'inverted' | 'large', }) => {
     return (

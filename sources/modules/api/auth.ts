@@ -1,7 +1,7 @@
 import axios from 'axios';
 import * as z from 'zod';
-import { HappyError } from '../errors/HappyError';
-import { SERVER_ENDPOINT } from '../../config';
+import { HappyError } from '@/modules/errors/HappyError';
+import { SERVER_ENDPOINT } from '@/config';
 
 export async function requestPhoneAuth(phone: string, key: string) {
     let schema = z.union([z.object({

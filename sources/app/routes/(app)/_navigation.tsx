@@ -9,8 +9,9 @@ import { Image } from 'expo-image';
 import { useSafeAreaInsets } from 'react-native-safe-area-context';
 import { Banner } from '@/app/components/Banner';
 import { useAppModel } from '@/global';
-import { openSystemSettings } from '@/utils/openSystemSettings';
-import { texts } from '@/app/text/text';
+import { DeviceStateView } from '@/app/components/DeviceStateView';
+import { useDeviceState } from '@/app/components/useDeviceState';
+import { BatteryComponent } from '@/app/components/BatteryComponent';
 
 //
 // Navigation
@@ -19,31 +20,53 @@ import { texts } from '@/app/text/text';
 export const Sidebar = () => {
     const layout = useLayout();
     const safeArea = useSafeAreaInsets();
+    const deviceState = useDeviceState();
     return (
-        <View style={{ alignSelf: 'stretch', width: 200, marginHorizontal: 8, gap: 4, paddingTop: safeArea.top }}>
-            <View style={{ height: 64, alignItems: 'center', flexDirection: 'row', marginLeft: 8, marginTop: 2 }}>
-                <Image source={require('@/app/assets/splash_2.png')} style={{ width: 24, height: 24 }} />
-                <Text style={{ color: Theme.text, marginLeft: 12, fontSize: 24 }}>Glassium</Text>
-            </View>
-            <View style={{ marginBottom: 8 }}>
-                <AIStatusComponent small={true} />
-            </View>
+        <View style={{ alignSelf: 'stretch', marginHorizontal: 16, gap: 4, flexGrow: 1, paddingTop: safeArea.top, paddingBottom: safeArea.bottom }}>
+
+            {/* Show nice logo in sidebar only when sidebar is always visible */}
+            {layout === 'large' && (
+                <View style={{ height: 64, alignItems: 'center', flexDirection: 'row', marginLeft: 8, marginTop: 2 }}>
+                    <Image source={require('@/app/assets/splash_2.png')} style={{ width: 24, height: 24 }} />
+                    <Text style={{ color: Theme.text, marginLeft: 12, fontSize: 24 }}>Glassium</Text>
+                </View>
+            )}
+
+            {/* Top padding for mobile screens */}
+            {layout === 'small' && (
+                <View style={{ height: Platform.select({ default: 44, 'android': 56, web: 56 }) }} />
+            )}
+
+            {/* Sidebar buttons */}
             <SidebarButton icon="home-outline" title='Home' pathname='/' internal="index" />
             {layout === 'large' && (
                 <SidebarButton icon="document-text-outline" title='Transcripts' pathname='/data/transcripts' internal="data/transcripts/index" />
             )}
             <SidebarButton icon="cog" title='Settings' pathname='/settings' internal='settings/index' />
+            <View style={{ flexGrow: 1 }} />
+
+            {/* Show device state only when explicitly paired on large devices */}
+            {layout === 'large' && deviceState && deviceState.paired && (
+                <View style={{ marginBottom: 16 }}>
+                    <DeviceStateView state={deviceState} />
+                </View>
+            )}
+            {/* <View style={{ marginBottom: 16 }}>
+                <DeviceStateView state={deviceState} />
+            </View> */}
         </View>
     );
 };
 
 export const HomeHeader = () => {
     const layout = useLayout();
-    const safeArea = useSafeAreaInsets();
+    const device = useDeviceState();
     return (
         <Stack.Screen
             options={{
-                title: layout === 'large' ? 'Home' : 'Glassium',
+                // headerShown: layout === 'small', // We don't show header in home on large screen
+                title: layout === 'small' ? 'Glassium' : 'Home',
+                headerRight: () => <DeviceHedaerControls />,
             }}
         />
     );
@@ -51,13 +74,25 @@ export const HomeHeader = () => {
 
 export const HomeTopBar = () => {
     const layout = useLayout();
-    const safeArea = useSafeAreaInsets();
     return (
-        <View style={{ paddingTop: 16, gap: 8 }}>
+        <View style={{ paddingTop: 8, gap: 8 }}>
+            <UpdateBanner />
+            <VoiceSampleBanner />
             {layout === 'small' && (
                 <>
-                    <UpdateBatter />
-                    <AIStatusComponent small={false} />
+                    {/* <AIStatusComponent small={false} /> */}
+                    <Pressable
+                        style={(p) => ({
+                            backgroundColor: p.pressed ? '#131313' : '#1d1d1d',
+                            borderRadius: 16,
+                            paddingHorizontal: 16,
+                            paddingVertical: 16,
+                            flexDirection: 'row'
+                        })}
+                        onPress={() => router.navigate('/data/transcripts')}
+                    >
+                        <Text style={{ color: Theme.text, fontSize: 18 }}>View transcripts</Text>
+                    </Pressable>
                 </>
             )}
         </View>
@@ -72,10 +107,6 @@ const SidebarButton = (props: { icon: string, title: string, pathname: string, i
     const pathName = usePathname();
     const navigation = useNavigationContainerRef();
     function doNavigate() {
-
-        // router.navigate(props.pathname);
-
-        console.log(navigation.getState());
 
         // Try to find the existing key for (app) and (screens) routes
         let state = navigation.getState();
@@ -124,69 +155,74 @@ const SidebarButton = (props: { icon: string, title: string, pathname: string, i
     )
 };
 
-const AIStatusComponent = React.memo((props: { small: boolean }) => {
-    const app = useAppModel();
-    const state = useDeviceState();
-    const doPair = async () => {
-        if (app.wearable.bluetooth.supportsScan) {
-            router.navigate('manage-device')
-        } else if (app.wearable.bluetooth.supportsPick) {
-            await app.wearable.pick();
-        }
-    };
-    const doOpenSettings = () => {
-        router.navigate('settings')
-    }
+// const AIStatusComponent = React.memo((props: { small: boolean }) => {
+//     const app = useAppModel();
+//     const state = useDeviceState();
+//     const doPair = async () => {
+//         if (app.wearable.bluetooth.supportsScan) {
+//             router.navigate('manage-device')
+//         } else if (app.wearable.bluetooth.supportsPick) {
+//             await app.wearable.pick();
+//         }
+//     };
+//     const doOpenSettings = () => {
+//         router.navigate('settings')
+//     }
 
-    if (state === 'denied' && Platform.OS !== 'web') {
-        return (<Banner title={texts.bt_denied.title} text={props.small ? texts.bt_denied.message_small : texts.bt_denied.message} kind="warning" onPress={openSystemSettings} small={props.small} />);
-    }
-    // if (state === 'unavailable' && !props.small) {
-    //     return (<Banner title={texts.bt_unavailable.title} text={texts.bt_unavailable.message} kind="warning" onPress={openSystemSettings} small={props.small} />);
-    // }
-    if (state === 'pairing') {
-        return (<Banner title={texts.bt_pairing.title} text={props.small ? texts.bt_pairing.message_small : texts.bt_pairing.message} kind="alert" onPress={doPair} small={props.small} />);
-    }
+//     if (state === 'denied' && Platform.OS !== 'web') {
+//         return (<Banner title={texts.bt_denied.title} text={props.small ? texts.bt_denied.message_small : texts.bt_denied.message} kind="warning" onPress={openSystemSettings} small={props.small} />);
+//     }
+//     // if (state === 'unavailable' && !props.small) {
+//     //     return (<Banner title={texts.bt_unavailable.title} text={texts.bt_unavailable.message} kind="warning" onPress={openSystemSettings} small={props.small} />);
+//     // }
+//     if (state === 'pairing') {
+//         return (<Banner title={texts.bt_pairing.title} text={props.small ? texts.bt_pairing.message_small : texts.bt_pairing.message} kind="alert" onPress={doPair} small={props.small} />);
+//     }
 
-    // Everyday statuses
-    // if (state === 'offline') {
-    //     return (<Banner title='Offline' text='Connection to AI is lost. Processing will resume on reconnection.' kind="normal" fixedSize={true} />);
-    // }
-    if (state === 'disconnected') {
-        return (<Banner title={texts.bt_disconnected.title} text={props.small ? texts.bt_disconnected.message_small : texts.bt_disconnected.message} kind="normal" fixedSize={true} onPress={doOpenSettings} small={props.small} />);
-    }
-    if (state === 'online') {
-        return <Banner title={texts.bt_online.title} text={props.small ? texts.bt_online.message_small : texts.bt_online.message} kind="normal" fixedSize={true} onPress={doOpenSettings} small={props.small} />;
-    }
+//     // Everyday statuses
+//     // if (state === 'offline') {
+//     //     return (<Banner title='Offline' text='Connection to AI is lost. Processing will resume on reconnection.' kind="normal" fixedSize={true} />);
+//     // }
+//     if (state === 'disconnected') {
+//         return (<Banner title={texts.bt_disconnected.title} text={props.small ? texts.bt_disconnected.message_small : texts.bt_disconnected.message} kind="normal" fixedSize={true} onPress={doOpenSettings} small={props.small} />);
+//     }
+//     if (state === 'online') {
+//         return <Banner title={texts.bt_online.title} text={props.small ? texts.bt_online.message_small : texts.bt_online.message} kind="normal" fixedSize={true} onPress={doOpenSettings} small={props.small} />;
+//     }
 
-    // Unknown
-    return null;
-});
+//     // Unknown
+//     return null;
+// });
 
-const UpdateBatter = () => {
+const UpdateBanner = () => {
     const updates = Updates.useUpdates();
-    if (updates.isUpdatePending && Platform.OS !== 'web') {
+    const hasUpdate = updates.isUpdatePending && Platform.OS !== 'web';
+    // const hasUpdate = true;
+    if (hasUpdate) {
         return (<Banner title='New version available!' text="Press to restart app to apply update" kind="alert" onPress={() => Updates.reloadAsync()} />);
     }
     return null;
 }
 
-function useDeviceState() {
+const VoiceSampleBanner = () => {
     const app = useAppModel();
-    const wearable = app.wearable.use();
-    let state: 'online' | 'offline' | 'disconnected' | 'denied' | 'unavailable' | 'pairing' | 'unknown' = 'unknown';
-    if (wearable.pairing === 'denied') {
-        state = 'denied';
-    } else if (wearable.pairing === 'unavailable') {
-        state = 'unavailable';
-    } else if (wearable.pairing === 'need-pairing') {
-        state = 'pairing';
-    } else if (wearable.device) {
-        if (wearable.device.status === 'connected' || wearable.device.status === 'subscribed') {
-            state = 'online';
-        } else if (wearable.device.status === 'connecting' || wearable.device.status === 'disconnected') {
-            state = 'disconnected';
-        }
+    const me = app.profile.use();
+    const needVoiceSample = me && !me.voiceSample;
+
+    if (needVoiceSample) {
+        return (
+            <Banner title="Voice sample needed" text="To improve AI experience, please, record a voice sample" kind="normal" onPress={() => router.navigate('/settings/voice')} />
+        );
     }
-    return state;
-}
+
+    return null;
+};
+
+const DeviceHedaerControls = React.memo(() => {
+    const app = useAppModel();
+    const device = useDeviceState();
+    if (device.paired && device.battery !== undefined) {
+        return <BatteryComponent level={device.battery} />;
+    }
+    return null;
+});

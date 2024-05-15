@@ -34,6 +34,8 @@ export default React.memo(() => {
                 <RoundButton title={'View logs'} size='small' onPress={() => router.navigate('/debug/logs')} />
                 <View style={{ height: 16 }} />
                 <RoundButton title={'Test Alert'} size='small' onPress={() => alert('Test!', 'Test body', [{ text: 'OK' }])} />
+                <View style={{ height: 16 }} />
+                <RoundButton title={'Views'} size='small' onPress={() => router.navigate('/debug/views')} />
             </View>
             <View style={{ height: 16 }} />
             <Item title="Debug Capture" />

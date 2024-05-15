@@ -49,7 +49,7 @@ export class WearableModule {
             return {
                 pairing,
                 device: null,
-                profile: null
+                profile: this.#profile
             };
         }
     });

@@ -42,7 +42,7 @@ export const DrawerButton = React.memo((props: { canGoBack: boolean }) => {
         return null;
     }
     return (
-        <Pressable onPress={toggleDrawer}>
+        <Pressable onPress={toggleDrawer} hitSlop={24} style={{ width: 48, height: 48, alignItems: 'center', justifyContent: 'center' }}>
             <Ionicons name="menu" size={24} color={Theme.text} />
         </Pressable>
     )

@@ -16,7 +16,7 @@ export default React.memo(() => {
         <>
             <ScrollView style={{ flexGrow: 1, backgroundColor: Theme.background }} contentContainerStyle={{ paddingBottom: safeArea.bottom + 64 + 32, marginHorizontal: 16 }}>
                 {memory.image && (
-                    <Animated.View sharedTransitionTag={'memory-' + id}>
+                    <Animated.View>
                         <Image
                             style={{
                                 height: 'auto',

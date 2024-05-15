@@ -12,14 +12,15 @@ import { randomQuote } from '@/app/libs/quotes';
 import { Item } from '@/app/components/Item';
 import { Theme } from '@/app/theme';
 import { RoundButton } from '@/app/components/RoundButton';
-import { DeviceComponent } from '@/app/components/DeviceComponent';
+import { DeviceStateView } from '@/app/components/DeviceStateView';
+import { useDeviceState } from '@/app/components/useDeviceState';
 
 export default React.memo(() => {
     const safeArea = useSafeAreaInsets();
     const appModel = useAppModel();
-    const wearable = appModel.wearable.use();
     const updates = Update.useUpdates();
     const profile = appModel.profile.use();
+    const deviceState = useDeviceState();
     const alert = useAlert();
     const restartApp = async () => {
         await Update.reloadAsync();
@@ -58,13 +59,6 @@ export default React.memo(() => {
         // Reset app
         await cleanAndReload();
     };
-    const doPair = async () => {
-        if (appModel.wearable.bluetooth.supportsScan) {
-            router.navigate('/settings/device')
-        } else if (appModel.wearable.bluetooth.supportsPick) {
-            await appModel.wearable.pick();
-        }
-    };
 
     const quote = React.useMemo(() => randomQuote(), []);
     return (
@@ -82,42 +76,9 @@ export default React.memo(() => {
                 </View>
             )}
             <Item title="Device" />
-            {wearable.pairing === 'loading' && (
-                <View style={{ alignItems: 'flex-start', paddingHorizontal: 16, flexDirection: 'column' }}>
-                    <ActivityIndicator />
-                </View>
-            )}
-            {wearable.pairing === 'denied' && (
-                <View style={{ alignItems: 'flex-start', paddingHorizontal: 16, flexDirection: 'column' }}>
-                    <Text style={{ fontSize: 18, color: Theme.text, marginBottom: 8, opacity: 0.8 }}>Glassium requires bluetooth access. Please, allow it in the settings.</Text>
-                    <RoundButton title={'Open settings'} size='small' />
-                </View>
-            )}
-            {wearable.pairing === 'unavailable' && (
-                <View style={{ alignItems: 'flex-start', paddingHorizontal: 16, flexDirection: 'column' }}>
-                    <Text style={{ fontSize: 18, color: Theme.text, marginBottom: 8, opacity: 0.8 }}>Glassium requires bluetooth, but this device doesn't have one.</Text>
-                </View>
-            )}
-            {wearable.pairing === 'need-pairing' && (
-                <View style={{ alignItems: 'flex-start', paddingHorizontal: 16, flexDirection: 'column' }}>
-                    <Text style={{ fontSize: 18, color: Theme.text, marginBottom: 8, opacity: 0.8 }}>No device paired, please add your device to the app.</Text>
-                    <RoundButton title={'Pair new device'} size='small' action={doPair} />
-                </View>
-            )}
-            {wearable.pairing === 'ready' && (
-                <View style={{ alignItems: 'flex-start', paddingHorizontal: 16, flexDirection: 'column' }}>
-                    <DeviceComponent
-                        title={wearable.profile!.name}
-                        kind={wearable.profile!!.vendor}
-                        subtitle={
-                            (wearable.device.status === 'connected' || wearable.device.status === 'subscribed')
-                                ? (wearable.device.battery !== null ? wearable.device.battery + '% battery' : 'Connected')
-                                : 'Connecting...'
-                        }
-                        action={async () => { router.navigate('/settings/device') }}
-                    />
-                </View>
-            )}
+            <View style={{ marginHorizontal: 16, marginTop: 8 }}>
+                <DeviceStateView state={deviceState} />
+            </View>
             <View style={{ height: 16 }} />
             <Item title="Data" />
             <View style={{ alignItems: 'flex-start', paddingHorizontal: 16, flexDirection: 'column' }}>

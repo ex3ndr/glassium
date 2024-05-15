@@ -13,7 +13,7 @@ export default function AppLayout() {
     const layout = useLayout();
 
     // Style the drawer
-    const drawerNavigationOptions = React.useCallback((p: any) => {
+    const drawerNavigationOptions = (p: any) => {
         let state = p.navigation.getState();
         let isInRoot = true;
         if (state.type === 'drawer' && state.routes.length === 1) {
@@ -33,7 +33,7 @@ export default function AppLayout() {
             },
             swipeEnabled: isInRoot
         } as any;
-    }, []);
+    };
 
     // Redirect if not onboarded or not logged in
     if (state.kind === 'onboarding') {
@@ -56,7 +56,7 @@ export default function AppLayout() {
             >
                 <Drawer
                     screenOptions={drawerNavigationOptions}
-                    drawerContent={Sidebar}
+                    drawerContent={() => <Sidebar />}
                 />
             </View>
         </Provider>

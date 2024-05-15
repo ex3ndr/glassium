@@ -33,7 +33,7 @@ const DiscoveryDevice = React.memo(() => {
         <View style={{ flexGrow: 1, backgroundColor: Theme.background }}>
             {devices.length === 0 && (
                 <View style={{ flexGrow: 1, justifyContent: 'center', alignItems: 'center', marginBottom: safeArea.bottom }}>
-                    <ActivityIndicator />
+                    <ActivityIndicator color={Theme.text} />
                     <Text style={{ paddingHorizontal: 16, paddingVertical: 16, fontSize: 24, color: Theme.text }}>Looking for devices</Text>
                 </View>
             )}

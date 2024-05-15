@@ -1,10 +1,11 @@
 import * as React from 'react';
 import { HappyError } from '@/modules/errors/HappyError';
-import { alert } from '@/utils/alert';
+import { useAlert } from '@/app/libs/alert';
 
 export function useHappyAction(action: () => Promise<void>) {
     const [loading, setLoading] = React.useState(false);
     const loadingRef = React.useRef(false);
+    const alert = useAlert();
     const doAction = React.useCallback(() => {
         if (loadingRef.current) {
             return;

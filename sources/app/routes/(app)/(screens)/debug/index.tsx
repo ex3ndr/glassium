@@ -10,9 +10,11 @@ import { useAtomValue } from 'jotai';
 import { SButton } from '@/app/components/SButton';
 import { format } from 'date-fns';
 import { router } from 'expo-router';
+import { useAlert } from '@/app/libs/alert';
 
 export default React.memo(() => {
     const app = useAppModel();
+    const alert = useAlert();
     const restartApp = async () => {
         await Update.reloadAsync();
     };
@@ -30,6 +32,8 @@ export default React.memo(() => {
                 <RoundButton title={'Restart app'} size='small' action={restartApp} />
                 <View style={{ height: 16 }} />
                 <RoundButton title={'View logs'} size='small' onPress={() => router.navigate('/debug/logs')} />
+                <View style={{ height: 16 }} />
+                <RoundButton title={'Test Alert'} size='small' onPress={() => alert('Test!', 'Test body', [{ text: 'OK' }])} />
             </View>
             <View style={{ height: 16 }} />
             <Item title="Debug Capture" />

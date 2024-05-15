@@ -6,18 +6,19 @@ import { useClient } from '@/global';
 import { ShakeInstance, Shaker } from '@/app/components/Shaker';
 import { useHappyAction } from '@/utils/useHappyAction';
 import { checkUsername } from '@/utils/checkUsername';
-import { alert } from '@/utils/alert';
+import { useAlert } from '@/app/libs/alert';
 import { Theme } from '@/app/theme';
 import { SInput } from '@/app/components/SInput';
 import { SButton } from '@/app/components/SButton';
 import { useRefresh } from '../_resolve';
 import { KeyboardAvoidingView } from '@/app/components/KeyboardAvoidingView';
-import { hapticsError } from '@/modules/haptics/haptics';
+import { hapticsError } from '@/app/libs/haptics';
 
 export default React.memo(() => {
     const safeArea = useSafeAreaInsets();
     const layout = useLayout();
     const client = useClient();
+    const alert = useAlert();
     const refresh = useRefresh();
 
     const [username, setUsername] = React.useState('');

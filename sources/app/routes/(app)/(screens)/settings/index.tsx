@@ -6,9 +6,9 @@ import { useSafeAreaInsets } from 'react-native-safe-area-context';
 import { router } from 'expo-router';
 import { useAppModel } from '@/global';
 import { isDevMode, setDevMode } from '@/devmode';
-import { alert } from '@/utils/alert';
+import { useAlert } from '@/app/libs/alert';
 import { cleanAndReload } from '@/modules/reload/cleanAndReload';
-import { randomQuote } from '@/modules/fun/randomQuote';
+import { randomQuote } from '@/app/libs/quotes';
 import { Item } from '@/app/components/Item';
 import { Theme } from '@/app/theme';
 import { RoundButton } from '@/app/components/RoundButton';
@@ -20,6 +20,7 @@ export default React.memo(() => {
     const wearable = appModel.wearable.use();
     const updates = Update.useUpdates();
     const profile = appModel.profile.use();
+    const alert = useAlert();
     const restartApp = async () => {
         await Update.reloadAsync();
     };

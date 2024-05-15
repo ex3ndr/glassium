@@ -1,0 +1,21 @@
+.backdrop {
+    position: absolute;
+    display: flex;
+    width: 100vw;
+    height: 100vh;
+    background-color: rgba(0,0,0,0.5);
+    justify-content: center;
+    align-items: center;
+}
+
+.modal {
+    display: flex;
+    flex-direction: column;
+    background-color: black;
+    border-width: 1px;
+    border-color: white;
+    border-style: solid;
+    padding: 24px;
+    border-radius: 8px;
+    min-width: 400px;
+}

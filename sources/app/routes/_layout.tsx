@@ -12,7 +12,7 @@ import { GlobalStateContext, GlobalStateControllerContext, useNewGlobalControlle
 import { GestureHandlerRootView } from 'react-native-gesture-handler';
 import { Theme } from '../theme';
 import { View } from 'react-native';
-import { useLayout } from '@/utils/useLayout';
+import { AlertProvider } from '../libs/alert';
 
 // Configuration
 let theme = {
@@ -25,7 +25,6 @@ let theme = {
 
 export default function RootLayout() {
     const [state, controller] = useNewGlobalController();
-    const layout = useLayout();
     return (
         <View style={{ flexDirection: 'row', flexGrow: 1, flexBasis: 0, backgroundColor: Theme.panel, justifyContent: 'center' }}>
             <View style={{ flexGrow: 1, flexBasis: 0, maxWidth: 1600 }}>
@@ -34,18 +33,17 @@ export default function RootLayout() {
                         <PostHogProvider client={posthog}>
                             <GlobalStateContext.Provider value={state}>
                                 <GlobalStateControllerContext.Provider value={controller}>
-                                    <Navigator>
-                                        <Slot />
-                                    </Navigator>
+                                    <AlertProvider>
+                                        <Navigator>
+                                            <Slot />
+                                        </Navigator>
+                                    </AlertProvider>
                                 </GlobalStateControllerContext.Provider>
                             </GlobalStateContext.Provider>
                         </PostHogProvider>
                     </ThemeProvider>
                 </GestureHandlerRootView>
             </View>
-            {/* {layout === 'large' && (
-                <View style={{ width: 240 }} />
-            )} */}
         </View>
     );
 }

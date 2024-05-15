@@ -5,7 +5,7 @@ import { Image } from 'expo-image';
 import { useAppModel } from '@/global';
 import { useHappyAction } from '@/utils/useHappyAction';
 import { openSystemSettings } from '@/utils/openSystemSettings';
-import { hapticsLight } from '@/modules/haptics/haptics';
+import { hapticsLight } from '@/app/libs/haptics';
 import { delay } from '@/utils/time';
 import { router } from 'expo-router';
 import { Theme } from '@/app/theme';

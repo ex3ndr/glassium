@@ -11,7 +11,7 @@ import { SButton } from '@/app/components/SButton';
 import { format } from 'date-fns';
 import { router } from 'expo-router';
 
-export const DevScreen = React.memo(() => {
+export default React.memo(() => {
     const app = useAppModel();
     const restartApp = async () => {
         await Update.reloadAsync();
@@ -29,9 +29,7 @@ export const DevScreen = React.memo(() => {
             <View style={{ alignItems: 'flex-start', paddingHorizontal: 16, flexDirection: 'column' }}>
                 <RoundButton title={'Restart app'} size='small' action={restartApp} />
                 <View style={{ height: 16 }} />
-                <RoundButton title={'View logs'} size='small' onPress={() => router.navigate('logs')} />
-                <View style={{ height: 16 }} />
-                <RoundButton title={'View update logs'} size='small' onPress={() => router.navigate('update-logs')} />
+                <RoundButton title={'View logs'} size='small' onPress={() => router.navigate('/debug/logs')} />
             </View>
             <View style={{ height: 16 }} />
             <Item title="Debug Capture" />

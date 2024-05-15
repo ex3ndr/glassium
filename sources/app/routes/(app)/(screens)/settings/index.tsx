@@ -149,10 +149,10 @@ export default React.memo(() => {
             {isDevMode() && (
                 <>
                     <View style={{ height: 16 }} />
-                    <Item title="Developer Mode" />
+                    <Item title="Debug Tools" />
                     <View style={{ alignItems: 'flex-start', paddingHorizontal: 16, flexDirection: 'column' }}>
                         <Text style={{ fontSize: 18, color: Theme.text, marginBottom: 16, opacity: 0.8 }}>{quote.text}{'\n\n'}<Text style={{ fontStyle: 'italic' }}>{quote.from}</Text></Text>
-                        <RoundButton title={'Open developer tools'} size='small' onPress={() => router.navigate('dev')} />
+                        <RoundButton title={'Open debug tools'} size='small' onPress={() => router.navigate('/debug')} />
                     </View>
                 </>
             )}

@@ -6,7 +6,7 @@ import { RoundButton } from '@/app/components/RoundButton';
 import { Theme } from '@/app/theme';
 import { router } from 'expo-router';
 
-export const DevScreen = React.memo(() => {
+export default React.memo(() => {
     const restartApp = async () => {
         await Update.reloadAsync();
     };
@@ -16,9 +16,7 @@ export const DevScreen = React.memo(() => {
             <View style={{ alignItems: 'flex-start', paddingHorizontal: 16, flexDirection: 'column' }}>
                 <RoundButton title={'Restart app'} size='small' action={restartApp} />
                 <View style={{ height: 16 }} />
-                <RoundButton title={'View logs'} size='small' onPress={() => router.navigate('logs')} />
-                <View style={{ height: 16 }} />
-                <RoundButton title={'View update logs'} size='small' onPress={() => router.navigate('update-logs')} />
+                <RoundButton title={'View logs'} size='small' onPress={() => router.navigate('/debug/logs')} />
             </View>
         </ScrollView>
     );

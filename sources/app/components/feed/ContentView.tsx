@@ -7,6 +7,7 @@ import { AppService } from '@/modules/services/AppService';
 import { useAppModel } from '@/global';
 import { Theme } from '@/app/theme';
 import { RoundButton } from '@/app/components/RoundButton';
+import Animated from 'react-native-reanimated';
 
 export const ContentView = React.memo((props: { content: Content, app: AppService, display: 'normal' | 'large' }) => {
     if (Array.isArray(props.content)) {
@@ -47,20 +48,22 @@ const ContentMemory = React.memo((props: { id: string, display: 'normal' | 'larg
         let image;
         if (memory.image) {
             image = (
-                <Image
-                    source={{ uri: memory.image.url }}
-                    placeholder={{ thumbhash: memory.image.thumbhash }}
-                    style={{ width: 'auto', height: 'auto', aspectRatio: memory.image.width / memory.image.height, borderTopLeftRadius: 16, borderTopRightRadius: 16 }}
-                />
+                <Animated.View sharedTransitionTag={'memory-' + props.id}>
+                    <Image
+                        source={{ uri: memory.image.url }}
+                        placeholder={{ thumbhash: memory.image.thumbhash }}
+                        style={{ width: 'auto', height: 'auto', aspectRatio: memory.image.width / memory.image.height, borderRadius: 16 }}
+                    />
+                </Animated.View>
             )
         } else {
             image = <View style={{ width: 64, height: 64, borderRadius: 32, backgroundColor: Theme.warninig }} />
         }
 
         return (
-            <Pressable key={memory.id} style={{ marginHorizontal: 16, marginVertical: 8, borderRadius: 16, borderWidth: 0.5, borderColor: '#272727', flexDirection: 'column' }} onPress={() => router.navigate('/memory/' + props.id)}>
+            <Pressable key={memory.id} style={{ marginHorizontal: 16, marginVertical: 8, borderRadius: 16, borderWidth: 0.5, borderColor: '#272727', flexDirection: 'column', backgroundColor: 'white', }} onPress={() => router.navigate('/memory/' + props.id)}>
                 {image}
-                <View style={{ flexDirection: 'column', flexGrow: 1, flexBasis: 0, paddingTop: 8, paddingHorizontal: 8, paddingBottom: 16, backgroundColor: 'white', borderBottomLeftRadius: 16, borderBottomRightRadius: 16 }}>
+                <View style={{ flexDirection: 'column', flexGrow: 1, flexBasis: 0, paddingTop: 8, paddingHorizontal: 8, paddingBottom: 16, borderBottomLeftRadius: 16, borderBottomRightRadius: 16 }}>
                     <Text style={{ fontSize: 16, color: Theme.textInverted }} numberOfLines={3}>{memory.title}</Text>
                     <Text style={{ fontSize: 14, opacity: 0.6, color: Theme.textInverted }} numberOfLines={2}>{memory.summary.replaceAll('\n', ' ')}</Text>
                 </View>

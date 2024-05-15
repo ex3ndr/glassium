@@ -1,14 +1,15 @@
 import * as React from 'react';
+import { useHeaderHeight } from "@react-navigation/elements";
 import { KeyboardAvoidingView as KeyboardAvoidingViewBase, KeyboardAvoidingViewProps, Platform } from 'react-native';
-import { useSafeAreaInsets } from 'react-native-safe-area-context';
 
+// HINT: https://medium.com/@felippepuhle/react-native-quick-tip-solving-keyboardavoidingview-problems-on-screens-using-native-headers-or-1c77b5ec417c
 export const KeyboardAvoidingView = React.memo((props: KeyboardAvoidingViewProps) => {
-    const safeArea = useSafeAreaInsets();
+    const headerHeight = useHeaderHeight();
     return (
         <KeyboardAvoidingViewBase
             behavior="padding"
             enabled={Platform.OS === 'ios'}
-            keyboardVerticalOffset={safeArea.bottom + 44}
+            keyboardVerticalOffset={headerHeight}
             {...props}
         />
     );

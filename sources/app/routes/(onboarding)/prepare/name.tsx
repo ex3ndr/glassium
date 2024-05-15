@@ -1,6 +1,5 @@
 import * as React from 'react';
 import { Text, View } from 'react-native';
-import * as Haptics from 'expo-haptics';
 import { useSafeAreaInsets } from 'react-native-safe-area-context';
 import { useClient } from '@/global';
 import { useLayout } from '@/utils/useLayout';
@@ -12,6 +11,7 @@ import { SInput } from '@/app/components/SInput';
 import { SButton } from '@/app/components/SButton';
 import { useRefresh } from '../_resolve';
 import { KeyboardAvoidingView } from '@/app/components/KeyboardAvoidingView';
+import { hapticsError } from '@/modules/haptics/haptics';
 
 export default React.memo(() => {
     const refresh = useRefresh();
@@ -26,7 +26,7 @@ export default React.memo(() => {
         let l: string | null = lastName.trim();
         if (f.length === 0) { // Check first name
             firstNameRef.current?.shake();
-            Haptics.notificationAsync(Haptics.NotificationFeedbackType.Error);
+            hapticsError();
             return;
         }
         if (l.length === 0) {
@@ -59,7 +59,7 @@ export default React.memo(() => {
                     <View style={{ flexGrow: 1 }} />
                     <View>
                         <Text style={{ fontSize: 36, alignSelf: 'center', marginBottom: 8, color: Theme.text }}>Your name</Text>
-                        <Text style={{ fontSize: 22, alignSelf: 'center', lineHeight: 30, color: Theme.text }}>Real name is preferred for AI to work</Text>
+                        <Text style={{ fontSize: 22, alignSelf: 'center', lineHeight: 30, color: Theme.text }}>Real name is preferred for AI</Text>
                         <Shaker style={{ marginTop: 24 }} ref={firstNameRef}>
                             <SInput placeholder='First Name' value={firstName} onValueChange={setFirstName} />
                         </Shaker>
@@ -70,7 +70,7 @@ export default React.memo(() => {
                     {layout === 'small' && (
                         <View style={{ flexGrow: 1 }} />
                     )}
-                    <SButton title='Continue' style={{ alignSelf: 'stretch', marginTop: 48, paddingBottom: 16 }} onPress={doRequest} loading={requesting} />
+                    <SButton title='Continue' style={{ alignSelf: 'stretch', marginTop: 16, paddingBottom: 8 }} onPress={doRequest} loading={requesting} />
                     {layout === 'large' && (
                         <View style={{ flexGrow: 1 }} />
                     )}

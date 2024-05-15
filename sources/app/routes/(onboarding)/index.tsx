@@ -9,7 +9,7 @@ export default function Page() {
     React.useEffect(() => run(refresh), []);
     return (
         <View style={{ flexGrow: 1, backgroundColor: Theme.background, alignSelf: 'stretch', justifyContent: 'center', alignItems: 'center' }}>
-            <ActivityIndicator />
+            <ActivityIndicator color={Theme.text} />
         </View>
     );
 }

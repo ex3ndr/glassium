@@ -1,7 +1,6 @@
 import * as React from 'react';
 import { useSafeAreaInsets } from 'react-native-safe-area-context';
 import { Text, View } from 'react-native';
-import * as Haptics from 'expo-haptics';
 import { useLayout } from '@/utils/useLayout';
 import { useClient } from '@/global';
 import { ShakeInstance, Shaker } from '@/app/components/Shaker';
@@ -13,6 +12,7 @@ import { SInput } from '@/app/components/SInput';
 import { SButton } from '@/app/components/SButton';
 import { useRefresh } from '../_resolve';
 import { KeyboardAvoidingView } from '@/app/components/KeyboardAvoidingView';
+import { hapticsError } from '@/modules/haptics/haptics';
 
 export default React.memo(() => {
     const safeArea = useSafeAreaInsets();
@@ -29,7 +29,7 @@ export default React.memo(() => {
         let name = username.trim();
         if (!checkUsername(name)) {
             usernameRef.current?.shake();
-            Haptics.notificationAsync(Haptics.NotificationFeedbackType.Error);
+            hapticsError();
             return;
         }
 
@@ -40,7 +40,7 @@ export default React.memo(() => {
         } else {
             if (res.error === 'invalid_username') {
                 usernameRef.current?.shake();
-                Haptics.notificationAsync(Haptics.NotificationFeedbackType.Error);
+                hapticsError();
                 // await alert('Invalid username', 'Please try another username', [{ text: 'OK' }]);
             }
             if (res.error === 'already_used') {
@@ -60,7 +60,7 @@ export default React.memo(() => {
                     maxWidth: 500
                 }}
             >
-                <View style={{ flexGrow: 1, flexBasis: 0, alignSelf: 'stretch' }}>
+                <View style={{ flexGrow: 1, flexBasis: 0, alignSelf: 'stretch', marginTop: safeArea.top }}>
                     <View style={{ flexGrow: 1 }} />
                     <View>
                         <Text style={{ fontSize: 36, alignSelf: 'center', marginBottom: 8, color: Theme.text }}>Pick a username</Text>
@@ -79,7 +79,7 @@ export default React.memo(() => {
                     {layout === 'small' && (
                         <View style={{ flexGrow: 1 }} />
                     )}
-                    <SButton title='Continue' style={{ alignSelf: 'stretch', marginTop: 48 }} onPress={doRequest} loading={requesting} />
+                    <SButton title='Continue' style={{ alignSelf: 'stretch', marginTop: 16, marginBottom: 8 }} onPress={doRequest} loading={requesting} />
                     {layout === 'large' && (
                         <View style={{ flexGrow: 1 }} />
                     )}

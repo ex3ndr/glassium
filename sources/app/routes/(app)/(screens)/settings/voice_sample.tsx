@@ -1,9 +1,15 @@
 import * as React from 'react';
 import { Text, View } from 'react-native';
 import { Audio } from 'expo-av';
-import * as Haptics from 'expo-haptics';
 import { Image } from 'expo-image';
 import { useAppModel } from '@/global';
+import { useHappyAction } from '@/utils/useHappyAction';
+import { openSystemSettings } from '@/utils/openSystemSettings';
+import { hapticsLight } from '@/modules/haptics/haptics';
+import { delay } from '@/utils/time';
+import { router } from 'expo-router';
+import { Theme } from '@/app/theme';
+import { RoundButton } from '@/app/components/RoundButton';
 
 export default React.memo(() => {
 
@@ -29,20 +35,20 @@ export default React.memo(() => {
         try {
 
             // Count down
-            await Haptics.impactAsync(Haptics.ImpactFeedbackStyle.Light);
+            hapticsLight();
             setState('Prepare in 3s...');
             await new Promise(resolve => setTimeout(resolve, 1000));
 
-            await Haptics.impactAsync(Haptics.ImpactFeedbackStyle.Light);
+            hapticsLight();
             setState('Prepare in 2s...');
             await new Promise(resolve => setTimeout(resolve, 1000));
 
-            await Haptics.impactAsync(Haptics.ImpactFeedbackStyle.Light);
+            hapticsLight();
             setState('Prepare in 1s...');
             await new Promise(resolve => setTimeout(resolve, 1000));
 
             // Start
-            await Haptics.impactAsync(Haptics.ImpactFeedbackStyle.Light);
+            hapticsLight();
             setState('Recording...');
             await Audio.setAudioModeAsync({ allowsRecordingIOS: true, playsInSilentModeIOS: true });
             const { recording } = await Audio.Recording.createAsync(Audio.RecordingOptionsPresets.HIGH_QUALITY);
@@ -58,7 +64,7 @@ export default React.memo(() => {
             // Success
             setState('Success!');
             await delay(1000);
-            router.goBack();
+            router.back();
         } catch (e) {
             setState('Error during recording');
         }

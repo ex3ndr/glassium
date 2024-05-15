@@ -1,5 +1,5 @@
 import * as React from 'react';
-import { Platform, Text, TextInput, View } from 'react-native';
+import { Text, TextInput, View } from 'react-native';
 import * as RNLocalize from "react-native-localize";
 import { useSafeAreaInsets } from 'react-native-safe-area-context';
 import { parsePhoneNumber } from 'libphonenumber-js';
@@ -111,7 +111,7 @@ export default function Phone() {
                             <SButton title={country.label + ' ' + country.emoji} style={{ alignSelf: 'stretch', marginBottom: 12 }} onPress={openCountryPicker} disabled={requesting} />
                             <View style={{ height: 50, backgroundColor: '#F2F2F2', alignSelf: 'stretch', flexDirection: 'row', borderRadius: 8 }}>
                                 <View style={{ marginLeft: 4, width: 60, height: 50, justifyContent: 'center', alignItems: 'center' }}>
-                                    <Text style={{ fontSize: 17, fontWeight: '600', opacity: 0.4 }}>
+                                    <Text style={{ fontSize: 17, fontWeight: '500', color: '#9D9FA3' }}>
                                         {country.value}
                                     </Text>
                                 </View>
@@ -121,6 +121,7 @@ export default function Phone() {
                                     keyboardType='phone-pad'
                                     value={number}
                                     onChangeText={setNumberValue}
+                                    placeholderTextColor="#9D9FA3"
                                     style={{
                                         height: 50,
                                         paddingLeft: 64,
@@ -140,7 +141,7 @@ export default function Phone() {
                         {layout === 'small' && (
                             <View style={{ flexGrow: 1 }} />
                         )}
-                        <SButton title='Continue' style={{ alignSelf: 'stretch', marginTop: 16, paddingBottom: 16 }} onPress={doRequest} loading={requesting} />
+                        <SButton title='Continue' style={{ alignSelf: 'stretch', marginTop: 16, marginBottom: 16 }} onPress={doRequest} loading={requesting} />
                         {layout === 'large' && (
                             <View style={{ flexGrow: 1 }} />
                         )}

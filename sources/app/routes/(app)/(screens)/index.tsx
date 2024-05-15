@@ -1,16 +1,14 @@
 import * as React from 'react';
 import { ActivityIndicator, Platform, Pressable, ScrollView, Text, View } from 'react-native';
 import { useSafeAreaInsets } from 'react-native-safe-area-context';
-import { useUpdates } from 'expo-updates';
-import * as Updates from 'expo-updates'
 import { useAppModel } from '@/global';
 import { Banner } from '@/app/components/Banner';
 import { Theme } from '@/app/theme';
-import { Content } from '@/app/components/Content';
 import { Feed } from '@/app/components/feed/Feed';
 import { openSystemSettings } from '@/utils/openSystemSettings';
 import { useLayout } from '@/utils/useLayout';
 import { Stack, router } from 'expo-router';
+import { HomeHeader, HomeTopBar } from '../_navigation';
 
 const AIStatusComponent = React.memo(() => {
     const app = useAppModel();
@@ -69,18 +67,12 @@ export default React.memo(() => {
     const app = useAppModel();
     const me = app.profile.use();
     const safeArea = useSafeAreaInsets();
-    const updates = useUpdates();
     const layout = useLayout();
 
     // Views
     const header = (
-        <>
-            {updates.isUpdatePending && (
-                <Banner title='New version available!' text="Press to restart app to apply update" kind="alert" onPress={() => Updates.reloadAsync()} />
-            )}
-            {Platform.OS !== 'web' && (
-                <AIStatusComponent />
-            )}
+        <View style={{ paddingHorizontal: 16, gap: 8 }}>
+            <HomeTopBar />
             {me && !me.voiceSample && (
                 <Banner title="Voice sample needed" text="To improve AI experience, please, record a voice sample" kind="normal" onPress={() => router.navigate('voice-sample')} />
             )}
@@ -89,8 +81,6 @@ export default React.memo(() => {
                     style={(p) => ({
                         backgroundColor: p.pressed ? '#131313' : '#1d1d1d',
                         borderRadius: 16,
-                        marginHorizontal: 16,
-                        marginVertical: 8,
                         paddingHorizontal: 16,
                         paddingVertical: 16,
                         flexDirection: 'row'
@@ -123,8 +113,8 @@ export default React.memo(() => {
                     <Text style={{ color: Theme.text, fontSize: 16, opacity: 0.8 }} numberOfLines={1}>Tap to start a new chat</Text>
                 </View>
             </Pressable> */}
-            <Text style={{ fontSize: 18, color: Theme.text, paddingHorizontal: 32, marginTop: 16, fontWeight: '700' }}>Moments</Text>
-        </>
+            <Text style={{ fontSize: 18, color: Theme.text, paddingHorizontal: 16, marginTop: 16, fontWeight: '700' }}>Moments</Text>
+        </View>
     );
     const footer = (loading: boolean) => {
         return (
@@ -150,8 +140,7 @@ export default React.memo(() => {
     );
     return (
         <>
-            <Stack.Screen options={{ headerShown: false }} />
-            {/* <Content> */}
+            <HomeHeader />
             <View style={{ alignSelf: 'stretch', flexGrow: 1, flexBasis: 0 }}>
                 <Feed
                     feed='smart'
@@ -162,7 +151,6 @@ export default React.memo(() => {
                     loading={loading}
                 />
             </View>
-            {/* </Content> */}
         </>
     );
 });

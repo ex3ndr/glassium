@@ -112,14 +112,14 @@ const SidebarButton = (props: { icon: string, title: string, pathname: string, i
                 backgroundColor: pathName === props.pathname ? 'rgba(255, 255, 255, 0.1)' : (((p as any).hovered || p.pressed) ? 'rgba(255, 255, 255, 0.05)' : 'transparent'),
                 borderRadius: 10,
                 paddingHorizontal: 16,
-                paddingVertical: 16,
                 height: 48,
-                flexDirection: 'row'
+                flexDirection: 'row',
+                alignItems: 'center',
             })}
             onPress={doNavigate}
         >
             <Ionicons name={props.icon as any} size={18} color={Theme.text} />
-            <Text style={{ color: Theme.text, fontSize: 16, marginLeft: 8 }}>{props.title}</Text>
+            <Text style={{ color: Theme.text, fontSize: 18, marginLeft: 8, lineHeight: 22 }}>{props.title}</Text>
         </Pressable>
     )
 };

@@ -9,7 +9,7 @@ import { router } from 'expo-router';
 
 const Row = React.memo((props: { item: Country, callback: (item: Country) => void }) => {
     return (
-        <Pressable style={(props) => ({ opacity: props.pressed ? 0.3 : 1 })} onPress={() => props.callback(props.item)}>
+        <Pressable style={(props) => ({ opacity: props.pressed ? 0.6 : 1 })} onPress={() => props.callback(props.item)}>
             <View style={{ height: 44, alignItems: 'center', paddingHorizontal: 16, flexDirection: 'row' }}>
                 <Text style={{ flexGrow: 1, flexBasis: 0, paddingRight: 16, fontSize: 16, color: Theme.text }}>{props.item.emoji} {props.item.label}</Text>
                 <Text style={{ fontSize: 17, color: Theme.text }}>{props.item.value}</Text>

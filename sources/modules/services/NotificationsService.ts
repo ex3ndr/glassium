@@ -1,12 +1,12 @@
 import * as Notifications from 'expo-notifications';
 import Constants from 'expo-constants';
 import { backoff } from "../../utils/time";
-import { BubbleClient } from "../api/client";
+import { BackendClient } from "../api/client";
 
 export class NotificationsService {
-    readonly client: BubbleClient;
+    readonly client: BackendClient;
 
-    constructor(client: BubbleClient) {
+    constructor(client: BackendClient) {
         this.client = client;
 
         if (!__DEV__) {

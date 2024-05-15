@@ -88,13 +88,13 @@ export default React.memo(() => {
             )}
             {wearable.pairing === 'denied' && (
                 <View style={{ alignItems: 'flex-start', paddingHorizontal: 16, flexDirection: 'column' }}>
-                    <Text style={{ fontSize: 18, color: Theme.text, marginBottom: 8, opacity: 0.8 }}>Bubble requires bluetooth access. Please, allow it in the settings.</Text>
+                    <Text style={{ fontSize: 18, color: Theme.text, marginBottom: 8, opacity: 0.8 }}>Glassium requires bluetooth access. Please, allow it in the settings.</Text>
                     <RoundButton title={'Open settings'} size='small' />
                 </View>
             )}
             {wearable.pairing === 'unavailable' && (
                 <View style={{ alignItems: 'flex-start', paddingHorizontal: 16, flexDirection: 'column' }}>
-                    <Text style={{ fontSize: 18, color: Theme.text, marginBottom: 8, opacity: 0.8 }}>Bubble requires bluetooth, but this device doesn't have one.</Text>
+                    <Text style={{ fontSize: 18, color: Theme.text, marginBottom: 8, opacity: 0.8 }}>Glassium requires bluetooth, but this device doesn't have one.</Text>
                 </View>
             )}
             {wearable.pairing === 'need-pairing' && (
@@ -141,7 +141,7 @@ export default React.memo(() => {
                             </>
                         )}
                         {(!updates.isUpdatePending && !updates.isDownloading && !updates.isChecking) && (
-                            <Text style={{ fontSize: 18, color: Theme.text, opacity: 0.8 }}>Bubble is up-to-date.</Text>
+                            <Text style={{ fontSize: 18, color: Theme.text, opacity: 0.8 }}>Glassium is up-to-date.</Text>
                         )}
                     </View>
                 </>

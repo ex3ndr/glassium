@@ -1,17 +1,17 @@
 import { storage } from "../../storage";
-import { BubbleClient } from "../api/client";
+import { BackendClient } from "../api/client";
 import { fromByteArray } from 'react-native-quick-base64';
 import { log } from "../../utils/logs";
 import { InvalidateSync } from "../../utils/sync";
 
 export class SyncModel {
-    readonly client: BubbleClient;
+    readonly client: BackendClient;
     private localEnded = new Set<string>();
     private localSessions = new Map<string, string | null>();
     private pendingFrames = new Map<string, { index: number, format: string, data: Uint8Array }[]>();
     private readonly sync: InvalidateSync;
 
-    constructor(client: BubbleClient) {
+    constructor(client: BackendClient) {
         this.client = client;
         let stored = storage.getString('sync-sessions');
         if (stored) {

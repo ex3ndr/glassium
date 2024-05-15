@@ -1,14 +1,14 @@
-import { BubbleClient } from "../api/client";
+import { BackendClient } from "../api/client";
 import { cleanAndReload } from "../reload/cleanAndReload";
 import { AppState } from "react-native";
 import { log } from "../../utils/logs";
 import { InvalidateSync } from "../../utils/sync";
 
 export class TokenExpireService {
-    readonly client: BubbleClient;
+    readonly client: BackendClient;
     #sync: InvalidateSync;
 
-    constructor(client: BubbleClient) {
+    constructor(client: BackendClient) {
         this.client = client;
         this.#sync = new InvalidateSync(async () => {
             if (!await this.client.tokenAndAccountStatus()) {

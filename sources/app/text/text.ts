@@ -1,12 +1,12 @@
 export const texts = {
     bt_denied: {
         title: 'Bluetooth permission',
-        message: 'Bubble needs a bluetooth permission to connect to your device. Please, open settings and allow bluetooth for this app.',
+        message: 'Glassium needs a bluetooth permission to connect to your device. Please, open settings and allow bluetooth for this app.',
         message_small: 'Open settings and allow bluetooth for this app.'
     },
     bt_unavailable: {
         title: 'Bluetooth unavailable',
-        message: 'Unfortunatelly this device doesn\'t have a bluetooth and Bubble can\'t connect to any device.'
+        message: 'Unfortunatelly this device doesn\'t have a bluetooth and Glassium can\'t connect to any device.'
     },
     bt_pairing: {
         title: 'Pairing needed',

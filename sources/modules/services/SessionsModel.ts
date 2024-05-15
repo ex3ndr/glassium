@@ -1,6 +1,6 @@
 import * as React from 'react';
 import { PrimitiveAtom, atom, useAtomValue } from 'jotai';
-import { BubbleClient } from "../api/client";
+import { BackendClient } from "../api/client";
 import { storage } from '../../storage';
 import { Jotai } from './_types';
 import { InvalidateSync } from '../../utils/sync';
@@ -32,7 +32,7 @@ export type ViewSessionFull = {
 };
 
 export class SessionsModel {
-    readonly client: BubbleClient;
+    readonly client: BackendClient;
     readonly sessions = atom<ViewSession[] | null>(null);
     readonly jotai: Jotai;
     #fullSessions = new Map<string, PrimitiveAtom<ViewSessionFull | null>>();
@@ -40,7 +40,7 @@ export class SessionsModel {
     #sessions: ViewSession[] | null = null;
     #refresh: InvalidateSync
 
-    constructor(client: BubbleClient, jotai: Jotai) {
+    constructor(client: BackendClient, jotai: Jotai) {
         this.client = client;
         this.jotai = jotai;
 

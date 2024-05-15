@@ -16,13 +16,13 @@ export const TopBar = React.memo(() => {
     const debug = useAtomValue(appModel.debug.enabled);
 
     // Resolve title and subtitle
-    let title = 'Bubble';
+    let title = 'Glassium';
     let subtitle = 'idle';
     let subtitleStyle: 'secondary' | 'warning' | 'active' = 'secondary';
     let battery: number | null = null;
     let enableMuteButton = false;
     if (debug) {
-        title = 'Bubble (Debug)';
+        title = 'Glassium (Debug)';
     }
 
     if (wearable.pairing === 'denied') {

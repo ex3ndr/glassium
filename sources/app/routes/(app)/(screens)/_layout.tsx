@@ -6,17 +6,20 @@ export default function AppLayout() {
     return (
         <Stack
             screenOptions={{
-                headerShadowVisible: false,
+                // headerShadowVisible: false,
                 headerTintColor: Theme.text,
                 headerBackTitle: 'Back',
+                headerStyle: {
+                    backgroundColor: Theme.background,
+                },
                 headerBackVisible: true, // Broken in web
-                headerLeft: (p) => <DrawerButton canGoBack={p.canGoBack} />,
+                headerLeft: (p) => <DrawerButton canGoBack={p.canGoBack} />
             }}
         >
             <Stack.Screen name="settings/index" options={{ title: 'Settings' }} />
             <Stack.Screen name="settings/device" options={{ title: 'Device' }} />
             <Stack.Screen name="settings/voice_sample" options={{ title: 'Voice Sample' }} />
-            <Stack.Screen name="memory/[id]" options={{ title: 'Memory' }} />
+            <Stack.Screen name="memory/[id]" options={{ title: 'Memory', animation: 'fade' }} />
             <Stack.Screen name="data/transcripts/index" options={{ title: 'Transcripts' }} />
             <Stack.Screen name="data/sessions/index" options={{ title: 'Sessions' }} />
             <Stack.Screen name="data/sessions/[id]" options={{ title: 'Session' }} />

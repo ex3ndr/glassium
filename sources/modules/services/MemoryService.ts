@@ -1,6 +1,6 @@
 import { AsyncLock } from "../../utils/lock";
 import { backoff } from "../../utils/time";
-import { BubbleClient } from "../api/client";
+import { BackendClient } from "../api/client";
 
 export type MemoryViewItem = {
     id: string;
@@ -17,11 +17,11 @@ export type MemoryViewItem = {
 }
 
 export class MemoryService {
-    readonly client: BubbleClient;
+    readonly client: BackendClient;
     #lock = new AsyncLock();
     #memories = new Map<string, MemoryViewItem>();
 
-    constructor(client: BubbleClient) {
+    constructor(client: BackendClient) {
         this.client = client;
     }
 

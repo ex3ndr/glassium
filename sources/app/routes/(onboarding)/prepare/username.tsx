@@ -1,9 +1,9 @@
 import * as React from 'react';
 import { useSafeAreaInsets } from 'react-native-safe-area-context';
-import { KeyboardAvoidingView, Text, View } from 'react-native';
+import { Text, View } from 'react-native';
 import * as Haptics from 'expo-haptics';
 import { useLayout } from '@/utils/useLayout';
-import { useClient, useGlobalStateController } from '@/global';
+import { useClient } from '@/global';
 import { ShakeInstance, Shaker } from '@/app/components/Shaker';
 import { useHappyAction } from '@/utils/useHappyAction';
 import { checkUsername } from '@/utils/checkUsername';
@@ -12,6 +12,7 @@ import { Theme } from '@/app/theme';
 import { SInput } from '@/app/components/SInput';
 import { SButton } from '@/app/components/SButton';
 import { useRefresh } from '../_resolve';
+import { KeyboardAvoidingView } from '@/app/components/KeyboardAvoidingView';
 
 export default React.memo(() => {
     const safeArea = useSafeAreaInsets();
@@ -50,9 +51,14 @@ export default React.memo(() => {
     return (
         <View style={{ flexGrow: 1, backgroundColor: Theme.background, flexDirection: 'row', alignItems: 'stretch', justifyContent: 'center' }}>
             <KeyboardAvoidingView
-                style={{ flexGrow: 1, alignItems: 'center', flexDirection: 'column', paddingHorizontal: 32, marginBottom: safeArea.bottom, maxWidth: 500 }}
-                behavior="padding"
-                keyboardVerticalOffset={safeArea.top}
+                style={{
+                    flexGrow: 1,
+                    alignItems: 'center',
+                    flexDirection: 'column',
+                    paddingHorizontal: 32,
+                    marginBottom: safeArea.bottom,
+                    maxWidth: 500
+                }}
             >
                 <View style={{ flexGrow: 1, flexBasis: 0, alignSelf: 'stretch' }}>
                     <View style={{ flexGrow: 1 }} />

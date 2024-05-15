@@ -6,7 +6,7 @@ import { SERVER_ENDPOINT } from "@/config";
 import { Content, contentCodec } from "./content";
 import { log } from "@/utils/logs";
 
-export class BubbleClient {
+export class BackendClient {
 
     readonly client: Axios
     readonly token: string;

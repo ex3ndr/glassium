@@ -5,63 +5,9 @@ import { useAppModel } from '@/global';
 import { Banner } from '@/app/components/Banner';
 import { Theme } from '@/app/theme';
 import { Feed } from '@/app/components/feed/Feed';
-import { openSystemSettings } from '@/utils/openSystemSettings';
 import { useLayout } from '@/utils/useLayout';
-import { Stack, router } from 'expo-router';
+import { router } from 'expo-router';
 import { HomeHeader, HomeTopBar } from '../_navigation';
-
-const AIStatusComponent = React.memo(() => {
-    const app = useAppModel();
-    const wearable = app.wearable.use();
-    const doPair = async () => {
-        if (app.wearable.bluetooth.supportsScan) {
-            router.navigate('manage-device')
-        } else if (app.wearable.bluetooth.supportsPick) {
-            await app.wearable.pick();
-        }
-    };
-    const doOpenSettings = () => {
-        router.navigate('settings')
-    }
-    let state: 'online' | 'offline' | 'disconnected' | 'denied' | 'unavailable' | 'pairing' | 'unknown' = 'unknown';
-    if (wearable.pairing === 'denied') {
-        state = 'denied';
-    } else if (wearable.pairing === 'unavailable') {
-        state = 'unavailable';
-    } else if (wearable.pairing === 'need-pairing') {
-        state = 'pairing';
-    } else if (wearable.device) {
-        if (wearable.device.status === 'connected' || wearable.device.status === 'subscribed') {
-            state = 'online';
-        } else if (wearable.device.status === 'connecting' || wearable.device.status === 'disconnected') {
-            state = 'disconnected';
-        }
-    }
-
-    if (state === 'denied') {
-        return (<Banner title='Bluetooth permission' text="Bubble needs a bluetooth permission to connect to your device. Please, open settings and allow bluetooth for this app." kind="warning" onPress={openSystemSettings} />);
-    }
-    if (state === 'unavailable') {
-        return (<Banner title='Bluetooth unavailable' text="Unfortunatelly this device doesn't have a bluetooth and Bubble can't connect to any device." kind="warning" onPress={openSystemSettings} />);
-    }
-    if (state === 'pairing') {
-        return (<Banner title='Pairing needed' text="Press to connect a new device to allow AI start collection of experiences around you" kind="alert" onPress={doPair} />);
-    }
-
-    // Everyday statuses
-    // if (state === 'offline') {
-    //     return (<Banner title='Offline' text='Connection to AI is lost. Processing will resume on reconnection.' kind="normal" fixedSize={true} />);
-    // }
-    if (state === 'disconnected') {
-        return (<Banner title='Disconnected' text='Device disconnected. Some experiences may be lost.' kind="normal" fixedSize={true} onPress={doOpenSettings} />);
-    }
-    if (state === 'online') {
-        return <Banner title='Online' text='AI is connected to your device and collects experiences around you.' kind="normal" fixedSize={true} onPress={doOpenSettings} />;
-    }
-
-    // Unknown
-    return null;
-});
 
 export default React.memo(() => {
     const app = useAppModel();
@@ -73,9 +19,10 @@ export default React.memo(() => {
     const header = (
         <View style={{ paddingHorizontal: 16, gap: 8 }}>
             <HomeTopBar />
-            {me && !me.voiceSample && (
+            {/* {me && !me.voiceSample && (
                 <Banner title="Voice sample needed" text="To improve AI experience, please, record a voice sample" kind="normal" onPress={() => router.navigate('voice-sample')} />
-            )}
+            )} */}
+            <Banner title="Voice sample needed" text="To improve AI experience, please, record a voice sample" kind="normal" onPress={() => router.navigate('voice-sample')} />
             {layout === 'small' && (
                 <Pressable
                     style={(p) => ({
@@ -109,7 +56,7 @@ export default React.memo(() => {
                     style={{ width: 60, height: 60, borderRadius: 30 }}
                 />
                 <View style={{ flexDirection: 'column', marginLeft: 16, justifyContent: 'center' }}>
-                    <Text style={{ color: Theme.text, fontSize: 18 }} numberOfLines={1}>Bubble AI Assistant</Text>
+                    <Text style={{ color: Theme.text, fontSize: 18 }} numberOfLines={1}>Glassium Assistant</Text>
                     <Text style={{ color: Theme.text, fontSize: 16, opacity: 0.8 }} numberOfLines={1}>Tap to start a new chat</Text>
                 </View>
             </Pressable> */}

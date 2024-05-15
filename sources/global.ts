@@ -2,7 +2,7 @@ import * as React from 'react';
 import axios from 'axios';
 import * as Notifications from 'expo-notifications';
 import { storage } from '@/storage';
-import { BubbleClient } from '@/modules/api/client';
+import { BackendClient } from '@/modules/api/client';
 import { AppService } from '@/modules/services/AppService';
 import { cleanAndReload } from '@/modules/reload/cleanAndReload';
 import { backoff } from '@/utils/time';
@@ -32,11 +32,11 @@ export type GlobalState = {
     kind: 'onboarding',
     state: OnboardingState,
     token: string,
-    client: BubbleClient
+    client: BackendClient
 } | {
     kind: 'ready',
     token: string,
-    client: BubbleClient
+    client: BackendClient
 };
 
 let globalAppModel: AppService | null = null;
@@ -88,7 +88,7 @@ export function loadAppModelIfNeeded() {
     }
 
     // Create client
-    let client = new BubbleClient(axios.create({
+    let client = new BackendClient(axios.create({
         baseURL: `https://${SERVER_ENDPOINT}`,
         headers: {
             Authorization: `Bearer ${token}`,
@@ -158,7 +158,7 @@ export function isSkipNotifications() {
 // Implementation
 //
 
-async function checkIfTokenValid(client: BubbleClient) {
+async function checkIfTokenValid(client: BackendClient) {
     let status = await client.tokenAndAccountStatus();
     // console.warn(status);
     if (!await client.tokenAndAccountStatus()) {
@@ -166,7 +166,7 @@ async function checkIfTokenValid(client: BubbleClient) {
     }
 }
 
-async function refreshOnboarding(client: BubbleClient): Promise<OnboardingState | null> {
+async function refreshOnboarding(client: BackendClient): Promise<OnboardingState | null> {
 
     // Load server state
     let serverState = await client.fetchPreState();
@@ -213,7 +213,7 @@ export function useNewGlobalController(): [GlobalState, GlobalStateController] {
         }
 
         // Create client with tokenq
-        let client = new BubbleClient(axios.create({
+        let client = new BackendClient(axios.create({
             baseURL: `https://${SERVER_ENDPOINT}`,
             headers: {
                 Authorization: `Bearer ${token}`,
@@ -250,7 +250,7 @@ export function useNewGlobalController(): [GlobalState, GlobalStateController] {
                 resetOnboardingState();
 
                 // Create client
-                let client = new BubbleClient(axios.create({
+                let client = new BackendClient(axios.create({
                     baseURL: `https://${SERVER_ENDPOINT}`,
                     headers: {
                         Authorization: `Bearer ${token}`,

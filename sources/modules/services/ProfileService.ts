@@ -1,5 +1,5 @@
 import * as z from 'zod';
-import { BubbleClient } from "../api/client";
+import { BackendClient } from "../api/client";
 import { Jotai } from "./_types";
 import { storageGetTyped, storageSetTyped } from '../../storage';
 import { atom, useAtomValue } from 'jotai';
@@ -25,13 +25,13 @@ type ProfileStorage = z.infer<typeof ProfileSchema>;
 export type Profile = ProfileStorage['body'];
 
 export class ProfileService {
-    readonly client: BubbleClient;
+    readonly client: BackendClient;
     readonly jotai: Jotai;
     readonly profile = atom<Profile | null>(null);
     #existing: Profile | null = null;
     #sync: InvalidateSync;
 
-    constructor(client: BubbleClient, jotai: Jotai) {
+    constructor(client: BackendClient, jotai: Jotai) {
         this.client = client;
         this.jotai = jotai;
 

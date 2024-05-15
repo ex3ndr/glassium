@@ -1,5 +1,5 @@
 import { atom, useAtomValue } from "jotai";
-import { BubbleClient } from "../api/client";
+import { BackendClient } from "../api/client";
 import { FeedViewItem } from "./FeedService";
 import { Jotai } from "./_types";
 import { InvalidateSync } from "../../utils/sync";
@@ -12,7 +12,7 @@ import { Content } from "../api/content";
 
 export class FeedConnectionService {
     readonly id: string;
-    readonly client: BubbleClient;
+    readonly client: BackendClient;
     readonly jotai: Jotai;
     readonly users: UserService;
     readonly memories: MemoryService;
@@ -28,7 +28,7 @@ export class FeedConnectionService {
     #needMore = false;
     #pending: UpdateFeed[] = [];
 
-    constructor(id: string, users: UserService, memories: MemoryService, client: BubbleClient, jotai: Jotai) {
+    constructor(id: string, users: UserService, memories: MemoryService, client: BackendClient, jotai: Jotai) {
         this.id = id;
         this.client = client;
         this.jotai = jotai;

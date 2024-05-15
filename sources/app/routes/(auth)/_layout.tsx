@@ -9,7 +9,7 @@ export default function AppLayout() {
         return <Redirect href="/(onboarding)" />;
     }
     if (state.kind === 'ready') {
-        return <Redirect href="/(app)" />;
+        return <Redirect href="/(app)/(screens)/" />;
     }
     return (
         <Stack
@@ -27,7 +27,8 @@ export default function AppLayout() {
             <Stack.Screen name="auth/country"
                 options={{
                     presentation: Platform.OS === 'ios' ? 'modal' : 'card',
-                    headerShown: Platform.OS === 'ios' ? false : true
+                    headerShown: Platform.OS === 'ios' ? false : true,
+                    title: 'Select Country',
                 }}
             />
         </Stack>

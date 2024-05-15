@@ -1,5 +1,5 @@
 import * as React from 'react';
-import { Alert, KeyboardAvoidingView, Text, TextInput, View } from 'react-native';
+import { Platform, Text, TextInput, View } from 'react-native';
 import * as RNLocalize from "react-native-localize";
 import { useSafeAreaInsets } from 'react-native-safe-area-context';
 import { parsePhoneNumber } from 'libphonenumber-js';
@@ -11,6 +11,7 @@ import { Theme } from '@/app/theme';
 import { SButton } from '@/app/components/SButton';
 import { storage } from '@/storage';
 import { router } from 'expo-router';
+import { KeyboardAvoidingView } from '@/app/components/KeyboardAvoidingView';
 
 export default function Phone() {
 
@@ -89,17 +90,25 @@ export default function Phone() {
         <>
             <View style={{ flexGrow: 1, backgroundColor: Theme.background, flexDirection: 'row', alignItems: 'stretch', justifyContent: 'center' }}>
                 <KeyboardAvoidingView
-                    style={{ flexGrow: 1, alignItems: 'center', flexDirection: 'column', paddingHorizontal: 32, marginBottom: safeArea.bottom, maxWidth: 500 }}
-                    behavior="padding"
-                    keyboardVerticalOffset={safeArea.top + 44}
+                    style={{
+                        flexGrow: 1,
+                        alignItems: 'center',
+                        flexDirection: 'column',
+                        paddingHorizontal: 32,
+                        marginBottom: safeArea.bottom,
+                        maxWidth: 500
+                    }}
                 >
                     <View style={{ flexGrow: 1, flexBasis: 0, alignSelf: 'stretch' }}>
                         <View style={{ flexGrow: 1 }} />
-                        <View>
-                            <Text style={{ fontSize: 36, alignSelf: 'center', marginBottom: 8, color: Theme.text }}>Your Phone</Text>
-                            <Text style={{ fontSize: 22, color: Theme.text, alignSelf: 'center', lineHeight: 30 }}>Please, confirm your country code</Text>
-                            <Text style={{ fontSize: 22, color: Theme.text, alignSelf: 'center', lineHeight: 30 }}>and enter your phone number.</Text>
-                            <SButton title={country.label + ' ' + country.emoji} style={{ alignSelf: 'stretch', marginTop: 48, marginBottom: 12 }} onPress={openCountryPicker} disabled={requesting} />
+                        <View style={{ flexGrow: 10000, maxHeight: 300 }}>
+                            <View style={{ marginBottom: 16 }}>
+                                <Text style={{ fontSize: 36, alignSelf: 'center', marginBottom: 8, color: Theme.text }}>Your Phone</Text>
+                                <Text style={{ fontSize: 22, color: Theme.text, alignSelf: 'center', lineHeight: 30 }}>Please, confirm your country code</Text>
+                                <Text style={{ fontSize: 22, color: Theme.text, alignSelf: 'center', lineHeight: 30 }}>and enter your phone number.</Text>
+                            </View>
+                            <View style={{ flexGrow: 1 }} />
+                            <SButton title={country.label + ' ' + country.emoji} style={{ alignSelf: 'stretch', marginBottom: 12 }} onPress={openCountryPicker} disabled={requesting} />
                             <View style={{ height: 50, backgroundColor: '#F2F2F2', alignSelf: 'stretch', flexDirection: 'row', borderRadius: 8 }}>
                                 <View style={{ marginLeft: 4, width: 60, height: 50, justifyContent: 'center', alignItems: 'center' }}>
                                     <Text style={{ fontSize: 17, fontWeight: '600', opacity: 0.4 }}>
@@ -126,11 +135,12 @@ export default function Phone() {
                                     }}
                                 />
                             </View>
+                            <View style={{ flexGrow: 1 }} />
                         </View>
                         {layout === 'small' && (
                             <View style={{ flexGrow: 1 }} />
                         )}
-                        <SButton title='Continue' style={{ alignSelf: 'stretch', marginTop: 48, paddingBottom: 16 }} onPress={doRequest} loading={requesting} />
+                        <SButton title='Continue' style={{ alignSelf: 'stretch', marginTop: 16, paddingBottom: 16 }} onPress={doRequest} loading={requesting} />
                         {layout === 'large' && (
                             <View style={{ flexGrow: 1 }} />
                         )}

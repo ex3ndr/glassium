@@ -1,19 +1,18 @@
-import { BubbleClient } from "../api/client";
+import { BackendClient } from "../api/client";
 import { Update, Updates } from "../api/schema";
 import { storage } from "../../storage";
 import { log } from "../../utils/logs";
 import { InvalidateSync } from "../../utils/sync";
-import { AsyncLock } from "../../utils/lock";
 
 export class UpdatesModel {
-    readonly client: BubbleClient;
+    readonly client: BackendClient;
     #maxKnownSeq: number = 0;
     #seq: number | null = null;
     #sync: InvalidateSync;
     #queue = new Array<{ seq: number, update: Update | null }>();
     onUpdates?: (updates: Update) => Promise<void>;
 
-    constructor(client: BubbleClient) {
+    constructor(client: BackendClient) {
         this.client = client;
         let s = storage.getNumber('updates-seq');
         if (s !== undefined) {

@@ -1,5 +1,5 @@
 import { createStore } from "jotai";
-import { BubbleClient } from "../api/client";
+import { BackendClient } from "../api/client";
 import { SessionsModel } from "./SessionsModel";
 import { WearableModule } from "../wearable/WearableModule";
 import { Jotai } from "./_types";
@@ -22,7 +22,7 @@ import { NotificationsService } from "./NotificationsService";
 import { AppUpdateService } from "./AppUpdateService";
 
 export class AppService {
-    readonly client: BubbleClient;
+    readonly client: BackendClient;
     readonly jotai: Jotai;
     readonly posthog: PostHog;
     readonly sessions: SessionsModel;
@@ -42,7 +42,7 @@ export class AppService {
     readonly notifications: NotificationsService;
     readonly appUpdates: AppUpdateService;
 
-    constructor(client: BubbleClient) {
+    constructor(client: BackendClient) {
         this.client = client;
         this.posthog = getPostHog();
         this.jotai = createStore();

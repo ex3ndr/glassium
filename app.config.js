@@ -11,26 +11,27 @@ const RUNTIME_VERSION = "11";
 
 export default {
   "expo": {
-    "name": "Bubble",
+    "name": "Glassium",
     "slug": "bubble",
     "version": "1.2.0",
     "runtimeVersion": RUNTIME_VERSION,
     "orientation": "portrait",
-    "icon": IS_NEXT ? './assets/icon_next.png' : "./assets/icon.png",
+    // "icon": IS_NEXT ? './assets/icon_next.png' : "./assets/icon.png",
+    "icon": "./assets/icon.png",
     "userInterfaceStyle": "dark",
     "splash": {
       "backgroundColor": "#000"
     },
     "androidStatusBar": {
       "barStyle": "light-content",
-      "backgroundColor": "#00000000",
+      "backgroundColor": "#121212",
       "translucent": false
     },
     "assetBundlePatterns": [
       "**/*"
     ],
     "ios": {
-      "backgroundColor": "#000",
+      "backgroundColor": "#121212",
       "supportsTablet": true,
       "bundleIdentifier": "com.bubbleapp.ios",
       "infoPlist": {
@@ -47,7 +48,7 @@ export default {
       }
     },
     "android": {
-      "backgroundColor": "#000",
+      "backgroundColor": "#121212",
       "adaptiveIcon": {
         "foregroundImage": "./assets/adaptive-icon.png",
         "backgroundColor": "#000"

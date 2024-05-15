@@ -1,4 +1,4 @@
-# 🫧 Bubble
+# 🫧 Glassier
 
 A mobile app for AI Wearables.
 

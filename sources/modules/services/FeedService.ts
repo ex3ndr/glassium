@@ -1,4 +1,4 @@
-import { BubbleClient } from "../api/client";
+import { BackendClient } from "../api/client";
 import { UserService } from "./UserService";
 import { Jotai } from "./_types";
 import { Content } from "../api/content";
@@ -19,13 +19,13 @@ export type FeedState = {
 } | null;
 
 export class FeedService {
-    readonly client: BubbleClient;
+    readonly client: BackendClient;
     readonly users: UserService;
     readonly memories: MemoryService;
     readonly jotai: Jotai;
     #feeds = new Map<string, FeedConnectionService>();
 
-    constructor(client: BubbleClient, jotai: Jotai, users: UserService, memories: MemoryService) {
+    constructor(client: BackendClient, jotai: Jotai, users: UserService, memories: MemoryService) {
         this.client = client;
         this.jotai = jotai;
         this.users = users;

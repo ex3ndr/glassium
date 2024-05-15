@@ -1,6 +1,6 @@
 import { AsyncLock } from "../../utils/lock";
 import { backoff } from "../../utils/time";
-import { BubbleClient } from "../api/client";
+import { BackendClient } from "../api/client";
 
 export type UserViewItem = {
     id: string,
@@ -12,11 +12,11 @@ export type UserViewItem = {
 }
 
 export class UserService {
-    readonly client: BubbleClient;
+    readonly client: BackendClient;
     #lock = new AsyncLock();
     #profiles = new Map<string, UserViewItem>();
 
-    constructor(client: BubbleClient) {
+    constructor(client: BackendClient) {
         this.client = client;
     }
 

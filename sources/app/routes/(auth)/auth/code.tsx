@@ -1,5 +1,5 @@
 import * as React from 'react';
-import { KeyboardAvoidingView, Text, TextInput, View } from 'react-native';
+import { Text, TextInput, View } from 'react-native';
 import { useSafeAreaInsets } from 'react-native-safe-area-context';
 import { useGlobalStateController } from '@/global';
 import { useLayout } from '@/utils/useLayout';
@@ -9,6 +9,7 @@ import { storage } from '@/storage';
 import { Theme } from '@/app/theme';
 import { SButton } from '@/app/components/SButton';
 import { router } from 'expo-router';
+import { KeyboardAvoidingView } from '@/app/components/KeyboardAvoidingView';
 
 export default function CodeScreen() {
 
@@ -44,9 +45,14 @@ export default function CodeScreen() {
     return (
         <View style={{ flexGrow: 1, backgroundColor: Theme.background, flexDirection: 'row', alignItems: 'stretch', justifyContent: 'center' }}>
             <KeyboardAvoidingView
-                style={{ flexGrow: 1, alignItems: 'center', flexDirection: 'column', paddingHorizontal: 32, marginBottom: safeArea.bottom, maxWidth: 500 }}
-                behavior="padding"
-                keyboardVerticalOffset={safeArea.top + 44}
+                style={{
+                    flexGrow: 1,
+                    alignItems: 'center',
+                    flexDirection: 'column',
+                    paddingHorizontal: 32,
+                    marginBottom: safeArea.bottom,
+                    maxWidth: 500
+                }}
             >
                 <View style={{ flexGrow: 1, flexBasis: 0, alignSelf: 'stretch' }}>
                     <View style={{ flexGrow: 1 }} />

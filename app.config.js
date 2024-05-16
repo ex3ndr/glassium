@@ -35,6 +35,7 @@ export default {
       "backgroundColor": "#121212",
       "supportsTablet": true,
       "bundleIdentifier": "com.bubbleapp.ios",
+      "associatedDomains": ["applinks:glassium.org"],
       "infoPlist": {
         "UIBackgroundModes": [
           "fetch",
@@ -59,6 +60,20 @@ export default {
         "android.permission.BLUETOOTH",
         "android.permission.BLUETOOTH_ADMIN",
         "android.permission.BLUETOOTH_CONNECT"
+      ],
+      "intentFilters": [
+        {
+          "action": "VIEW",
+          "autoVerify": true,
+          "data": [
+            {
+              "scheme": "https",
+              "host": "glassium.org",
+              "pathPrefix": "/"
+            }
+          ],
+          "category": ["BROWSABLE", "DEFAULT"]
+        }
       ]
     },
     "web": {

@@ -1,0 +1,12 @@
+[
+    {
+      "relation": ["delegate_permission/common.handle_all_urls"],
+      "target": {
+        "namespace": "android_app",
+        "package_name": "com.bubbleapp.android",
+        "sha256_cert_fingerprints": [
+          "FB:53:65:AD:2A:CC:88:22:4E:CD:8B:4D:88:A3:1B:04:8C:96:F6:EC:F8:CF:33:37:98:D8:B6:B4:F5:5C:BA:1D"
+        ]
+      }
+    }
+  ]

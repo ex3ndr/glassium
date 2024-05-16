@@ -15,14 +15,14 @@ export default function AppLayout() {
     // Style the drawer
     const drawerNavigationOptions = (p: any) => {
         let state = p.navigation.getState();
-        let isInRoot = true;
-        if (state.type === 'drawer' && state.routes.length === 1) {
-            if (state.routes[0].name === '(screens)' && state.routes[0].state && state.routes[0].state.routes) {
-                if (state.routes[0].state.routes.length > 1) {
-                    isInRoot = false;
-                }
-            }
-        }
+        // let isInRoot = true;
+        // if (state.type === 'drawer' && state.routes.length === 1) {
+        //     if (state.routes[0].name === '(screens)' && state.routes[0].state && state.routes[0].state.routes) {
+        //         if (state.routes[0].state.routes.length > 1) {
+        //             isInRoot = false;
+        //         }
+        //     }
+        // }
         return {
             headerShown: false,
             drawerType: layout === 'large' ? 'permanent' : 'front',
@@ -31,7 +31,8 @@ export default function AppLayout() {
                 borderRightWidth: 0,
                 width: 240,
             },
-            swipeEnabled: isInRoot
+            // swipeEnabled: isInRoot
+            swipeEnabled: false
         } as any;
     };
 

@@ -9,6 +9,9 @@ export const DefaultMetatags = () => {
             <meta property="og:site_name" content="Glassium" />
             <meta property="og:description" content="All-in-one app for AI Wearable devices" />
             <meta property="og:image" content="/social.png" />
+            <meta property="og:image:width" content="1200" />
+            <meta property="og:image:height" content="630" />
+            <meta property="og:type" content="website"/>
         </Head>
     );
 }

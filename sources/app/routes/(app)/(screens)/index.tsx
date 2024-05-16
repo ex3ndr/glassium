@@ -1,20 +1,20 @@
 import * as React from 'react';
 import { ActivityIndicator, ScrollView, Text, View } from 'react-native';
 import { useSafeAreaInsets } from 'react-native-safe-area-context';
-import { useAppModel } from '@/global';
 import { Theme } from '@/app/theme';
 import { Feed } from '@/app/components/feed/Feed';
 import { HomeHeader, HomeTopBar } from '../_navigation';
+import { useLayout } from '@/utils/useLayout';
 
 export default React.memo(() => {
-    const app = useAppModel();
+    const layout = useLayout();
     const safeArea = useSafeAreaInsets();
 
     // Views
     const header = (
-        <View style={{ paddingHorizontal: 16, gap: 8 }}>
+        <View style={{ paddingHorizontal: 16, gap: 16, marginTop: (layout === 'large' ? (24 + safeArea.top) : 8) }}>
             <HomeTopBar />
-            <Text style={{ fontSize: 18, color: Theme.text, paddingHorizontal: 16, marginTop: 16, fontWeight: '700' }}>Moments</Text>
+            <Text style={{ fontSize: 18, color: Theme.text, paddingHorizontal: 16, fontWeight: '700' }}>Moments</Text>
         </View>
     );
     const footer = (loading: boolean) => {

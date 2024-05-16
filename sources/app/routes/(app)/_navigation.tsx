@@ -61,7 +61,7 @@ export const Sidebar = () => {
 export const HomeTopBar = () => {
     const layout = useLayout();
     return (
-        <View style={{ paddingTop: 8, gap: 8 }}>
+        <>
             <UpdateBanner />
             {/* <VoiceSampleBanner /> */}
             {layout === 'small' && (
@@ -81,7 +81,7 @@ export const HomeTopBar = () => {
                     </Pressable>
                 </>
             )}
-        </View>
+        </>
     )
 };
 
@@ -175,7 +175,7 @@ export const HomeHeader = () => {
     return (
         <Stack.Screen
             options={{
-                // headerShown: layout === 'small', // We don't show header in home on large screen
+                headerShown: layout === 'small', // We don't show header in home on large screen
                 // title: layout === 'small' ? 'Glassium' : 'Home',
                 headerTitle: () => <DeviceHeaderView />,
                 headerRight: () => <DeviceHedaerControls />,

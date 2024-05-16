@@ -30,7 +30,7 @@ export default function Splash() {
             >
                 {Platform.OS === 'web' && (
                     <View style={{ flexDirection: 'row', gap: 32, paddingVertical: 16 }}>
-                        <a href="https://basedhardware.com" target='_blank' className='link'>Store</a>
+                        <a href="https://basedhardware.com" target='_blank' className='link'>Hardware</a>
                         <a href="https://github.com/ex3ndr/bubble" target='_blank' className='link'>Github</a>
                     </View>
                 )}

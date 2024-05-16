@@ -40,7 +40,7 @@ export default function Splash() {
                     Glassium
                 </Text>
                 <Text style={{ fontSize: 18, color: Theme.text, textAlign: 'center', marginTop: 8, marginBottom: 64 }}>
-                    AI agents that help you
+                    AI agents that live with you
                 </Text>
                 {layout === 'small' && Platform.OS !== 'web' && (
                     <View style={{ flexGrow: 1 }} />

@@ -6,10 +6,11 @@ import { log } from '../../../utils/logs';
 import { uptime } from '../../../utils/uptime';
 import { track } from '../../track/track';
 
-export class BluetoothModel implements BluetoothModelInterface {
-    readonly isPersistent: boolean = true;
-    readonly supportsScan: boolean = true;
-    readonly supportsPick: boolean = false;
+export class BluetoothService implements BluetoothModelInterface {
+    static readonly instance = new BluetoothService();
+    static readonly isPersistent: boolean = true;
+    static readonly supportsScan: boolean = true;
+    static readonly supportsPick: boolean = false;
 
     #manager: BleManager;
     #scanning = false;
@@ -231,5 +232,9 @@ export class BluetoothModel implements BluetoothModelInterface {
 
     #onRestored = (restoredState: BleRestoredState | null) => {
         console.warn('Bluetooth restored state:', restoredState);
+    }
+
+    destroy() {
+        this.#manager.destroy();
     }
 }

@@ -243,8 +243,13 @@ const DeviceHedaerControls = React.memo(() => {
     if (layout === 'large') {
         return null;
     }
+    let components: any[] = [];
     if (device.paired && device.battery !== undefined) {
-        return <BatteryComponent level={device.battery} />;
+        components.push(<BatteryComponent level={device.battery} />);
     }
-    return null;
+    return (
+        <View style={{ flexDirection: 'row', alignItems: 'center', gap: 8 }}>
+            {components}
+        </View>
+    );
 });

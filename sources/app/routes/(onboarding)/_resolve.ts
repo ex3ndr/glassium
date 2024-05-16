@@ -28,6 +28,9 @@ export function _resolve(src: GlobalState): string {
     if (src.state.kind === 'need_voice') {
         return '/(onboarding)/prepare/voice';
     }
+    if (src.state.kind === 'need_pairing') {
+        return '/(onboarding)/prepare/pairing';
+    }
     throw new Error('Invalid state');
 }
 

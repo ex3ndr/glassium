@@ -3,7 +3,7 @@ import { Jotai } from "../services/_types";
 import { atom } from "jotai";
 import { ProtocolDefinition, resolveProtocol } from "./protocol/protocol";
 import { BTDevice } from "./bluetooth/types";
-import { BluetoothModel } from "./bluetooth/bt";
+import { BluetoothService } from "./bluetooth/bt";
 import { bluetoothServices } from "./protocol/services";
 import { uptime } from "../../utils/uptime";
 import { track } from "../track/track";
@@ -18,7 +18,7 @@ export class DeviceModel {
     readonly id: string;
     readonly #sync: InvalidateSync;
     readonly jotai: Jotai;
-    readonly bluetooth: BluetoothModel;
+    readonly bluetooth: BluetoothService;
     readonly state = atom<{ status: 'disconnected' | 'connecting' } | { status: 'connected' | 'subscribed', battery: number | null, muted: boolean }>({ status: 'connecting' });
     onStreamingStart?: (protocol: ProtocolDefinition, muted: boolean) => void;
     onStreamingMute?: (muted: boolean) => void;
@@ -34,7 +34,7 @@ export class DeviceModel {
     #deviceMuted: boolean | null = null;
     #deviceMutedSubscription: (() => void) | null = null;
 
-    constructor(id: string | BTDevice, jotai: Jotai, bluetooth: BluetoothModel, needStreaming = false) {
+    constructor(id: string | BTDevice, jotai: Jotai, bluetooth: BluetoothService, needStreaming = false) {
         this.#needStreaming = needStreaming;
         this.bluetooth = bluetooth;
         if (typeof id === 'object') {

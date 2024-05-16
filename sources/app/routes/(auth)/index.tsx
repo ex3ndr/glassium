@@ -40,7 +40,7 @@ export default function Splash() {
                     Glassium
                 </Text>
                 <Text style={{ fontSize: 18, color: Theme.text, textAlign: 'center', marginTop: 8, marginBottom: 64 }}>
-                    All-in-one app for AI Wearable devices
+                    AI agents that help you
                 </Text>
                 {layout === 'small' && Platform.OS !== 'web' && (
                     <View style={{ flexGrow: 1 }} />

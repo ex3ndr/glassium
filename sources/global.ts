@@ -7,8 +7,11 @@ import { AppService } from '@/modules/services/AppService';
 import { cleanAndReload } from '@/modules/reload/cleanAndReload';
 import { backoff } from '@/utils/time';
 import { SERVER_ENDPOINT } from '@/config';
+import { Platform } from 'react-native';
+import { WearableModule } from './modules/wearable/WearableModule';
+import { BluetoothService } from './modules/wearable/bluetooth/bt';
 
-const ONBOARDING_VERSION = 2; // Increment this to reset onboarding
+const ONBOARDING_VERSION = 4; // Increment this to reset onboarding
 
 //
 // State
@@ -26,6 +29,8 @@ export type OnboardingState = {
     kind: 'need_push'
 } | {
     kind: 'need_activation'
+} | {
+    kind: 'need_pairing'
 };
 
 export type GlobalState = {
@@ -147,6 +152,7 @@ export function resetOnboardingState() {
     storage.delete('onboarding:completed');
     storage.delete('onboarding:skip_notifications');
     storage.delete('onboarding:skip_voice');
+    storage.delete('onboarding:skip_pairing');
 }
 
 export function markSkipNotifications() {
@@ -161,8 +167,16 @@ export function isSkipVoice() {
     return storage.getBoolean('onboarding:skip_voice');
 }
 
+export function isSkipPairing() {
+    return storage.getBoolean('onboarding:skip_pairing');
+}
+
 export function markSkipVoice() {
     storage.set('onboarding:skip_voice', true);
+}
+
+export function markSkipPairing() {
+    storage.set('onboarding:skip_pairing', true);
 }
 
 //
@@ -197,6 +211,11 @@ async function refreshOnboarding(client: BackendClient): Promise<OnboardingState
     // In the end require activation
     if (serverState.canActivate) {
         return { kind: 'need_activation' };
+    }
+
+    // Connect device
+    if (Platform.OS !== 'web' && BluetoothService.supportsScan && !isSkipPairing() && !WearableModule.loadProfile()) {
+        return { kind: 'need_pairing' };
     }
 
     // Read profile

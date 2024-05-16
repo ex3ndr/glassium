@@ -6,6 +6,7 @@ import { Ionicons } from '@expo/vector-icons';
 import { DeviceState } from './useDeviceState';
 import { router } from 'expo-router';
 import { useAppModel } from '@/global';
+import { BluetoothService } from '@/modules/wearable/bluetooth/bt';
 
 const icons = {
     'compass': require('../assets/device_compass.png'),
@@ -21,9 +22,9 @@ export const DeviceStateView = React.memo((props: { state: DeviceState | null })
     let image = <Ionicons name="code-working" size={32} color="white" style={{ opacity: 0.3 }} />
     let activeSubtitle = false;
     let action = () => {
-        if (app.wearable.bluetooth.supportsScan) {
+        if (BluetoothService.supportsScan) {
             router.navigate('/settings/device')
-        } else if (app.wearable.bluetooth.supportsPick) {
+        } else if (BluetoothService.supportsPick) {
             app.wearable.pick();
         }
     }

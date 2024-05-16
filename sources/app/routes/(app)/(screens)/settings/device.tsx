@@ -8,13 +8,7 @@ import { DeviceComponent } from '@/app/components/DeviceComponent';
 import { HappyError } from '@/modules/errors/HappyError';
 import { router } from 'expo-router';
 import { RoundButton } from '@/app/components/RoundButton';
-
-
-function inferVendorFromName(name: string): 'compass' | 'friend' | 'bubble' {
-    if (name.toLowerCase().includes('compass')) return 'compass';
-    if (name.toLowerCase().includes('friend')) return 'friend';
-    return 'bubble';
-}
+import { inferVendorFromName } from '@/modules/wearable/protocol/inferVendorFromName';
 
 const DiscoveryDevice = React.memo(() => {
     const safeArea = useSafeAreaInsets();

@@ -50,8 +50,8 @@ export default React.memo(() => {
                 </View>
             )}
             {sessions !== null && sessions.length === 0 && (
-                <View style={{ flexGrow: 1, paddingBottom: safeArea.bottom }}>
-                    <Text>No sessions</Text>
+                <View style={{ flexGrow: 1, paddingBottom: safeArea.bottom, justifyContent: 'center', alignItems: 'center' }}>
+                    <Text style={{ color: Theme.text, fontSize: 28, opacity: 0.6 }}>No sessions yet</Text>
                 </View>
             )}
             {sessions !== null && sessions.length > 0 && (

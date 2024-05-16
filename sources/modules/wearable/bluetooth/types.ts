@@ -32,9 +32,9 @@ export type BTCharacteristic = {
 };
 
 export interface BluetoothModelInterface {
-    readonly isPersistent: boolean;
-    readonly supportsScan: boolean;
-    readonly supportsPick: boolean;
+    // static readonly isPersistent: boolean;
+    // static readonly supportsScan: boolean;
+    // static readonly supportsPick: boolean;
 
     // Bluetooth Init
     start(): Promise<BluetoothStartResult>;

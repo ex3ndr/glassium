@@ -7,7 +7,7 @@ import { DeviceProfile, loadDeviceProfile, profileCodec } from "@/modules/wearab
 import { log } from "@/utils/logs";
 import { Platform } from "react-native";
 import { AudioCodec, createCodec, createSkipCodec } from "@/modules/media/audioCodec";
-import { BluetoothModel } from "@/modules/wearable/bluetooth/bt";
+import { BluetoothService } from "@/modules/wearable/bluetooth/bt";
 import { isDiscoveredDeviceSupported } from "@/modules/wearable/protocol/scan";
 import { bluetoothServices } from "@/modules/wearable/protocol/services";
 import { track } from "@/modules/track/track";
@@ -16,12 +16,39 @@ import { AsyncLock } from "@/utils/lock";
 import { DebugService } from "@/modules/services/DebugService";
 
 export class WearableModule {
+
+    static loadProfile(): DeviceProfile | null {
+        if (BluetoothService.isPersistent) {
+            let profile = storage.getString('wearable-device');
+            if (profile && Platform.OS !== 'web') {
+                let js;
+                try {
+                    js = JSON.parse(profile);
+                    let parsed = profileCodec.safeParse(js);
+                    if (parsed.success) {
+                        return parsed.data;
+                    }
+                } catch (e) {
+                    return null;
+                }
+            }
+        }
+        return null;
+    }
+
+    static saveProfile(profile: DeviceProfile | null) {
+        if (profile) {
+            storage.set('wearable-device', JSON.stringify(profile));
+        } else {
+            storage.delete('wearable-device');
+        }
+    }
+
     private static lock = new AsyncLock(); // Use static lock to prevent multiple BT operations
     readonly debug: DebugService;
     readonly jotai: Jotai;
     readonly pairingStatus = atom<'loading' | 'need-pairing' | 'ready' | 'denied' | 'unavailable'>('loading');
     readonly discoveryStatus = atom<{ devices: { name: string, id: string }[] } | null>(null);
-    readonly bluetooth = new BluetoothModel();
     onDevicePaired?: () => void;
     onDeviceUnpaired?: () => void;
     onStreamingStart?: (sr: 8000 | 16000) => void;
@@ -59,27 +86,16 @@ export class WearableModule {
         this.jotai = jotai;
         this.debug = debug;
 
-        // Auto-load if persistent
-        if (this.bluetooth.isPersistent) {
-            let profile = storage.getString('wearable-device');
-            if (profile && Platform.OS !== 'web') {
-                let js;
-                try {
-                    js = JSON.parse(profile);
-                } catch (e) {
-                    return;
-                }
-                let parsed = profileCodec.safeParse(js);
-                if (parsed.success) {
-                    this.#profile = parsed.data;
-                    this.#device = new DeviceModel(parsed.data.id, jotai, this.bluetooth);
-                    this.#device.onStreamingStart = this.#onStreamingStart;
-                    this.#device.onStreamingStop = this.#onStreamingStop;
-                    this.#device.onStreamingFrame = this.#onStreamingFrame;
-                    this.#device.onStreamingMute = this.#onStreamingMute;
-                    this.#device.init();
-                }
-            }
+        // Auto-load if persisted
+        let profile = WearableModule.loadProfile();
+        if (profile) {
+            this.#profile = profile;
+            this.#device = new DeviceModel(profile.id, jotai, BluetoothService.instance);
+            this.#device.onStreamingStart = this.#onStreamingStart;
+            this.#device.onStreamingStop = this.#onStreamingStop;
+            this.#device.onStreamingFrame = this.#onStreamingFrame;
+            this.#device.onStreamingMute = this.#onStreamingMute;
+            this.#device.init();
         }
     }
 
@@ -95,7 +111,7 @@ export class WearableModule {
         WearableModule.lock.inLock(async () => {
 
             // Starting bluetooth
-            let result = await this.bluetooth.start();
+            let result = await BluetoothService.instance.start();
             if (result === 'denied') {
                 this.jotai.set(this.pairingStatus, 'denied');
                 track('wearable_bluetooth_denied');
@@ -130,7 +146,7 @@ export class WearableModule {
         if (!this.jotai.get(this.discoveryStatus)) {
             this.jotai.set(this.discoveryStatus, { devices: [] });
         }
-        this.bluetooth.startScan((device) => {
+        BluetoothService.instance.startScan((device) => {
             if (isDiscoveredDeviceSupported(device)) {
                 let devices = this.jotai.get(this.discoveryStatus)!.devices;
                 devices = [{ name: device.name, id: device.id }, ...devices.filter((v) => v.id !== device.id)];
@@ -142,7 +158,7 @@ export class WearableModule {
         this.#discoveryCancel = () => {
             if (this.#discoveryCancel != null) {
                 this.#discoveryCancel = null;
-                this.bluetooth.stopScan();
+                BluetoothService.instance.stopScan();
             }
         }
     }
@@ -158,7 +174,7 @@ export class WearableModule {
     }
 
     pick = async () => {
-        let picked = await this.bluetooth.pick(Object.values(bluetoothServices));
+        let picked = await BluetoothService.instance.pick(Object.values(bluetoothServices));
         if (picked) {
             return this.tryPairDevice(picked.id);
         }
@@ -175,7 +191,7 @@ export class WearableModule {
             }
 
             // Connecting to device
-            let connected = await this.bluetooth.connect(id, 5000);
+            let connected = await BluetoothService.instance.connect(id, 5000);
             if (!connected) {
                 return 'connection-error' as const;
             }
@@ -196,7 +212,7 @@ export class WearableModule {
 
             // Save device
             this.#profile = profile;
-            this.#device = new DeviceModel(connected, this.jotai, this.bluetooth, this.#needStreaming);
+            this.#device = new DeviceModel(connected, this.jotai, BluetoothService.instance, this.#needStreaming);
             this.#device.onStreamingStart = this.#onStreamingStart;
             this.#device.onStreamingStop = this.#onStreamingStop;
             this.#device.onStreamingFrame = this.#onStreamingFrame;
@@ -204,7 +220,7 @@ export class WearableModule {
             this.#device.init();
 
             // Update state
-            storage.set('wearable-device', JSON.stringify(profile));
+            WearableModule.saveProfile(profile);
             this.jotai.set(this.pairingStatus, 'ready');
             track('wearable_device_added');
 
@@ -233,7 +249,7 @@ export class WearableModule {
             this.#device = null;
 
             // Update state
-            storage.delete('wearable-device');
+            WearableModule.saveProfile(null);
             this.jotai.set(this.pairingStatus, 'need-pairing');
             track('wearable_device_removed');
 

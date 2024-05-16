@@ -61,11 +61,30 @@ const ContentMemory = React.memo((props: { id: string, display: 'normal' | 'larg
         }
 
         return (
-            <Pressable key={memory.id} style={{ marginHorizontal: 16, marginVertical: 8, borderRadius: 16, borderWidth: 0.5, borderColor: '#272727', flexDirection: 'column', backgroundColor: 'white', }} onPress={() => router.navigate('/memory/' + props.id)}>
+            <Pressable
+                key={memory.id}
+                style={{
+                    marginHorizontal: 16,
+                    marginVertical: 8,
+                    borderRadius: 16,
+                    borderWidth: 0.5,
+                    borderColor: '#272727',
+                    flexDirection: 'column',
+                    backgroundColor: Theme.panel,
+                    flexShrink: 0
+                }}
+                onPress={() => router.navigate('/memory/' + props.id)}
+            >
                 {image}
-                <View style={{ flexDirection: 'column', flexGrow: 1, flexBasis: 0, paddingTop: 8, paddingHorizontal: 8, paddingBottom: 16, borderBottomLeftRadius: 16, borderBottomRightRadius: 16 }}>
-                    <Text style={{ fontSize: 16, color: Theme.textInverted }} numberOfLines={3}>{memory.title}</Text>
-                    <Text style={{ fontSize: 14, opacity: 0.6, color: Theme.textInverted }} numberOfLines={2}>{memory.summary.replaceAll('\n', ' ')}</Text>
+                <View style={{
+                    flexDirection: 'column',
+                    paddingTop: 16,
+                    paddingHorizontal: 16,
+                    paddingBottom: 16,
+                    borderBottomLeftRadius: 16,
+                    borderBottomRightRadius: 16
+                }}>
+                    <Text style={{ fontSize: 16, color: Theme.text }} numberOfLines={1}>{memory.title}</Text>
                 </View>
             </Pressable>
         )

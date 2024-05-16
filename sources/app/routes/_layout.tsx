@@ -13,7 +13,6 @@ import { GestureHandlerRootView } from 'react-native-gesture-handler';
 import { Theme } from '../theme';
 import { View } from 'react-native';
 import { AlertProvider } from '../libs/alert';
-import { DefaultMetatags } from './_head';
 
 // Configuration
 let theme = {
@@ -27,27 +26,24 @@ let theme = {
 export default function RootLayout() {
     const [state, controller] = useNewGlobalController();
     return (
-        <>
-            <DefaultMetatags />
-            <View style={{ flexDirection: 'row', flexGrow: 1, flexBasis: 0, backgroundColor: Theme.panel, justifyContent: 'center' }}>
-                <View style={{ flexGrow: 1, flexBasis: 0, maxWidth: 1600 }}>
-                    <GestureHandlerRootView style={{ flex: 1 }}>
-                        <ThemeProvider value={theme}>
-                            <PostHogProvider client={posthog}>
-                                <GlobalStateContext.Provider value={state}>
-                                    <GlobalStateControllerContext.Provider value={controller}>
-                                        <AlertProvider>
-                                            <Navigator>
-                                                <Slot />
-                                            </Navigator>
-                                        </AlertProvider>
-                                    </GlobalStateControllerContext.Provider>
-                                </GlobalStateContext.Provider>
-                            </PostHogProvider>
-                        </ThemeProvider>
-                    </GestureHandlerRootView>
-                </View>
+        <View style={{ flexDirection: 'row', flexGrow: 1, flexBasis: 0, backgroundColor: Theme.panel, justifyContent: 'center' }}>
+            <View style={{ flexGrow: 1, flexBasis: 0, maxWidth: 1600 }}>
+                <GestureHandlerRootView style={{ flex: 1 }}>
+                    <ThemeProvider value={theme}>
+                        <PostHogProvider client={posthog}>
+                            <GlobalStateContext.Provider value={state}>
+                                <GlobalStateControllerContext.Provider value={controller}>
+                                    <AlertProvider>
+                                        <Navigator>
+                                            <Slot />
+                                        </Navigator>
+                                    </AlertProvider>
+                                </GlobalStateControllerContext.Provider>
+                            </GlobalStateContext.Provider>
+                        </PostHogProvider>
+                    </ThemeProvider>
+                </GestureHandlerRootView>
             </View>
-        </>
+        </View>
     );
 }

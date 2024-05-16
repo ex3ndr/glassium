@@ -8,6 +8,9 @@ import { Drawer } from 'expo-router/drawer';
 import { Theme } from '@/app/theme';
 import { Sidebar } from './_navigation';
 
+// Error boundary
+export { ErrorBoundary } from 'expo-router';
+
 export default function AppLayout() {
     const state = useGlobalState();
     const layout = useLayout();

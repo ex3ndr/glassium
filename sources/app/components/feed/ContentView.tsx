@@ -41,7 +41,7 @@ export const ContentView = React.memo((props: { content: Content, app: AppServic
 
 const ContentMemory = React.memo((props: { id: string, display: 'normal' | 'large' }) => {
     let app = useAppModel();
-    let memory = app.memory.use(props.id);
+    let memory = app.memory.get(props.id);
 
     if (props.display === 'large') {
 

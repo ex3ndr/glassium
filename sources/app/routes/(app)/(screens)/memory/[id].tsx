@@ -1,5 +1,5 @@
 import * as React from 'react';
-import { ScrollView, Text, View } from 'react-native';
+import { ActivityIndicator, ScrollView, Text, View } from 'react-native';
 import { Image } from 'expo-image';
 import Animated from 'react-native-reanimated';
 import { useSafeAreaInsets } from 'react-native-safe-area-context';
@@ -12,6 +12,14 @@ export default React.memo(() => {
     const app = useAppModel();
     const safeArea = useSafeAreaInsets();
     let memory = app.memory.use(id as string);
+
+    if (!memory) {
+        return (
+            <View style={{ flexGrow: 1, justifyContent: 'center', alignItems: 'center' }}>
+                <ActivityIndicator color={Theme.text} />
+            </View>
+        )
+    }
     return (
         <>
             <ScrollView style={{ flexGrow: 1, backgroundColor: Theme.background }} contentContainerStyle={{ paddingBottom: safeArea.bottom + 64 + 32, marginHorizontal: 16 }}>

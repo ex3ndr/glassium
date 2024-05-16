@@ -23,6 +23,9 @@ let theme = {
     },
 };
 
+// Error boundary
+export { ErrorBoundary } from 'expo-router';
+
 export default function RootLayout() {
     const [state, controller] = useNewGlobalController();
     return (

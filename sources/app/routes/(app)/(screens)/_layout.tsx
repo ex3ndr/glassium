@@ -3,6 +3,9 @@ import { Theme } from "@/app/theme";
 import { Stack } from "expo-router";
 import { Platform } from "react-native";
 
+// Error boundary
+export { ErrorBoundary } from 'expo-router';
+
 export default function AppLayout() {
     return (
         <Stack

@@ -71,10 +71,14 @@ export default React.memo(() => {
             <Text style={{ fontSize: 22, alignSelf: 'center', lineHeight: 30, color: Theme.text }}>Do you have an AI wearable?</Text>
             <View style={{ flexGrow: 1, maxHeight: 380, alignItems: 'center', justifyContent: 'center' }}>
                 {!scanning && (
-                    <LottieView style={{ width: 200, height: 200 }} source={require('@/app/assets/animation_speak.json')} autoPlay={true} />
+                    <View style={{ width: 200, height: 200 }}>
+                        <LottieView style={{ width: 200, height: 200 }} source={require('@/app/assets/animation_speak.json')} autoPlay={true} />
+                    </View>
                 )}
                 {scanning && devices.length === 0 && (
-                    <LottieView style={{ width: 200, height: 200 }} source={require('@/app/assets/animation_eye.json')} autoPlay={true} />
+                    <View style={{ width: 200, height: 200 }}>
+                        <LottieView style={{ width: 200, height: 200 }} source={require('@/app/assets/animation_eye.json')} autoPlay={true} />
+                    </View>
                 )}
                 {scanning && devices.length > 0 && (
                     <ScrollView

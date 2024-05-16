@@ -31,7 +31,6 @@ export default function Splash() {
                 {Platform.OS === 'web' && (
                     <View style={{ flexDirection: 'row', gap: 32, paddingVertical: 16 }}>
                         <a href="https://basedhardware.com" target='_blank' className='link'>Store</a>
-                        <a href="https://github.com/ex3ndr/bubble" target='_blank' className='link'>Docs</a>
                         <a href="https://github.com/ex3ndr/bubble" target='_blank' className='link'>Github</a>
                     </View>
                 )}
@@ -76,11 +75,11 @@ export default function Splash() {
                 )}
                 {Platform.OS === 'web' && (
                     <View style={{ flexDirection: 'row', gap: 32, marginBottom: 32, opacity: 0.5 }}>
-                        <a href="/legal/privacy" className='link'>
+                        <a href="/support" className='link'>
                             Support
                         </a>
-                        <a href="/legal/privacy" className='link'>
-                            Terms of use
+                        <a href="/legal/tos" className='link'>
+                            Terms of Service
                         </a>
                         <a href="/legal/privacy" className='link'>
                             Privacy Policy

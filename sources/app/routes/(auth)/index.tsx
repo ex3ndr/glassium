@@ -3,7 +3,7 @@ import { Theme } from '@/app/theme';
 import { useLayout } from '@/utils/useLayout';
 import { Stack, router } from 'expo-router';
 import * as React from 'react';
-import { Image, Text, View } from 'react-native';
+import { Image, Platform, Text, View } from 'react-native';
 import { useSafeAreaInsets } from 'react-native-safe-area-context';
 
 export default function Splash() {
@@ -36,12 +36,40 @@ export default function Splash() {
                 <Text style={{ fontSize: 18, color: Theme.text, textAlign: 'center', marginTop: 8, marginBottom: 64 }}>
                     All-in-one app for AI Wearable devices
                 </Text>
-                {layout === 'small' && (
+                {layout === 'small' && Platform.OS !== 'web' && (
                     <View style={{ flexGrow: 1 }} />
                 )}
-                <RoundButton display="default" title={"Start"} style={{ width: 300, marginBottom: 16 }} onPress={doStart} />
-                {layout === 'large' && (
+
+                {Platform.OS === 'web' && (
+                    <>
+                        <View style={{ flexDirection: 'row', gap: 8, marginBottom: 32, width: 180 * 2 + 8 }}>
+                            <a href="https://play.google.com/store/apps/details?id=com.bubbleapp.android">
+                                <img
+                                    src="/googleplay.png"
+                                    alt="Download on the Google Play"
+                                    style={{ width: 180, height: 52 }}
+                                />
+                            </a>
+                            <a href="https://apps.apple.com/app/bubble-ai/id6499084145">
+                                <img
+                                    src="/appstore.png"
+                                    alt="Download on the App Store"
+                                    style={{ width: 180, height: 52 }}
+                                />
+                            </a>
+                        </View>
+                        <RoundButton display="inverted" title={'Continue on Web'} style={{ width: 300, marginBottom: 16 }} onPress={doStart} />
+                    </>
+                )}
+                {Platform.OS !== 'web' && (
+                    <RoundButton display="default" title={'Start'} style={{ width: 300, marginBottom: 16 }} onPress={doStart} />
+                )}
+                {(layout === 'large' || Platform.OS === 'web') && (
                     <View style={{ flexGrow: 1 }} />
+                )}
+                {Platform.OS === 'web' && (
+                    <View>
+                    </View>
                 )}
             </View>
         </>

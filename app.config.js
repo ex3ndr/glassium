@@ -16,9 +16,10 @@ export default {
     "version": "1.2.0",
     "runtimeVersion": RUNTIME_VERSION,
     "orientation": "portrait",
-    // "icon": IS_NEXT ? './assets/icon_next.png' : "./assets/icon.png",
+    "icon": IS_NEXT ? './assets/icon_next.png' : "./assets/icon.png",
     "icon": "./assets/icon.png",
     "userInterfaceStyle": "dark",
+    "scheme": "glassium",
     "splash": {
       "backgroundColor": "#000"
     },

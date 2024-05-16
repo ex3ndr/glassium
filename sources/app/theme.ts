@@ -1,7 +1,7 @@
 export const Theme = {
 
     // Core
-    background: '#121212', // Must be synced with app.config.js
+    background: '#121212', // Must be synced with app.config.js and index.html
     panel: '#000',
     accent: '#fff',
     divider: '#333',

@@ -58,26 +58,12 @@ export const Sidebar = () => {
     );
 };
 
-export const HomeHeader = () => {
-    const layout = useLayout();
-    const device = useDeviceState();
-    return (
-        <Stack.Screen
-            options={{
-                // headerShown: layout === 'small', // We don't show header in home on large screen
-                title: layout === 'small' ? 'Glassium' : 'Home',
-                headerRight: () => <DeviceHedaerControls />,
-            }}
-        />
-    );
-}
-
 export const HomeTopBar = () => {
     const layout = useLayout();
     return (
         <View style={{ paddingTop: 8, gap: 8 }}>
             <UpdateBanner />
-            <VoiceSampleBanner />
+            {/* <VoiceSampleBanner /> */}
             {layout === 'small' && (
                 <>
                     {/* <AIStatusComponent small={false} /> */}
@@ -155,45 +141,6 @@ const SidebarButton = (props: { icon: string, title: string, pathname: string, i
     )
 };
 
-// const AIStatusComponent = React.memo((props: { small: boolean }) => {
-//     const app = useAppModel();
-//     const state = useDeviceState();
-//     const doPair = async () => {
-//         if (app.wearable.bluetooth.supportsScan) {
-//             router.navigate('manage-device')
-//         } else if (app.wearable.bluetooth.supportsPick) {
-//             await app.wearable.pick();
-//         }
-//     };
-//     const doOpenSettings = () => {
-//         router.navigate('settings')
-//     }
-
-//     if (state === 'denied' && Platform.OS !== 'web') {
-//         return (<Banner title={texts.bt_denied.title} text={props.small ? texts.bt_denied.message_small : texts.bt_denied.message} kind="warning" onPress={openSystemSettings} small={props.small} />);
-//     }
-//     // if (state === 'unavailable' && !props.small) {
-//     //     return (<Banner title={texts.bt_unavailable.title} text={texts.bt_unavailable.message} kind="warning" onPress={openSystemSettings} small={props.small} />);
-//     // }
-//     if (state === 'pairing') {
-//         return (<Banner title={texts.bt_pairing.title} text={props.small ? texts.bt_pairing.message_small : texts.bt_pairing.message} kind="alert" onPress={doPair} small={props.small} />);
-//     }
-
-//     // Everyday statuses
-//     // if (state === 'offline') {
-//     //     return (<Banner title='Offline' text='Connection to AI is lost. Processing will resume on reconnection.' kind="normal" fixedSize={true} />);
-//     // }
-//     if (state === 'disconnected') {
-//         return (<Banner title={texts.bt_disconnected.title} text={props.small ? texts.bt_disconnected.message_small : texts.bt_disconnected.message} kind="normal" fixedSize={true} onPress={doOpenSettings} small={props.small} />);
-//     }
-//     if (state === 'online') {
-//         return <Banner title={texts.bt_online.title} text={props.small ? texts.bt_online.message_small : texts.bt_online.message} kind="normal" fixedSize={true} onPress={doOpenSettings} small={props.small} />;
-//     }
-
-//     // Unknown
-//     return null;
-// });
-
 const UpdateBanner = () => {
     const updates = Updates.useUpdates();
     const hasUpdate = updates.isUpdatePending && Platform.OS !== 'web';
@@ -218,9 +165,84 @@ const VoiceSampleBanner = () => {
     return null;
 };
 
+//
+// Home header
+//
+
+export const HomeHeader = () => {
+    const layout = useLayout();
+    const device = useDeviceState();
+    return (
+        <Stack.Screen
+            options={{
+                // headerShown: layout === 'small', // We don't show header in home on large screen
+                // title: layout === 'small' ? 'Glassium' : 'Home',
+                headerTitle: () => <DeviceHeaderView />,
+                headerRight: () => <DeviceHedaerControls />,
+            }}
+        />
+    );
+}
+
+const DeviceHeaderView = React.memo(() => {
+    const layout = useLayout();
+    const deviceState = useDeviceState();
+    if (layout === 'large') {
+        return (
+            <Text style={{ color: Theme.text, fontSize: 21 }}>Home</Text>
+        );
+    }
+
+    let subtitle: string | null = 'idle';
+    if (deviceState.paired) {
+        if (deviceState.state === 'connected') {
+            if (deviceState.muted !== undefined && deviceState.muted || deviceState.softMuted) {
+                subtitle = 'muted';
+            } else {
+                if (deviceState.voice) {
+                    subtitle = 'voice detected';
+                } else {
+                    subtitle = 'listening';
+                }
+            }
+        } else if (deviceState.state === 'connecting') {
+            subtitle = 'connecting';
+        } else if (deviceState.state === 'denied') {
+            subtitle = 'bluetooth disabled';
+        } else if (deviceState.state === 'unavailable') {
+            subtitle = null;
+        }
+    } else {
+        if (deviceState.state === 'denied') {
+            subtitle = 'bluetooth disabled';
+        } else if (deviceState.state === 'unavailable') {
+            subtitle = null;
+        } else {
+            subtitle = 'no device';
+        }
+    }
+
+    return (
+        <View style={{ flexDirection: 'column', alignItems: Platform.OS === 'ios' ? 'center' : 'flex-start' }}>
+            <Text style={{ color: Theme.text, fontSize: 20, fontWeight: '600' }}>Glassium</Text>
+            {subtitle && (
+                <View style={{ flexDirection: 'row' }}>
+                    <Text style={[{ color: Theme.text, fontSize: 14, fontWeight: '500', opacity: 0.5, marginTop: -3 }]}>
+                        {subtitle}
+                    </Text>
+                </View>
+            )}
+        </View>
+    );
+});
+
 const DeviceHedaerControls = React.memo(() => {
+    const layout = useLayout();
     const app = useAppModel();
     const device = useDeviceState();
+    if (layout === 'large') {
+        return null;
+    }
     if (device.paired && device.battery !== undefined) {
         return <BatteryComponent level={device.battery} />;
     }

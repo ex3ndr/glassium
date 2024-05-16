@@ -63,9 +63,7 @@ export class ProfileService {
         });
     }
 
-    uploadVoiceSample = async (uri: string) => {
-        let sample = await readFileAsync(uri, 'base64');
-        await backoff(() => this.client.uploadVoiceSample(sample));
+    reloadProfile = async () => {
         await this.#sync.invalidateAndAwait();
     }
 

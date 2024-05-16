@@ -70,9 +70,9 @@ export default React.memo(() => {
                 </View>
             )}
             {!!profile && (
-                <View style={{ alignItems: 'flex-start', paddingHorizontal: 16, flexDirection: 'column' }}>
+                <View style={{ alignItems: 'flex-start', paddingHorizontal: 16, marginBottom: 16, flexDirection: 'column' }}>
                     <Text style={{ fontSize: 18, color: Theme.text, marginBottom: 8, opacity: 0.8 }}>@{profile.username} <Text style={{ opacity: 0.4 }}>{profile.firstName} {profile.lastName}</Text></Text>
-                    <Text style={{ fontSize: 18, color: Theme.text, marginBottom: 8, opacity: 0.8 }}>{profile.phone}</Text>
+                    <RoundButton title={'Manage account'} size='small' onPress={() => { router.navigate('/settings/account') }} />
                 </View>
             )}
             <Item title="Device" />
@@ -118,15 +118,6 @@ export default React.memo(() => {
                     </View>
                 </>
             )}
-            <View style={{ height: 16 }} />
-            <Item title="Account" />
-            <View style={{ alignItems: 'flex-start', paddingHorizontal: 16, flexDirection: 'column' }}>
-                <Text style={{ fontSize: 18, color: Theme.text, marginBottom: 8, opacity: 0.8 }}>Managing your account and associated data.</Text>
-                <View style={{ gap: 16 }}>
-                    <RoundButton title={'Logout Account'} size='small' action={logoutAction} />
-                    <RoundButton title={'Delete Account'} size='small' action={deleteAction} />
-                </View>
-            </View>
 
             <View style={{ flexGrow: 1 }} />
             <Pressable onPress={onVersionPress}>

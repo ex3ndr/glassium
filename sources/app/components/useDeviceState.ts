@@ -6,6 +6,9 @@ export type DeviceState = {
     name: string,
     muted?: boolean,
     battery?: number,
+    voice?: boolean,
+    needSoftMute?: boolean,
+    softMuted?: boolean,
     vendor: 'compass' | 'friend' | 'bubble'
 } | {
     paired: false,
@@ -15,6 +18,8 @@ export type DeviceState = {
 export function useDeviceState(): DeviceState {
     const app = useAppModel();
     const wearable = app.wearable.use();
+    const endpointing = app.endpointing.use();
+    const capture = app.capture.use();
 
     if (wearable.profile) {
         if (wearable.pairing === 'ready' && (wearable.device.status === 'connected' || wearable.device.status === 'subscribed')) {
@@ -24,6 +29,9 @@ export function useDeviceState(): DeviceState {
                 name: wearable.profile!.name,
                 vendor: wearable.profile!.vendor,
                 muted: wearable.device!.muted,
+                voice: endpointing === 'voice',
+                needSoftMute: (!wearable.profile.features || (!wearable.profile.features.hasMuteSwitch && !wearable.profile.features.hasOffSwitch)),
+                softMuted: capture.localMute,
                 battery: wearable.device!.battery !== null ? wearable.device!.battery : undefined
             }
         }

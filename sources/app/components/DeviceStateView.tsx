@@ -19,6 +19,7 @@ export const DeviceStateView = React.memo((props: { state: DeviceState | null })
     let title = 'No device';
     let subtitle = 'Press to connect';
     let image = <Ionicons name="code-working" size={32} color="white" style={{ opacity: 0.3 }} />
+    let activeSubtitle = false;
     let action = () => {
         if (app.wearable.bluetooth.supportsScan) {
             router.navigate('/settings/device')
@@ -30,9 +31,10 @@ export const DeviceStateView = React.memo((props: { state: DeviceState | null })
         if (props.state.paired) {
             title = props.state.name;
             if (props.state.state === 'connected') {
-                if (props.state.muted !== undefined && props.state.muted) {
+                if (props.state.muted !== undefined && props.state.muted || props.state.softMuted) {
                     subtitle = 'Muted';
                 } else {
+                    activeSubtitle = props.state.voice || false;
                     subtitle = 'Listening';
                 }
                 if (props.state.battery !== undefined) {
@@ -79,7 +81,7 @@ export const DeviceStateView = React.memo((props: { state: DeviceState | null })
             </View>
             <View style={{ paddingLeft: 9, flexDirection: 'column', flexGrow: 1, flexBasis: 0 }}>
                 <Text style={{ fontSize: 18, color: Theme.text, marginBottom: Platform.select({ default: 0, android: -4 }) }} numberOfLines={1}>{title}</Text>
-                <Text style={{ fontSize: 14, color: Theme.text, opacity: 0.7 }} numberOfLines={1}>{subtitle}</Text>
+                <Text style={{ fontSize: 14, color: activeSubtitle ? '#8e9ff2' : Theme.text, opacity: 0.7 }} numberOfLines={1}>{subtitle}</Text>
             </View>
         </Pressable>
     )

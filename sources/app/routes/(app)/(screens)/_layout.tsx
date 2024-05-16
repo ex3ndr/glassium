@@ -20,6 +20,7 @@ export default function AppLayout() {
             <Stack.Screen name="settings/index" options={{ title: 'Settings' }} />
             <Stack.Screen name="settings/device" options={{ title: 'Device', presentation: Platform.OS === 'ios' ? 'modal' : 'card' }} />
             <Stack.Screen name="settings/voice" options={{ title: 'Voice Sample' }} />
+            <Stack.Screen name="settings/account" options={{ title: 'Manage Account' }} />
             <Stack.Screen name="memory/[id]" options={{ title: 'Memory', presentation: Platform.OS === 'ios' ? 'modal' : 'card' }} />
             <Stack.Screen name="data/transcripts/index" options={{ title: 'Transcripts' }} />
             <Stack.Screen name="data/sessions/index" options={{ title: 'Sessions' }} />

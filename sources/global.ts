@@ -8,7 +8,7 @@ import { cleanAndReload } from '@/modules/reload/cleanAndReload';
 import { backoff } from '@/utils/time';
 import { SERVER_ENDPOINT } from '@/config';
 
-const ONBOARDING_VERSION = 1; // Increment this to reset onboarding
+const ONBOARDING_VERSION = 2; // Increment this to reset onboarding
 
 //
 // State
@@ -18,6 +18,8 @@ export type OnboardingState = {
     kind: 'prepare'
 } | {
     kind: 'need_username'
+} | {
+    kind: 'need_voice'
 } | {
     kind: 'need_name'
 } | {
@@ -144,6 +146,7 @@ export function isOnboardingCompleted() {
 export function resetOnboardingState() {
     storage.delete('onboarding:completed');
     storage.delete('onboarding:skip_notifications');
+    storage.delete('onboarding:skip_voice');
 }
 
 export function markSkipNotifications() {
@@ -152,6 +155,14 @@ export function markSkipNotifications() {
 
 export function isSkipNotifications() {
     return storage.getBoolean('onboarding:skip_notifications');
+}
+
+export function isSkipVoice() {
+    return storage.getBoolean('onboarding:skip_voice');
+}
+
+export function markSkipVoice() {
+    storage.set('onboarding:skip_voice', true);
 }
 
 //
@@ -186,6 +197,12 @@ async function refreshOnboarding(client: BackendClient): Promise<OnboardingState
     // In the end require activation
     if (serverState.canActivate) {
         return { kind: 'need_activation' };
+    }
+
+    // Read profile
+    let me = await client.me();
+    if (!me.voiceSample && !isSkipVoice()) {
+        return { kind: 'need_voice' };
     }
 
     // All requirements satisfied

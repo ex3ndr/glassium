@@ -25,6 +25,9 @@ export function _resolve(src: GlobalState): string {
     if (src.state.kind === 'need_username') {
         return '/(onboarding)/prepare/username';
     }
+    if (src.state.kind === 'need_voice') {
+        return '/(onboarding)/prepare/voice';
+    }
     throw new Error('Invalid state');
 }
 

@@ -28,6 +28,13 @@ export default function Splash() {
                     backgroundColor: Theme.background
                 }}
             >
+                {Platform.OS === 'web' && (
+                    <View style={{ flexDirection: 'row', gap: 32, paddingVertical: 16 }}>
+                        <a href="https://basedhardware.com" target='_blank' className='link'>Store</a>
+                        <a href="https://github.com/ex3ndr/bubble" target='_blank' className='link'>Docs</a>
+                        <a href="https://github.com/ex3ndr/bubble" target='_blank' className='link'>Github</a>
+                    </View>
+                )}
                 <View style={{ flexGrow: 1 }} />
                 <Image source={require('@/app/assets/splash_2.png')} style={layout === 'large' ? { width: 256, height: 256 } : { width: 200, height: 200 }} />
                 <Text style={{ fontSize: 32, color: Theme.text, marginTop: 16, fontWeight: '600' }}>
@@ -68,8 +75,18 @@ export default function Splash() {
                     <View style={{ flexGrow: 1 }} />
                 )}
                 {Platform.OS === 'web' && (
-                    <View>
+                    <View style={{ flexDirection: 'row', gap: 32, marginBottom: 32, opacity: 0.5 }}>
+                        <a href="/legal/privacy" className='link'>
+                            Support
+                        </a>
+                        <a href="/legal/privacy" className='link'>
+                            Terms of use
+                        </a>
+                        <a href="/legal/privacy" className='link'>
+                            Privacy Policy
+                        </a>
                     </View>
+
                 )}
             </View>
         </>

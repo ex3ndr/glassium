@@ -79,10 +79,10 @@ export default function Splash() {
                             Support
                         </a>
                         <a href="/legal/tos" className='link'>
-                            Terms of Service
+                            Terms
                         </a>
                         <a href="/legal/privacy" className='link'>
-                            Privacy Policy
+                            Privacy
                         </a>
                     </View>
 

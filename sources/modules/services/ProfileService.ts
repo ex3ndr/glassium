@@ -7,6 +7,7 @@ import { AppState } from 'react-native';
 import { posthogIdentity } from '../track/track';
 import { InvalidateSync } from '../../utils/sync';
 import { backoff } from '@/utils/time';
+import { log } from '@/utils/logs';
 
 const ProfileSchema = z.object({
     version: z.literal(3),
@@ -48,12 +49,14 @@ export class ProfileService {
 
             // Report voice
             if (this.#hadVoice && !!this.#hadPairing && !storage.getBoolean('profile:voice-reported')) {
+                log('[PRF]', 'Reporting voice for the first time.');
                 await this.client.reportFirstVoiced(this.#hadPairing);
                 storage.set('profile:voice-reported', true);
             }
 
             // Report voice
             if (!!this.#hadPairing && !storage.getBoolean('profile:pairing-reported')) {
+                log('[PRF]', 'Reporting pairing for the first time.');
                 await this.client.reportFirstPaired(this.#hadPairing);
                 storage.set('profile:pairing-reported', true);
             }

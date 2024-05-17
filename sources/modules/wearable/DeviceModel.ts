@@ -11,6 +11,7 @@ import { InvalidateSync } from "../../utils/sync";
 import { AsyncLock } from "../../utils/lock";
 import { backoff, delay } from "../../utils/time";
 import { convertCompassVoltage } from "./protocol/compass";
+import { Platform } from "react-native";
 
 export class DeviceModel {
     static #lock = new AsyncLock(); // Use static lock to prevent multiple BT operations
@@ -102,6 +103,7 @@ export class DeviceModel {
 
             // Detect disconnect
             if (this.#device && (!this.#device.connected || this.#needStop)) {
+                log('BT', `Device cleanup ${this.#device.connected} ${this.#needStop}`);
 
                 // Remove all subscriptions
                 await this.#cleanupDevice();
@@ -118,7 +120,7 @@ export class DeviceModel {
             // Connect to device
             if (!this.#device) {
                 log('BT', 'Device is not connected: connecting');
-                let dev = await this.bluetooth.connect(this.id, 30000);
+                let dev = await this.bluetooth.connect(this.id, 5000);
                 if (!dev) {
                     throw new Error('Device not found'); // Backoff retry
                 }

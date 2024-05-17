@@ -43,26 +43,30 @@ export default React.memo(() => {
         if (!connected) {
             throw new HappyError('Unable to connect to the device. Are you sure nothing is connected to it already?', false);
         }
+        try {
 
-        // Check protocols
-        const protocol = await resolveProtocol(connected);
-        if (!protocol) {
-            connected.disconnect();
-            throw new HappyError('It seesm that his device is not supported.', false)
+            // Check protocols
+            const protocol = await resolveProtocol(connected);
+            if (!protocol) {
+                throw new HappyError('It seesm that his device is not supported.', false)
+            }
+
+            // Check profile
+            const profile = await loadDeviceProfile(protocol, connected);
+            if (!profile) {
+                throw new HappyError('It seesm that his device is not supported.', false)
+            }
+
+            // Persist device
+            WearableModule.saveProfile(profile);
+
+        } finally {
+            await connected.disconnect();
         }
-
-        // Check profile
-        const profile = await loadDeviceProfile(protocol, connected);
-        if (!profile) {
-            connected.disconnect();
-            throw new HappyError('It seesm that his device is not supported.', false)
-        }
-
-        // Persist device
-        WearableModule.saveProfile(profile);
 
         // Reload
         await refresh();
+
     }
 
     return (

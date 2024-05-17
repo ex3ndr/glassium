@@ -247,12 +247,16 @@ const DeviceHedaerControls = React.memo(() => {
     const layout = useLayout();
     const app = useAppModel();
     const device = useDeviceState();
+    const capture = app.capture.use();
     if (layout === 'large') {
         return null;
     }
     let components: any[] = [];
     if (device.paired && device.battery !== undefined) {
         components.push(<BatteryComponent level={device.battery} />);
+    }
+    if (device.paired && device.needSoftMute || capture.localMute) {
+        components.push(<Pressable onPress={() => app.capture.setLocalMute(!capture.localMute)} hitSlop={16}><Ionicons name={capture.localMute ? 'mic-off' : 'mic'} size={24} color={Theme.accent} /></Pressable>);
     }
     return (
         <View style={{ flexDirection: 'row', alignItems: 'center', gap: 8 }}>

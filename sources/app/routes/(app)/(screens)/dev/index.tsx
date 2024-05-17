@@ -42,8 +42,8 @@ export default React.memo(() => {
                         {tokens.map(token => (
                             <View style={{ flexDirection: 'row', gap: 8 }}>
                                 <Text style={{ color: Theme.text, fontSize: 18 }}>#{token.id}</Text>
-                                <Text style={{ color: Theme.text, fontSize: 18 }}>Used <TimeView time={token.used} /></Text>
                                 <Text style={{ color: Theme.text, fontSize: 18 }}>Created <TimeView time={token.created} /></Text>
+                                <Text style={{ color: Theme.text, fontSize: 18 }}>Used  {token.used ? <TimeView time={token.used} /> : 'never'}</Text>
                                 <RoundButton title="Delete" size="small" action={() => deleteToken(token.id)} />
                             </View>
                         ))}

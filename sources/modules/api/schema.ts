@@ -214,7 +214,7 @@ export const Schema = {
         tokens: z.array(z.object({
             id: z.string(),
             created: z.number(),
-            used: z.number()
+            used: z.number().nullable()
         }))
     }),
     tokenCreate: z.object({

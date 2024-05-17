@@ -40,7 +40,7 @@ export default React.memo(() => {
                 {tokens !== null && tokens.length > 0 && (
                     <>
                         {tokens.map(token => (
-                            <View style={{ flexDirection: 'row', gap: 8 }}>
+                            <View style={{ flexDirection: 'row', gap: 8, flexWrap: 'wrap' }}>
                                 <Text style={{ color: Theme.text, fontSize: 18 }}>#{token.id}</Text>
                                 <Text style={{ color: Theme.text, fontSize: 18 }}>Created <TimeView time={token.created} /></Text>
                                 <Text style={{ color: Theme.text, fontSize: 18 }}>Used  {token.used ? <TimeView time={token.used} /> : 'never'}</Text>

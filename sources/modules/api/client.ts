@@ -164,6 +164,30 @@ export class BackendClient {
     }
 
     //
+    // Developer
+    //
+
+    async updateDeveloperMode(enable: boolean) {
+        let res = await this.client.post('/app/profile/edit/developer', { enable });
+        Schema.ok.parse(res.data);
+    }
+
+    async personalTokens() {
+        let res = await this.client.post('/app/dev/tokens', {});
+        return Schema.tokens.parse(res.data).tokens;
+    }
+
+    async createPersonalToken() {
+        let res = await this.client.post('/app/dev/tokens/create', {});
+        return Schema.tokenCreate.parse(res.data).token;
+    }
+
+    async deletePersonalToken(id: string) {
+        let res = await this.client.post('/app/dev/tokens/delete', { id });
+        Schema.ok.parse(res.data);
+    }
+
+    //
     // Memories
     //
 

@@ -31,6 +31,7 @@ export default function AppLayout() {
             <Stack.Screen name="debug/index" options={{ title: 'Debug Tools' }} />
             <Stack.Screen name="debug/logs" options={{ title: 'Debug Logs' }} />
             <Stack.Screen name="debug/views" options={{ title: 'Views' }} />
+            <Stack.Screen name="dev/index" options={{ title: 'Developer' }} />
         </Stack>
     )
 }

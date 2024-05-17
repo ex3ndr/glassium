@@ -9,9 +9,9 @@ import { Text, View } from 'react-native';
 import { useSafeAreaInsets } from 'react-native-safe-area-context';
 
 export default React.memo(() => {
-    const safeArea = useSafeAreaInsets();
     const appModel = useAppModel();
     const alert = useAlert();
+    const dev = appModel.profile.useDeveloperMode();
 
     const deleteAction = async () => {
 
@@ -39,15 +39,31 @@ export default React.memo(() => {
         await cleanAndReload();
     };
 
+    const enableDeveloperMode = async () => {
+        await appModel.profile.enableDeveloperMode();
+    }
+
     return (
         <View>
-            <Item title="Danger" />
+            <Item title="Developer Mode" />
             <View style={{ alignItems: 'flex-start', paddingHorizontal: 16, flexDirection: 'column' }}>
-                <Text style={{ fontSize: 18, color: Theme.text, marginBottom: 8, opacity: 0.8 }}>Managing your account and associated data.</Text>
-                <View style={{ gap: 16 }}>
-                    <RoundButton title={'Logout Account'} size='small' action={logoutAction} />
-                    <RoundButton title={'Delete Account'} size='small' action={deleteAction} />
-                </View>
+                <Text style={{ fontSize: 18, color: Theme.text, marginBottom: 16, opacity: 0.8 }}>Enable developer mode to unlock API to work with your data</Text>
+                {dev
+                    ? <Text style={{ fontSize: 18, color: Theme.text, opacity: 0.8, fontStyle: 'italic' }}>Developer mode enabled</Text>
+                    : <RoundButton title={'Enable Developer Mode'} size='small' action={enableDeveloperMode} />
+                }
+            </View>
+            <View style={{ height: 32 }} />
+            <Item title="Delete account" />
+            <View style={{ alignItems: 'flex-start', paddingHorizontal: 16, flexDirection: 'column' }}>
+                <Text style={{ fontSize: 18, color: Theme.text, marginBottom: 16, opacity: 0.8 }}>Delete your account and all associated data. Can't be reversed.</Text>
+                <RoundButton title={'Delete Account'} size='small' action={deleteAction} />
+            </View>
+            <View style={{ height: 32 }} />
+            <Item title="Logout" />
+            <View style={{ alignItems: 'flex-start', paddingHorizontal: 16, flexDirection: 'column' }}>
+                <Text style={{ fontSize: 18, color: Theme.text, marginBottom: 16, opacity: 0.8 }}>Logout from your account</Text>
+                <RoundButton title={'Logout Account'} size='small' action={logoutAction} />
             </View>
         </View>
     );

@@ -1,4 +1,4 @@
-# 🫧 Glassier
+# 🫧 Glassium
 
 A mobile app for AI Wearables.
 

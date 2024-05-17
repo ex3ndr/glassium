@@ -178,6 +178,7 @@ export const Schema = {
             username: z.string(),
             phone: z.string().nullable(),
             voiceSample: z.boolean(),
+            roles: z.array(z.string())
         })
     }),
     users: z.object({
@@ -207,5 +208,20 @@ export const Schema = {
     }),
     ok: z.object({
         ok: z.literal(true)
+    }),
+    tokens: z.object({
+        ok: z.literal(true),
+        tokens: z.array(z.object({
+            id: z.string(),
+            created: z.number(),
+            used: z.number()
+        }))
+    }),
+    tokenCreate: z.object({
+        ok: z.literal(true),
+        token: z.object({
+            id: z.string(),
+            token: z.string()
+        })
     }),
 };

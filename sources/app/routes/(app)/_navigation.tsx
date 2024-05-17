@@ -18,9 +18,11 @@ import { BatteryComponent } from '@/app/components/BatteryComponent';
 //
 
 export const Sidebar = () => {
+    const app = useAppModel();
     const layout = useLayout();
     const safeArea = useSafeAreaInsets();
     const deviceState = useDeviceState();
+    const dev = app.profile.useDeveloperMode();
     return (
         <View style={{ alignSelf: 'stretch', marginHorizontal: 16, gap: 4, flexGrow: 1, paddingTop: safeArea.top, paddingBottom: safeArea.bottom }}>
 
@@ -41,6 +43,9 @@ export const Sidebar = () => {
             <SidebarButton icon="home-outline" title='Home' pathname='/' internal="index" />
             {layout === 'large' && (
                 <SidebarButton icon="document-text-outline" title='Transcripts' pathname='/data/transcripts' internal="data/transcripts/index" />
+            )}
+            {dev && (
+                <SidebarButton icon="cog" title='Developer' pathname='/dev' internal='dev/index' />
             )}
             <SidebarButton icon="cog" title='Settings' pathname='/settings' internal='settings/index' />
             <View style={{ flexGrow: 1 }} />
@@ -135,7 +140,9 @@ const SidebarButton = (props: { icon: string, title: string, pathname: string, i
             })}
             onPress={doNavigate}
         >
-            <Ionicons name={props.icon as any} size={18} color={Theme.text} />
+            <View style={{ width: 18, height: 18 }}>
+                <Ionicons name={props.icon as any} size={18} color={Theme.text} />
+            </View>
             <Text style={{ color: Theme.text, fontSize: 18, marginLeft: 8, lineHeight: 22 }}>{props.title}</Text>
         </Pressable>
     )

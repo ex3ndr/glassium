@@ -46,17 +46,17 @@ export class AppService {
         this.client = client;
         this.posthog = getPostHog();
         this.jotai = createStore();
+        this.profile = new ProfileService(client, this.jotai);
         this.debug = new DebugService(this.jotai);
         this.sessions = new SessionsModel(client, this.jotai);
         this.wearable = new WearableModule(this.jotai, this.debug);
         this.sync = new SyncModel(client);
         this.realtime = new RealtimeModel(client, this.jotai);
-        this.endpointing = new EndpointingModule(this.sync, this.jotai);
+        this.endpointing = new EndpointingModule(this.sync, this.jotai, this.profile);
         this.capture = new CaptureModule(this.jotai, this.wearable, this.endpointing, this.realtime);
         this.updates = new UpdatesModel(client);
         this.tokenExpire = new TokenExpireService(client);
         this.background = new BackgroundService();
-        this.profile = new ProfileService(client, this.jotai);
         this.users = new UserService(client);
         this.memory = new MemoryService(client);
         this.feed = new FeedService(client, this.jotai, this.users, this.memory);
@@ -66,10 +66,11 @@ export class AppService {
         this.wearable.onStreamingStart = this.capture.onCaptureStart;
         this.wearable.onStreamingStop = this.capture.onCaptureStop;
         this.wearable.onStreamingFrame = this.capture.onCaptureFrame;
-        this.wearable.onDevicePaired = this.background.start;
-        this.wearable.onDeviceUnpaired = this.background.stop;
-        if (this.wearable.device) {
+        this.wearable.onDevicePaired = this.#onDevicePaired;
+        this.wearable.onDeviceUnpaired = this.#onDeviceUnpaired;
+        if (this.wearable.profile) {
             this.background.start();
+            this.profile.reportPairing(this.wearable.profile.vendor);
         }
 
         // Start
@@ -84,6 +85,17 @@ export class AppService {
 
     useWearable = () => {
         return this.wearable.use();
+    }
+
+    #onDevicePaired = () => {
+        this.background.start();
+        if (this.wearable.profile) {
+            this.profile.reportPairing(this.wearable.profile.vendor);
+        }
+    }
+
+    #onDeviceUnpaired = () => {
+        this.background.stop();
     }
 
     #handleUpdate = async (update: Update) => {

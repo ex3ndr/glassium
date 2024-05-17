@@ -1,7 +1,7 @@
 import * as z from 'zod';
 import { BackendClient } from "../api/client";
 import { Jotai } from "./_types";
-import { storageGetTyped, storageSetTyped } from '../../storage';
+import { storage, storageGetTyped, storageSetTyped } from '../../storage';
 import { atom, useAtomValue } from 'jotai';
 import { AppState } from 'react-native';
 import { posthogIdentity } from '../track/track';
@@ -29,6 +29,8 @@ export class ProfileService {
     readonly jotai: Jotai;
     readonly profile = atom<Profile | null>(null);
     #sync: InvalidateSync;
+    #hadVoice = false;
+    #hadPairing: string | null = null;
 
     constructor(client: BackendClient, jotai: Jotai) {
         this.client = client;
@@ -43,6 +45,20 @@ export class ProfileService {
 
         // Run sync
         this.#sync = new InvalidateSync(async () => {
+
+            // Report voice
+            if (this.#hadVoice && !!this.#hadPairing && !storage.getBoolean('profile:voice-reported')) {
+                await this.client.reportFirstVoiced(this.#hadPairing);
+                storage.set('profile:voice-reported', true);
+            }
+
+            // Report voice
+            if (!!this.#hadPairing && !storage.getBoolean('profile:pairing-reported')) {
+                await this.client.reportFirstPaired(this.#hadPairing);
+                storage.set('profile:pairing-reported', true);
+            }
+
+            // Load
             let loaded = await this.client.me();
 
             // Update profile
@@ -67,6 +83,20 @@ export class ProfileService {
 
     reloadProfile = async () => {
         await this.#sync.invalidateAndAwait();
+    }
+
+    reportVoice = () => {
+        if (!this.#hadVoice) {
+            this.#hadVoice = true;
+            this.#sync.invalidate();
+        }
+    }
+
+    reportPairing = (vendor: string) => {
+        if (!this.#hadPairing) {
+            this.#hadPairing = vendor;
+            this.#sync.invalidate();
+        }
     }
 
     use = () => {

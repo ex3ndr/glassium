@@ -8,6 +8,7 @@ import { atom, useAtomValue } from "jotai";
 import { Jotai } from "../services/_types";
 import { track } from "../track/track";
 import { uptime } from "../../utils/uptime";
+import { ProfileService } from "../services/ProfileService";
 
 export class EndpointingModule {
 
@@ -24,6 +25,7 @@ export class EndpointingModule {
     };
     readonly sync: SyncModel;
     readonly jotai: Jotai;
+    readonly profile: ProfileService;
     readonly state = atom<'idle' | 'voice'>('idle');
 
     #lastTime: number = uptime();
@@ -36,9 +38,10 @@ export class EndpointingModule {
         vad: { from: number, redemption: number, voiceFrames: number, resumeVoiceFrames: number, end: number | null, cooldown: number } | null,
     } | null = null;
 
-    constructor(sync: SyncModel, jotai: Jotai) {
+    constructor(sync: SyncModel, jotai: Jotai, profile: ProfileService) {
         this.sync = sync;
         this.jotai = jotai;
+        this.profile = profile;
     }
 
     use = () => {
@@ -126,6 +129,7 @@ export class EndpointingModule {
                         resumeVoiceFrames: 0,
                     };
                     log('END', 'Voice detected');
+                    this.profile.reportVoice();
                     this.jotai.set(this.state, 'voice');
                 }
 

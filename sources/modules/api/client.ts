@@ -163,6 +163,16 @@ export class BackendClient {
         await this.client.post('/app/profile/edit/voice', { sample });
     }
 
+    async reportFirstPaired(vendor: string) {
+        let res = await this.client.post('/app/report/paired', { vendor });
+        Schema.ok.parse(res.data);
+    }
+
+    async reportFirstVoiced(vendor: string) {
+        let res = await this.client.post('/app/report/voiced', { vendor });
+        Schema.ok.parse(res.data);
+    }
+
     //
     // Developer
     //

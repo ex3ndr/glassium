@@ -34,6 +34,8 @@ const Item = React.memo((props: { item: FeedViewItem, app: AppService, display: 
         image = require('@/app/assets/avatar_overlord.png')
     } else if (by.username === 'memory') {
         image = require('@/app/assets/avatar_memory.png')
+    } else if (by.username === 'adviser') {
+        image = require('@/app/assets/avatar_adviser.png')
     }
 
     // Handle large case

@@ -13,7 +13,7 @@ import { inferVendorFromName } from '@/modules/wearable/protocol/inferVendorFrom
 import { resolveProtocol } from '@/modules/wearable/protocol/protocol';
 import { loadDeviceProfile } from '@/modules/wearable/protocol/profile';
 import { HappyError } from '@/modules/errors/HappyError';
-import { WearableModule } from '@/modules/wearable/WearableModule';
+import { WearableModule, bluetooth } from '@/modules/wearable/WearableModule';
 
 export default React.memo(() => {
     const refresh = useRefresh();
@@ -21,13 +21,13 @@ export default React.memo(() => {
     const [devices, setDevices] = React.useState<BTDiscoveredDevice[]>([]);
     React.useEffect(() => {
         if (scanning) {
-            BluetoothService.instance.startScan((d) => {
+            bluetooth().startScan((d) => {
                 if (isDiscoveredDeviceSupported(d)) {
                     setDevices((prev) => [...prev, d]);
                 }
             });
             return () => {
-                BluetoothService.instance.stopScan();
+                bluetooth().stopScan();
             }
         }
     }, [scanning]);
@@ -39,7 +39,7 @@ export default React.memo(() => {
     const connect = async (device: BTDiscoveredDevice) => {
 
         // Connecting to device
-        let connected = await BluetoothService.instance.connect(device.id, 5000);
+        let connected = await bluetooth().connect(device.id, 5000);
         if (!connected) {
             throw new HappyError('Unable to connect to the device. Are you sure nothing is connected to it already?', false);
         }

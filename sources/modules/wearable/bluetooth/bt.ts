@@ -7,7 +7,6 @@ import { uptime } from '../../../utils/uptime';
 import { track } from '../../track/track';
 
 export class BluetoothService implements BluetoothModelInterface {
-    static readonly instance = new BluetoothService();
     static readonly isPersistent: boolean = true;
     static readonly supportsScan: boolean = true;
     static readonly supportsPick: boolean = false;

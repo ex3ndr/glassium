@@ -84,7 +84,8 @@ export default {
         "react-native-ble-plx",
         {
           "neverForLocation": true,
-          "isBackgroundEnabled": true
+          "isBackgroundEnabled": true,
+          "bluetoothAlwaysPermission": "Allow $(PRODUCT_NAME) to connect to wearable devices via bluetooth",
         }
       ],
       "expo-localization",

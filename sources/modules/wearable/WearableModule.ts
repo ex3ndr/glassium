@@ -15,6 +15,15 @@ import { uptime } from "@/utils/uptime";
 import { AsyncLock } from "@/utils/lock";
 import { DebugService } from "@/modules/services/DebugService";
 
+let bluetoothRef: BluetoothService | null = null;
+
+export function bluetooth() {
+    if (!bluetoothRef) {
+        bluetoothRef = new BluetoothService();
+    }
+    return bluetoothRef;
+}
+
 export class WearableModule {
 
     static loadProfile(): DeviceProfile | null {
@@ -90,7 +99,7 @@ export class WearableModule {
         let profile = WearableModule.loadProfile();
         if (profile) {
             this.#profile = profile;
-            this.#device = new DeviceModel(profile.id, jotai, BluetoothService.instance);
+            this.#device = new DeviceModel(profile.id, jotai, bluetooth());
             this.#device.onStreamingStart = this.#onStreamingStart;
             this.#device.onStreamingStop = this.#onStreamingStop;
             this.#device.onStreamingFrame = this.#onStreamingFrame;
@@ -111,7 +120,7 @@ export class WearableModule {
         WearableModule.lock.inLock(async () => {
 
             // Starting bluetooth
-            let result = await BluetoothService.instance.start();
+            let result = await bluetooth().start();
             if (result === 'denied') {
                 this.jotai.set(this.pairingStatus, 'denied');
                 track('wearable_bluetooth_denied');
@@ -146,7 +155,7 @@ export class WearableModule {
         if (!this.jotai.get(this.discoveryStatus)) {
             this.jotai.set(this.discoveryStatus, { devices: [] });
         }
-        BluetoothService.instance.startScan((device) => {
+        bluetooth().startScan((device) => {
             if (isDiscoveredDeviceSupported(device)) {
                 let devices = this.jotai.get(this.discoveryStatus)!.devices;
                 devices = [{ name: device.name, id: device.id }, ...devices.filter((v) => v.id !== device.id)];
@@ -158,7 +167,7 @@ export class WearableModule {
         this.#discoveryCancel = () => {
             if (this.#discoveryCancel != null) {
                 this.#discoveryCancel = null;
-                BluetoothService.instance.stopScan();
+                bluetooth().stopScan();
             }
         }
     }
@@ -174,7 +183,7 @@ export class WearableModule {
     }
 
     pick = async () => {
-        let picked = await BluetoothService.instance.pick(Object.values(bluetoothServices));
+        let picked = await bluetooth().pick(Object.values(bluetoothServices));
         if (picked) {
             return this.tryPairDevice(picked.id);
         }
@@ -191,7 +200,7 @@ export class WearableModule {
             }
 
             // Connecting to device
-            let connected = await BluetoothService.instance.connect(id, 5000);
+            let connected = await bluetooth().connect(id, 5000);
             if (!connected) {
                 return 'connection-error' as const;
             }
@@ -212,7 +221,7 @@ export class WearableModule {
 
             // Save device
             this.#profile = profile;
-            this.#device = new DeviceModel(connected, this.jotai, BluetoothService.instance, this.#needStreaming);
+            this.#device = new DeviceModel(connected, this.jotai, bluetooth(), this.#needStreaming);
             this.#device.onStreamingStart = this.#onStreamingStart;
             this.#device.onStreamingStop = this.#onStreamingStop;
             this.#device.onStreamingFrame = this.#onStreamingFrame;

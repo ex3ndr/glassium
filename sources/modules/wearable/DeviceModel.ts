@@ -11,7 +11,6 @@ import { InvalidateSync } from "../../utils/sync";
 import { AsyncLock } from "../../utils/lock";
 import { backoff, delay } from "../../utils/time";
 import { convertCompassVoltage } from "./protocol/compass";
-import { Platform } from "react-native";
 
 export class DeviceModel {
     static #lock = new AsyncLock(); // Use static lock to prevent multiple BT operations

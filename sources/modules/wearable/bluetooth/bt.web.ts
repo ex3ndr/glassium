@@ -1,7 +1,6 @@
 import { BTDevice, BTDiscoveredDevice, BTService, BluetoothModelInterface, BluetoothStartResult } from "./types";
 
 export class BluetoothService implements BluetoothModelInterface {
-    static readonly instance = new BluetoothService();
     static readonly isPersistent: boolean = false;
     static readonly supportsScan: boolean = false;
     static readonly supportsPick: boolean = true;

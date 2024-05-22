@@ -26,6 +26,10 @@ let theme = {
 // Error boundary
 export { ErrorBoundary } from 'expo-router';
 
+export const unstable_settings = {
+    initialRouteName: '(app)/index',
+};
+
 export default function RootLayout() {
     const [state, controller] = useNewGlobalController();
     return (

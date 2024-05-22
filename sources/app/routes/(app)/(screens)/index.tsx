@@ -1,15 +1,24 @@
 import * as React from 'react';
-import { ActivityIndicator, ScrollView, Text, View } from 'react-native';
+import { ActivityIndicator, Pressable, ScrollView, Text, View } from 'react-native';
+import { Ionicons } from '@expo/vector-icons';
 import { useSafeAreaInsets } from 'react-native-safe-area-context';
 import { Theme } from '@/app/theme';
 import { Feed } from '@/app/components/feed/Feed';
 import { HomeHeader, HomeTopBar } from '../_navigation';
 import { useLayout } from '@/utils/useLayout';
 import LottieView from 'lottie-react-native';
+import { useRouter } from 'expo-router';
+import { useAppModel } from '@/global';
 
 export default React.memo(() => {
+    const app = useAppModel();
+    const experimental = app.profile.useExperimentalMode();
     const layout = useLayout();
     const safeArea = useSafeAreaInsets();
+    const router = useRouter();
+    const openChat = () => {
+        router.navigate('/chat/main');
+    };
 
     // Views
     const header = (
@@ -54,6 +63,43 @@ export default React.memo(() => {
             </View>
         </ScrollView>
     );
+    const chatButton = (
+        <View
+            style={{
+                position: 'absolute',
+                bottom: safeArea.bottom,
+                left: safeArea.left,
+                right: safeArea.right,
+                alignItems: 'flex-end',
+                justifyContent: 'center',
+                paddingHorizontal: 32,
+                paddingBottom: 32
+            }}
+        >
+            <Pressable
+                onPress={openChat}
+                style={{
+                    width: 64,
+                    height: 64,
+                    borderRadius: 32,
+                    backgroundColor: Theme.accent,
+                    alignItems: 'center',
+                    justifyContent: 'center',
+                    shadowColor: "#000",
+                    shadowOffset: {
+                        width: 0,
+                        height: 2,
+                    },
+                    shadowOpacity: 0.25,
+                    shadowRadius: 3.84,
+
+                    elevation: 5,
+                }}
+            >
+                <Ionicons name="chatbubble-ellipses-outline" size={34} color="black" />
+            </Pressable>
+        </View>
+    );
     return (
         <>
             <HomeHeader />
@@ -66,6 +112,7 @@ export default React.memo(() => {
                     empty={empty}
                     loading={loading}
                 />
+                {experimental && chatButton}
             </View>
         </>
     );

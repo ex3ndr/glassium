@@ -110,4 +110,9 @@ export class ProfileService {
         let profile = useAtomValue(this.profile);
         return profile?.roles.includes('developer') ?? false;
     }
+
+    useExperimentalMode = () => {
+        let profile = useAtomValue(this.profile);
+        return profile?.roles.includes('experimental') || __DEV__;
+    }
 }
